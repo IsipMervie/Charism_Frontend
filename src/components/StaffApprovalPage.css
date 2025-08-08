@@ -1,0 +1,143 @@
+/* StaffApprovalPage.css */
+
+.staff-approval-page {
+  padding: 20px 0;
+}
+
+.staff-approval-page h1 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.staff-approval-page .table {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.staff-approval-page .table th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  color: #495057;
+}
+
+.staff-approval-page .table td {
+  vertical-align: middle;
+}
+
+.staff-approval-page .btn {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 6px 12px;
+}
+
+.staff-approval-page .btn-sm {
+  font-size: 0.875rem;
+}
+
+.staff-approval-page .badge {
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+.staff-approval-page .card {
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.staff-approval-page .modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.staff-approval-page .modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 12px 12px 0 0;
+}
+
+.staff-approval-page .modal-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.staff-approval-page .form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.staff-approval-page .form-control {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 10px 12px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.staff-approval-page .form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.staff-approval-page .form-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.staff-approval-page .alert {
+  border-radius: 8px;
+  border: none;
+}
+
+.staff-approval-page .spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.staff-approval-page .staff-details {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.staff-approval-page .staff-details h6 {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.staff-approval-page .staff-details p {
+  margin-bottom: 8px;
+  color: #6c757d;
+}
+
+.staff-approval-page .staff-details strong {
+  color: #495057;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .staff-approval-page .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .staff-approval-page .btn-sm {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+  
+  .staff-approval-page .d-flex {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .staff-approval-page .d-flex .badge {
+    align-self: flex-start;
+  }
+} 

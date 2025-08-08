@@ -1,0 +1,78 @@
+/* Students40HoursPage.css */
+
+.students-40-container {
+  padding: 24px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.students-40-container h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.students-40-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.students-40-controls input[type="text"] {
+  padding: 8px;
+  flex: 1;
+  min-width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.students-40-list {
+  list-style: none;
+  padding: 0;
+}
+
+.students-40-list li {
+  margin-bottom: 16px;
+  background-color: #f9f9f9;
+  padding: 12px 16px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.students-40-list strong {
+  font-weight: 600;
+}
+
+.students-40-list .download-btn {
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
+.no-students-msg {
+  color: #dc3545;
+  font-weight: 600;
+  margin-top: 24px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 576px) {
+  .students-40-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .students-40-controls input[type="text"] {
+    width: 100%;
+  }
+
+  .students-40-list li {
+    font-size: 0.95rem;
+  }
+}

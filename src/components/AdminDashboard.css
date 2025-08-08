@@ -1,0 +1,466 @@
+/* Simple but Creative Admin Dashboard Design */
+
+.admin-dashboard-page {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 2rem 1rem;
+  margin-top: 70px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Pattern */
+.admin-dashboard-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.background-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.02) 0%, transparent 50%);
+  animation: patternMove 20s ease-in-out infinite;
+}
+
+@keyframes patternMove {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20px, -20px) scale(1.1);
+  }
+}
+
+/* Main Container */
+.admin-dashboard-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.admin-dashboard-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Header Section */
+.header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  position: relative;
+}
+
+.header-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 20px 20px 0 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.header-icon {
+  flex-shrink: 0;
+}
+
+.icon-symbol {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.icon-symbol:hover {
+  transform: translateY(-3px) rotate(5deg);
+}
+
+.header-text {
+  flex: 1;
+}
+
+.header-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-subtitle {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* School Info Card */
+.school-info-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.school-info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 16px 16px 0 0;
+}
+
+.school-info-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.school-logo-section {
+  flex-shrink: 0;
+}
+
+.school-logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.school-logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-placeholder {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.logo-icon {
+  font-size: 2rem;
+  color: #64748b;
+}
+
+.logo-loading,
+.school-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+}
+
+.school-info-section {
+  flex: 1;
+}
+
+.school-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+}
+
+.school-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.contact-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.contact-value {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.school-error {
+  margin: 0;
+  border-radius: 8px;
+  border: none;
+  background: #fef2f2;
+  color: #991b1b;
+  border-left: 4px solid #ef4444;
+}
+
+/* Action Buttons Grid */
+.action-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.action-button:hover::before {
+  transform: scaleX(1);
+}
+
+.action-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+}
+
+.button-icon {
+  font-size: 1.5rem;
+  color: #667eea;
+  transition: transform 0.3s ease;
+}
+
+.action-button:hover .button-icon {
+  transform: scale(1.1);
+}
+
+.button-text {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Button Color Variants */
+.manage-users-button:hover {
+  border-color: #3b82f6;
+}
+
+.manage-users-button:hover .button-icon {
+  color: #3b82f6;
+}
+
+.manage-events-button:hover {
+  border-color: #8b5cf6;
+}
+
+.manage-events-button:hover .button-icon {
+  color: #8b5cf6;
+}
+
+.analytics-button:hover {
+  border-color: #06b6d4;
+}
+
+.analytics-button:hover .button-icon {
+  color: #06b6d4;
+}
+
+.completed-button:hover {
+  border-color: #10b981;
+}
+
+.completed-button:hover .button-icon {
+  color: #10b981;
+}
+
+.staff-approvals-button:hover {
+  border-color: #f59e0b;
+}
+
+.staff-approvals-button:hover .button-icon {
+  color: #f59e0b;
+}
+
+.manage-messages-button:hover {
+  border-color: #ef4444;
+}
+
+.manage-messages-button:hover .button-icon {
+  color: #ef4444;
+}
+
+.school-settings-button:hover {
+  border-color: #6b7280;
+}
+
+.school-settings-button:hover .button-icon {
+  color: #6b7280;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-dashboard-page {
+    padding: 1rem;
+    margin-top: 65px;
+  }
+  
+  .header-title {
+    font-size: 2rem;
+  }
+  
+  .icon-symbol {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .school-info-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .school-logo,
+  .logo-placeholder,
+  .logo-loading,
+  .school-loading {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .action-buttons-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .action-button {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: 1.75rem;
+  }
+  
+  .header-subtitle {
+    font-size: 1rem;
+  }
+  
+  .school-info-card {
+    padding: 1.5rem;
+  }
+  
+  .school-name {
+    font-size: 1.25rem;
+  }
+  
+  .action-button {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .button-icon {
+    font-size: 1.25rem;
+  }
+}
+
+/* Focus States for Accessibility */
+.action-button:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .background-pattern {
+    animation: none;
+  }
+  
+  .icon-symbol:hover {
+    transform: none;
+  }
+  
+  .school-logo {
+    transition: none;
+  }
+  
+  .school-logo:hover {
+    transform: none;
+  }
+  
+  .action-button::before {
+    display: none;
+  }
+  
+  .action-button:hover {
+    transform: none;
+  }
+  
+  .action-button:hover .button-icon {
+    transform: none;
+  }
+}

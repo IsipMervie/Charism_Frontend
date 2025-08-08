@@ -1,0 +1,96 @@
+/* ReflectionUploadModal.css */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 32px 28px 24px 28px;
+  border-radius: 12px;
+  min-width: 340px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  max-width: 95vw;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+}
+
+.modal-content textarea {
+  width: 100%;
+  min-height: 70px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  margin-bottom: 14px;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.modal-content input[type="file"] {
+  margin-bottom: 14px;
+}
+
+.modal-content button[type="submit"] {
+  background: #3182ce;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modal-content button[type="submit"]:hover {
+  background: #225ea8;
+}
+
+.modal-content button[type="button"] {
+  background: #e2e8f0;
+  color: #2d3748;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.2s;
+}
+
+.modal-content button[type="button"]:hover {
+  background: #cbd5e1;
+}
+
+.modal-content .error-message {
+  color: #e53e3e;
+  margin-bottom: 10px;
+}
+
+.modal-content .success-message {
+  color: #38a169;
+  margin-bottom: 10px;
+} 
