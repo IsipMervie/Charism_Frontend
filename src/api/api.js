@@ -462,9 +462,19 @@ export const toggleEventAvailability = async (eventId) => {
 // Analytics
 export const getAnalytics = async () => {
   try {
-    const response = await axiosInstance.get('/events/analytics');
+    const response = await axiosInstance.get('/analytics');
     return response.data;
   } catch (error) {
+    // Fallback to legacy endpoint if the new one is not available
+    if (error?.response?.status === 404) {
+      try {
+        const legacy = await axiosInstance.get('/events/analytics');
+        return legacy.data;
+      } catch (legacyErr) {
+        console.error('Error fetching analytics (legacy):', legacyErr);
+        throw new Error('Failed to fetch analytics. Please try again.');
+      }
+    }
     console.error('Error fetching analytics:', error);
     throw new Error('Failed to fetch analytics. Please try again.');
   }

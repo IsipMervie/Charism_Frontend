@@ -2,7 +2,7 @@
 
 .my-participation-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #ffffff;
   position: relative;
   overflow-x: hidden;
 }
@@ -17,18 +17,7 @@
   overflow: hidden;
 }
 
-.background-pattern {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-  animation: patternMove 20s ease-in-out infinite;
-}
+.background-pattern { display: none; }
 
 @keyframes patternMove {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -73,7 +62,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
   border-radius: 24px 24px 0 0;
 }
 
@@ -90,19 +79,19 @@
 .icon-symbol {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
   transition: all 0.3s ease;
 }
 
 .icon-symbol:hover {
   transform: translateY(-5px) rotate(5deg);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
 }
 
 .header-text {
@@ -114,7 +103,7 @@
   font-weight: 700;
   color: #1e293b;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -122,7 +111,8 @@
 
 .header-subtitle {
   font-size: 1.1rem;
-  color: #64748b;
+  color: #1e293b;
+  font-weight: 600;
   margin: 0;
   line-height: 1.6;
 }
@@ -159,7 +149,7 @@
 .analytics-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -214,7 +204,7 @@
 }
 
 .progress-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 1.25rem;
 }
 
@@ -246,7 +236,7 @@
 }
 
 .current-hours {
-  color: #667eea;
+  color: #2563eb;
   font-size: 2rem;
 }
 
@@ -270,7 +260,7 @@
 .progress-bar {
   width: 100%;
   height: 12px;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(37, 99, 235, 0.1);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -411,7 +401,7 @@
 }
 
 .participation-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 1.25rem;
 }
 
@@ -434,7 +424,7 @@
 
 .empty-icon {
   font-size: 4rem;
-  color: #667eea;
+  color: #2563eb;
   margin-bottom: 1.5rem;
   opacity: 0.5;
 }
@@ -479,7 +469,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.1);
   background: rgba(255, 255, 255, 0.9);
 }
 
@@ -531,7 +521,7 @@
 }
 
 .detail-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 0.85rem;
   width: 16px;
 }
@@ -622,7 +612,7 @@
 
 .loading-spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: #2563eb;
   margin-bottom: 1.5rem;
   animation: spin 1s linear infinite;
 }

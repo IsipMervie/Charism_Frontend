@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { getAnalytics } from '../api/api';
-import { Container, Card, Row, Col, Spinner, Alert } from 'react-bootstrap';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  getAnalytics,
+  getDepartmentStatistics,
+  getYearlyStatistics,
+} from '../api/api';
+import { Container, Card, Row, Col, Spinner, Alert, Form, Nav } from 'react-bootstrap';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,6 +20,7 @@ import {
 } from 'chart.js';
 import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2';
 import { FaUsers, FaCalendarAlt, FaCheckCircle, FaComments, FaClock, FaGraduationCap } from 'react-icons/fa';
+import './AnalyticsPage.css';
 
 // Register ChartJS components
 ChartJS.register(
@@ -35,6 +40,11 @@ function AnalyticsPage() {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'department' | 'year'
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [departmentDetail, setDepartmentDetail] = useState(null);
+  const [yearDetail, setYearDetail] = useState(null);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -51,6 +61,25 @@ function AnalyticsPage() {
     };
     fetchAnalytics();
   }, []);
+
+  // Fetch detail when department or year changes
+  useEffect(() => {
+    const run = async () => {
+      try {
+        if (activeTab === 'department' && selectedDepartment) {
+          const detail = await getDepartmentStatistics(selectedDepartment);
+          setDepartmentDetail(detail);
+        }
+        if (activeTab === 'year' && selectedYear) {
+          const detail = await getYearlyStatistics(selectedYear);
+          setYearDetail(detail);
+        }
+      } catch (e) {
+        // Surface as inline error card content, keep global error untouched
+      }
+    };
+    run();
+  }, [activeTab, selectedDepartment, selectedYear]);
 
   const getValue = (key) => {
     if (error) return <span style={{ color: 'red' }}>Error</span>;
@@ -118,27 +147,32 @@ function AnalyticsPage() {
   };
 
   // Recent Activity Line Chart (real data from backend)
-  const recentActivityData = {
-    labels: ['7 days ago', '6 days ago', '5 days ago', '4 days ago', '3 days ago', '2 days ago', 'Yesterday'],
-    datasets: [
-      {
-        label: 'New Events',
-        data: data.dailyEvents || [0, 0, 0, 0, 0, 0, 0],
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.1)',
-        tension: 0.4,
-        fill: true,
-      },
-      {
-        label: 'New Users',
-        data: data.dailyUsers || [0, 0, 0, 0, 0, 0, 0],
-        borderColor: 'rgb(54, 162, 235)',
-        backgroundColor: 'rgba(54, 162, 235, 0.1)',
-        tension: 0.4,
-        fill: true,
-      },
-    ],
-  };
+  const recentActivityData = useMemo(() => {
+    const events = Array.isArray(data.dailyEvents) ? data.dailyEvents : [0,0,0,0,0,0,0];
+    const users = Array.isArray(data.dailyUsers) ? data.dailyUsers : [0,0,0,0,0,0,0];
+    const labels = events.map((_, idx) => `${events.length - idx} day${events.length - idx === 1 ? '' : 's'} ago`).slice(0, events.length);
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'New Events',
+          data: events,
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.1)',
+          tension: 0.4,
+          fill: true,
+        },
+        {
+          label: 'New Users',
+          data: users,
+          borderColor: 'rgb(54, 162, 235)',
+          backgroundColor: 'rgba(54, 162, 235, 0.1)',
+          tension: 0.4,
+          fill: true,
+        },
+      ],
+    };
+  }, [data.dailyEvents, data.dailyUsers]);
 
   // Department Statistics Bar Chart
   const departmentData = {
@@ -328,147 +362,274 @@ function AnalyticsPage() {
 
   if (loading) {
     return (
-      <Container className="mt-5 text-center">
-        <Spinner animation="border" role="status" size="lg">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-        <p className="mt-3">Loading analytics data...</p>
-      </Container>
+      <div className="analytics-container">
+        <div className="loading-section">
+          <div className="loading-spinner" />
+          <h3>Preparing insights…</h3>
+          <p>Fetching analytics data</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Container fluid className="mt-4">
-      <div className="mb-4">
-        <h1 className="text-center mb-3">📊 Analytics Dashboard</h1>
-        <p className="text-center text-muted">Comprehensive overview of your community engagement platform</p>
+    <div className="analytics-container">
+      <div className="analytics-header">
+        <div className="header-content">
+          <h1>📊 Analytics Dashboard</h1>
+          <p>Comprehensive overview of your community engagement platform</p>
+        </div>
       </div>
 
-      {error && (
-        <Alert variant="danger" className="mb-4">
-          <Alert.Heading>Error Loading Analytics</Alert.Heading>
-          <p>{error}</p>
-        </Alert>
-      )}
+      <Container fluid>
+        {error && (
+          <div className="error-alert">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
-      {/* Metric Cards */}
-      <Row className="mb-4">
-        {metricCards.map(({ key, label, icon, color }) => (
-          <Col lg={2} md={4} sm={6} key={key} className="mb-3">
-            <Card className="h-100 shadow-sm border-0" style={{ backgroundColor: '#f8f9fa' }}>
-              <Card.Body className="text-center">
-                <div className="mb-2" style={{ color }}>
-                  {icon}
+        <Nav variant="pills" activeKey={activeTab} onSelect={(k) => setActiveTab(k || 'overview')} className="mb-3 justify-content-center">
+          <Nav.Item>
+            <Nav.Link eventKey="overview">Overview</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="department">By Department</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="year">By Academic Year</Nav.Link>
+          </Nav.Item>
+        </Nav>
+
+        {activeTab === 'overview' && (
+          <>
+            <div className="metrics-section">
+              {metricCards.map(({ key, label, icon }) => (
+                <div key={key} className="metric-card" tabIndex={0}>
+                  <div className="metric-icon users">{icon}</div>
+                  <div className="metric-content">
+                    <h3>{getValue(key).toLocaleString()}</h3>
+                    <p>{label}</p>
+                  </div>
                 </div>
-                <Card.Title className="h6 mb-1">{label}</Card.Title>
-                <Card.Text className="h4 mb-0 fw-bold" style={{ color }}>
-                  {getValue(key).toLocaleString()}
-                </Card.Text>
+              ))}
+            </div>
+
+            <div className="charts-section">
+              <div className="chart-card">
+                <div className="chart-header">
+                  <h3>User Distribution</h3>
+                  <p>Proportion of users by role</p>
+                </div>
+                <div className="chart-container">
+                  <Pie data={userRoleData} options={pieOptions} />
+                </div>
+              </div>
+
+              <div className="chart-card">
+                <div className="chart-header">
+                  <h3>Event Status Distribution</h3>
+                  <p>Active vs Completed events</p>
+                </div>
+                <div className="chart-container">
+                  <Doughnut data={eventStatusData} options={doughnutOptions} />
+                </div>
+              </div>
+
+              <div className="chart-card">
+                <div className="chart-header">
+                  <h3>Attendance Overview</h3>
+                  <p>Total vs approved attendance</p>
+                </div>
+                <div className="chart-container">
+                  <Bar data={attendanceData} options={barOptions} />
+                </div>
+              </div>
+
+              <div className="chart-card">
+                <div className="chart-header">
+                  <h3>Recent Activity (Last 7 Days)</h3>
+                  <p>Daily new events and users</p>
+                </div>
+                <div className="chart-container">
+                  <Line data={recentActivityData} options={lineOptions} />
+                </div>
+              </div>
+
+              <div className="chart-card">
+                <div className="chart-header">
+                  <h3>Department Statistics</h3>
+                  <p>Students and events per department</p>
+                </div>
+                <div className="chart-container">
+                  <Bar data={departmentData} options={departmentBarOptions} />
+                </div>
+              </div>
+
+              <div className="chart-card">
+                <div className="chart-header">
+                  <h3>Academic Year Statistics</h3>
+                  <p>Students and events by academic year</p>
+                </div>
+                <div className="chart-container">
+                  <Bar data={yearData} options={yearBarOptions} />
+                </div>
+              </div>
+            </div>
+
+            <div className="stats-section mb-4">
+              <div className="stat-card" tabIndex={0}>
+                <div className="stat-icon"><FaClock /></div>
+                <div className="stat-content">
+                  <h4>Average Hours per Student</h4>
+                  <p>{getValue('studentsCount') > 0 ? (getValue('totalHours') / getValue('studentsCount')).toFixed(1) : 0}</p>
+                </div>
+              </div>
+              <div className="stat-card" tabIndex={0}>
+                <div className="stat-icon"><FaCheckCircle /></div>
+                <div className="stat-content">
+                  <h4>Approval Rate</h4>
+                  <p>
+                    {getValue('totalAttendance') > 0
+                      ? ((getValue('approvedAttendance') / getValue('totalAttendance')) * 100).toFixed(1)
+                      : 0}%
+                  </p>
+                </div>
+              </div>
+              <div className="stat-card" tabIndex={0}>
+                <div className="stat-icon"><FaCalendarAlt /></div>
+                <div className="stat-content">
+                  <h4>Recent Events (30 days)</h4>
+                  <p>{getValue('recentEvents')}</p>
+                </div>
+              </div>
+              <div className="stat-card" tabIndex={0}>
+                <div className="stat-icon"><FaUsers /></div>
+                <div className="stat-content">
+                  <h4>Recent Users (30 days)</h4>
+                  <p>{getValue('recentUsers')}</p>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeTab === 'department' && (
+          <>
+            <Card className="shadow-sm border-0 mb-3">
+              <Card.Body>
+                <Form>
+                  <Row className="align-items-end">
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Select Department</Form.Label>
+                      <Form.Select
+                        value={selectedDepartment}
+                        onChange={(e) => setSelectedDepartment(e.target.value)}
+                      >
+                        <option value="">-- Choose department --</option>
+                        {(data.departmentStats || [])
+                          .map(d => d.department)
+                          .filter(Boolean)
+                          .sort((a,b)=>a.localeCompare(b))
+                          .map(dep => (
+                            <option key={dep} value={dep}>{dep}</option>
+                          ))}
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                </Form>
               </Card.Body>
             </Card>
-          </Col>
-        ))}
-      </Row>
 
-      {/* Charts Row 1 */}
-      <Row className="mb-4">
-        <Col lg={6} className="mb-4">
-          <Card className="shadow-sm border-0">
-            <Card.Body>
-              <Pie data={userRoleData} options={pieOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={6} className="mb-4">
-          <Card className="shadow-sm border-0">
-            <Card.Body>
-              <Doughnut data={eventStatusData} options={doughnutOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Charts Row 2 */}
-      <Row className="mb-4">
-        <Col lg={6} className="mb-4">
-          <Card className="shadow-sm border-0">
-            <Card.Body>
-              <Bar data={attendanceData} options={barOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={6} className="mb-4">
-          <Card className="shadow-sm border-0">
-            <Card.Body>
-              <Line data={recentActivityData} options={lineOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Charts Row 3 - Department and Year Statistics */}
-      <Row className="mb-4">
-        <Col lg={6} className="mb-4">
-          <Card className="shadow-sm border-0">
-            <Card.Body>
-              <Bar data={departmentData} options={departmentBarOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col lg={6} className="mb-4">
-          <Card className="shadow-sm border-0">
-            <Card.Body>
-              <Bar data={yearData} options={yearBarOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Summary Statistics */}
-      <Row className="mb-4">
-        <Col lg={12}>
-          <Card className="shadow-sm border-0">
-            <Card.Header className="bg-primary text-white">
-              <h5 className="mb-0">📈 Summary Statistics</h5>
-            </Card.Header>
-            <Card.Body>
+            {selectedDepartment && (
               <Row>
-                <Col md={3} className="text-center mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Average Hours per Student</h6>
-                    <h4 className="text-primary">
-                      {data.totalUsers > 0 ? (getValue('totalHours') / getValue('studentsCount')).toFixed(1) : 0}
-                    </h4>
-                  </div>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Students</div>
+                    <div className="h3 mb-0">{departmentDetail?.studentCount ?? '—'}</div>
+                  </Card.Body></Card>
                 </Col>
-                <Col md={3} className="text-center mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Approval Rate</h6>
-                    <h4 className="text-success">
-                      {getValue('totalAttendance') > 0 
-                        ? ((getValue('approvedAttendance') / getValue('totalAttendance')) * 100).toFixed(1) 
-                        : 0}%
-                    </h4>
-                  </div>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Events</div>
+                    <div className="h3 mb-0">{departmentDetail?.eventCount ?? '—'}</div>
+                  </Card.Body></Card>
                 </Col>
-                <Col md={3} className="text-center mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Recent Events (30 days)</h6>
-                    <h4 className="text-warning">{getValue('recentEvents')}</h4>
-                  </div>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Approved Attendance</div>
+                    <div className="h3 mb-0">{departmentDetail?.approvedAttendance ?? '—'}</div>
+                  </Card.Body></Card>
                 </Col>
-                <Col md={3} className="text-center mb-3">
-                  <div className="p-3 bg-light rounded">
-                    <h6 className="text-muted">Recent Users (30 days)</h6>
-                    <h4 className="text-info">{getValue('recentUsers')}</h4>
-                  </div>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Total Hours</div>
+                    <div className="h3 mb-0">{departmentDetail?.totalHours ?? '—'}</div>
+                  </Card.Body></Card>
                 </Col>
               </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+            )}
+          </>
+        )}
+
+        {activeTab === 'year' && (
+          <>
+            <Card className="shadow-sm border-0 mb-3">
+              <Card.Body>
+                <Form>
+                  <Row className="align-items-end">
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Select Academic Year</Form.Label>
+                      <Form.Select
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                      >
+                        <option value="">-- Choose year --</option>
+                        {(data.yearStats || [])
+                          .map(y => y.academicYear)
+                          .filter(Boolean)
+                          .sort((a,b)=>a.localeCompare(b))
+                          .map(year => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                </Form>
+              </Card.Body>
+            </Card>
+
+            {selectedYear && (
+              <Row>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Students</div>
+                    <div className="h3 mb-0">{yearDetail?.studentCount ?? '—'}</div>
+                  </Card.Body></Card>
+                </Col>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Events</div>
+                    <div className="h3 mb-0">{yearDetail?.eventCount ?? '—'}</div>
+                  </Card.Body></Card>
+                </Col>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Approved Attendance</div>
+                    <div className="h3 mb-0">{yearDetail?.approvedAttendance ?? '—'}</div>
+                  </Card.Body></Card>
+                </Col>
+                <Col md={3} className="mb-3">
+                  <Card className="shadow-sm border-0 h-100"><Card.Body>
+                    <div className="text-muted">Total Hours</div>
+                    <div className="h3 mb-0">{yearDetail?.totalHours ?? '—'}</div>
+                  </Card.Body></Card>
+                </Col>
+              </Row>
+            )}
+          </>
+        )}
+      </Container>
+    </div>
   );
 }
 

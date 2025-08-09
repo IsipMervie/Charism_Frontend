@@ -77,7 +77,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
   border-radius: 20px 20px 0 0;
 }
 
@@ -102,13 +102,13 @@
 .icon-symbol {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.35);
   transition: transform 0.3s ease;
 }
 
@@ -125,15 +125,16 @@
   font-weight: 700;
   color: #1e293b;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .header-subtitle {
-  color: #64748b;
+  color: #1e293b;
   font-size: 1.1rem;
+  font-weight: 500;
   margin: 0;
   line-height: 1.5;
 }
@@ -143,7 +144,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border: none;
   border-radius: 12px;
@@ -151,13 +152,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
   white-space: nowrap;
 }
 
 .create-event-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
 }
 
 .button-icon {
@@ -188,8 +189,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
   transform: translateY(-1px);
 }
 
@@ -307,7 +308,7 @@
 }
 
 .meta-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 0.9rem;
 }
 
@@ -316,7 +317,7 @@
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #2563eb;
 }
 
 .detail-item {
@@ -380,13 +381,13 @@
 }
 
 .view-button {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
 }
 
 .view-button:hover {
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
 }
 
 .delete-button {
@@ -444,7 +445,7 @@
 
 .loading-spinner {
   font-size: 2rem;
-  color: #667eea;
+  color: #2563eb;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
@@ -474,7 +475,7 @@
 
 .retry-button {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border: none;
   border-radius: 8px;
@@ -486,7 +487,7 @@
 
 .retry-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
 }
 
 /* Responsive Design */
@@ -562,7 +563,7 @@
 .action-button:focus,
 .search-input:focus,
 .create-event-button:focus {
-  outline: 2px solid #667eea;
+  outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
 

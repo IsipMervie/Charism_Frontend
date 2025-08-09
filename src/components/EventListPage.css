@@ -75,14 +75,14 @@
 .icon-symbol {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
   font-size: 2rem;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.35);
   transition: transform 0.3s ease;
 }
 
@@ -95,7 +95,7 @@
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -138,8 +138,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
   transform: translateY(-1px);
 }
 
@@ -166,8 +166,8 @@
 
 .filter-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
   transform: translateY(-1px);
 }
 
@@ -193,7 +193,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border: none;
   border-radius: 12px;
@@ -201,12 +201,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
 }
 
 .pdf-download-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
 }
 
 .download-icon {
@@ -239,7 +239,7 @@
   left: 0;
   width: 50px;
   height: 2px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
 }
 
 .filters-grid {
@@ -273,8 +273,8 @@
 .filter-field input:focus,
 .filter-field select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 /* Events Section */
@@ -387,7 +387,7 @@
 }
 
 .meta-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 0.9rem;
 }
 
@@ -403,7 +403,7 @@
   padding: 0.75rem 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #2563eb;
 }
 
 .event-hours strong {
@@ -443,13 +443,13 @@
 }
 
 .primary-button {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
 }
 
 .primary-button:hover {
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
 }
 
 .secondary-button {
@@ -515,7 +515,7 @@
   background: #f8fafc;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #2563eb;
 }
 
 .time-label {
@@ -582,7 +582,7 @@
 
 .loading-spinner {
   font-size: 2rem;
-  color: #667eea;
+  color: #2563eb;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
@@ -601,7 +601,7 @@
 
 .retry-btn {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border: none;
   border-radius: 8px;
@@ -614,7 +614,7 @@
 
 .retry-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
 }
 
 /* Responsive Design */
@@ -695,7 +695,7 @@
 .action-button:focus,
 .search-input:focus,
 .filter-select:focus {
-  outline: 2px solid #667eea;
+  outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
 

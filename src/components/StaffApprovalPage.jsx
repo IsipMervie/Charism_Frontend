@@ -89,10 +89,13 @@ function StaffApprovalPage() {
   };
 
   return (
-    <Container className="mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Staff Approval Management</h1>
-        <Badge bg="warning" className="fs-6">
+    <Container className="mt-5 staff-approval-page">
+      <div className="header-section d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 className="header-title">Staff Approval Management</h1>
+          <p className="header-subtitle mb-0">Review and approve or reject pending staff accounts.</p>
+        </div>
+        <Badge className="fs-6 pending-badge">
           {pendingStaff.length} Pending Approval{pendingStaff.length !== 1 ? 's' : ''}
         </Badge>
       </div>
@@ -111,7 +114,7 @@ function StaffApprovalPage() {
           </Card.Body>
         </Card>
       ) : (
-        <Table striped bordered hover responsive>
+        <Table striped hover responsive className="staff-approval-table">
           <thead>
             <tr>
               <th>Name</th>
@@ -137,7 +140,7 @@ function StaffApprovalPage() {
                     size="sm" 
                     variant="success" 
                     onClick={() => handleAction(staff, 'approve')}
-                    className="me-2"
+                    className="me-2 approve-btn"
                   >
                     Approve
                   </Button>
@@ -145,6 +148,7 @@ function StaffApprovalPage() {
                     size="sm" 
                     variant="danger" 
                     onClick={() => handleAction(staff, 'reject')}
+                    className="reject-btn"
                   >
                     Reject
                   </Button>
@@ -156,7 +160,7 @@ function StaffApprovalPage() {
       )}
 
       {/* Approval/Rejection Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} dialogClassName="approval-modal">
         <Modal.Header closeButton>
           <Modal.Title>
             {action === 'approve' ? 'Approve Staff Member' : 'Reject Staff Member'}

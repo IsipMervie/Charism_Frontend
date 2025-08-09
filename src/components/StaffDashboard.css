@@ -2,7 +2,7 @@
 
 .staff-dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #ffffff;
   position: relative;
   overflow-x: hidden;
 }
@@ -17,18 +17,7 @@
   overflow: hidden;
 }
 
-.background-pattern {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-  animation: patternMove 20s ease-in-out infinite;
-}
+.background-pattern { display: none; }
 
 @keyframes patternMove {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -76,7 +65,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
   border-radius: 24px 24px 0 0;
 }
 
@@ -94,19 +83,19 @@
 .icon-symbol {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
   transition: all 0.3s ease;
 }
 
 .icon-symbol:hover {
   transform: translateY(-5px) rotate(5deg);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
 }
 
 .header-text {
@@ -118,7 +107,7 @@
   font-weight: 700;
   color: #1e293b;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -126,7 +115,8 @@
 
 .header-subtitle {
   font-size: 1.1rem;
-  color: #64748b;
+  color: #1e293b;
+  font-weight: 600;
   margin: 0;
   line-height: 1.6;
 }
@@ -140,11 +130,11 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border-radius: 20px;
   font-weight: 600;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
 }
 
 .user-icon {
@@ -183,7 +173,7 @@
 .stat-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -238,7 +228,7 @@
 }
 
 .actions-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 1.25rem;
 }
 
@@ -273,7 +263,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
   transition: left 0.5s ease;
 }
 
@@ -290,7 +280,7 @@
 .action-icon {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -322,7 +312,7 @@
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  color: #667eea;
+  color: #2563eb;
   font-size: 1.25rem;
   font-weight: 600;
   transition: transform 0.3s ease;
@@ -357,7 +347,7 @@
 }
 
 .staff-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 1.25rem;
 }
 
@@ -420,7 +410,7 @@
 
 .loading-spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: #2563eb;
   margin-bottom: 1.5rem;
   animation: spin 1s linear infinite;
 }
@@ -543,7 +533,7 @@
 /* Focus States */
 .action-card:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
 }
 
 /* Reduced Motion */

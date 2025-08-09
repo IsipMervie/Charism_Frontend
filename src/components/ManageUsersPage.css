@@ -2,7 +2,7 @@
 
 .manage-users-page {
   min-height: 100vh;
-  background: #fafafa;
+  background: #ffffff;
   padding: 2rem 1rem;
   margin-top: 70px;
   position: relative;
@@ -26,8 +26,8 @@
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.03) 0%, transparent 50%);
   animation: patternMove 25s ease-in-out infinite;
 }
 
@@ -78,7 +78,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
   border-radius: 24px 24px 0 0;
 }
 
@@ -103,13 +103,13 @@
 .icon-symbol {
   width: 90px;
   height: 90px;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 12px 32px rgba(37, 99, 235, 0.3);
   transition: all 0.4s ease;
   position: relative;
 }
@@ -121,7 +121,7 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 26px;
   z-index: -1;
   opacity: 0;
@@ -145,7 +145,7 @@
   font-weight: 800;
   color: #1e293b;
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -153,11 +153,11 @@
 }
 
 .header-subtitle {
-  color: #64748b;
+  color: #1e293b;
   font-size: 1.2rem;
   margin: 0;
   line-height: 1.6;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* User Stats */
@@ -186,7 +186,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #6366f1, #a855f7);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
   transform: scaleX(0);
   transition: transform 0.4s ease;
 }
@@ -194,7 +194,7 @@
 .stat-item:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: #6366f1;
+  border-color: #2563eb;
 }
 
 .stat-item:hover::before {
@@ -205,7 +205,7 @@
   display: block;
   font-size: 2.25rem;
   font-weight: 800;
-  color: #6366f1;
+  color: #2563eb;
   margin-bottom: 0.5rem;
   line-height: 1;
 }
@@ -401,7 +401,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #6366f1, #a855f7);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
   transform: scaleX(0);
   transition: transform 0.4s ease;
 }
@@ -427,12 +427,12 @@
 .user-avatar {
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
   color: white;
   font-size: 1.5rem;
   transition: all 0.4s ease;
@@ -476,7 +476,7 @@
 }
 
 .role-badge.admin {
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
 }
 
@@ -514,7 +514,7 @@
 }
 
 .detail-icon {
-  color: #6366f1;
+  color: #2563eb;
   font-size: 1.1rem;
   width: 24px;
   text-align: center;
@@ -699,11 +699,11 @@
 }
 
 .pagination-button:hover:not(:disabled) {
-  background: #6366f1;
+  background: #2563eb;
   color: white;
-  border-color: #6366f1;
+  border-color: #2563eb;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
 }
 
 .pagination-button:disabled {
@@ -726,7 +726,7 @@
   width: 60px;
   height: 60px;
   border: 4px solid #f1f5f9;
-  border-top: 4px solid #6366f1;
+  border-top: 4px solid #2563eb;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1.5rem;
@@ -780,7 +780,7 @@
 
 .retry-button {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border: none;
   border-radius: 12px;
@@ -788,12 +788,12 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.4s ease;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
 }
 
 .retry-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.45);
 }
 
 /* Edit Modal */
@@ -862,19 +862,19 @@
 
 .save-button {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 700;
   font-size: 1rem;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
 }
 
 .save-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.45);
 }
 
 /* Responsive Design */
@@ -1007,7 +1007,7 @@
 .retry-button:focus,
 .cancel-button:focus,
 .save-button:focus {
-  outline: 3px solid #6366f1;
+  outline: 3px solid #2563eb;
   outline-offset: 2px;
 }
 

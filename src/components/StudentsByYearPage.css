@@ -2,7 +2,7 @@
 
 .students-by-year-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #ffffff;
   position: relative;
   overflow-x: hidden;
 }
@@ -73,7 +73,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
   border-radius: 24px 24px 0 0;
 }
 
@@ -91,19 +91,19 @@
 .icon-symbol {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
   transition: all 0.3s ease;
 }
 
 .icon-symbol:hover {
   transform: translateY(-5px) rotate(5deg);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.45);
 }
 
 .header-text {
@@ -115,7 +115,7 @@
   font-weight: 700;
   color: #1e293b;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -157,7 +157,7 @@
 .stat-icon {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -336,7 +336,7 @@
 
 .view-toggle {
   display: flex;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(37, 99, 235, 0.1);
   border-radius: 12px;
   padding: 0.25rem;
 }
@@ -722,8 +722,8 @@
 
 .results-header {
   padding: 1.5rem 2rem;
-  background: rgba(102, 126, 234, 0.05);
-  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  background: rgba(37, 99, 235, 0.05);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.1);
 }
 
 .results-info {
@@ -743,7 +743,7 @@
 }
 
 .results-icon {
-  color: #667eea;
+  color: #2563eb;
 }
 
 .results-count {
@@ -851,7 +851,7 @@
 }
 
 .info-icon {
-  color: #667eea;
+  color: #2563eb;
   font-size: 0.8rem;
 }
 
@@ -977,10 +977,10 @@
   gap: 0.5rem;
   margin-top: 1.5rem;
   padding: 1rem;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(37, 99, 235, 0.1);
   border-radius: 12px;
   font-size: 0.9rem;
-  color: #667eea;
+  color: #2563eb;
   font-weight: 500;
 }
 
@@ -1008,7 +1008,7 @@
 
 .loading-spinner {
   font-size: 3rem;
-  color: #667eea;
+  color: #2563eb;
   margin-bottom: 1.5rem;
   animation: spin 1s linear infinite;
 }
@@ -1037,7 +1037,7 @@
 .retry-button {
   margin-top: 1.5rem;
   padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
   border: none;
   border-radius: 12px;
@@ -1045,12 +1045,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.35);
 }
 
 .retry-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 12px 35px rgba(37, 99, 235, 0.45);
 }
 
 /* Responsive Design */

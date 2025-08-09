@@ -363,11 +363,6 @@ function ManageUsersPage() {
                         <span className="detail-label">Academic Year:</span>
                         <span className="detail-value">{user.academicYear || '-'}</span>
                       </div>
-                      <div className="detail-item">
-                        <FaBell className="detail-icon" />
-                        <span className="detail-label">Notifications:</span>
-                        <span className="detail-value">{user.emailNotifications ? 'On' : 'Off'}</span>
-                      </div>
                     </div>
 
                     {user.role === 'Staff' && (
