@@ -34,7 +34,7 @@ const VerifyEmailPage = () => {
   return (
     <div className="verify-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
       <div className="verify-box" style={{ background: '#fff', padding: 32, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <h2>CommunityLink Email Verification</h2>
+        <h2>CHARISM Email Verification</h2>
         <p className={success ? 'success-message' : 'error-message'} style={{ color: success ? 'green' : 'red', fontWeight: 'bold' }}>
           {message}
         </p>

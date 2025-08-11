@@ -101,7 +101,6 @@ function ManageUsersPage() {
       section: user.section || '',
       department: user.department || '',
       approvalStatus: user.approvalStatus || 'pending',
-      emailNotifications: user.emailNotifications !== undefined ? user.emailNotifications : true,
     });
     setShowEditModal(true);
   };
@@ -544,17 +543,6 @@ function ManageUsersPage() {
                 </Form.Group>
               )}
 
-              <Form.Group className="mb-3">
-                <Form.Check
-                  type="switch"
-                  id="email-notifications-switch"
-                  label={editForm.emailNotifications ? 'Email Notifications Enabled' : 'Email Notifications Disabled'}
-                  name="emailNotifications"
-                  checked={editForm.emailNotifications}
-                  onChange={handleEditFormChange}
-                  className="form-switch"
-                />
-              </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>

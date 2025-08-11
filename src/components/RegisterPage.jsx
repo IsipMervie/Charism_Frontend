@@ -117,7 +117,7 @@ function RegisterPage() {
             <div className="register-icon">
               <div className="icon-symbol">✨</div>
             </div>
-            <h1 className="register-title">Join CommunityLink</h1>
+            <h1 className="register-title">Join CHARISM</h1>
             <p className="register-subtitle">Create your account to start your journey</p>
           </div>
 

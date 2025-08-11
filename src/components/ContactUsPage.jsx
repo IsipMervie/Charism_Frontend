@@ -128,21 +128,21 @@ function ContactUsPage() {
               <div className="info-icon">📍</div>
               <div className="info-text">
                 <h4>Location</h4>
-                <p>CommunityLink Headquarters</p>
+                <p>University of the Assumption</p>
               </div>
             </div>
             <div className="info-item">
               <div className="info-icon">📧</div>
               <div className="info-text">
                 <h4>Email</h4>
-                <p>contact@communitylink.com</p>
+                <p>ceo@ua.edu.ph</p>
               </div>
             </div>
             <div className="info-item">
               <div className="info-icon">📞</div>
               <div className="info-text">
                 <h4>Phone</h4>
-                <p>+1 (555) 123-4567</p>
+                <p>09368956784</p>
               </div>
             </div>
           </div>

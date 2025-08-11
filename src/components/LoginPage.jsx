@@ -1,5 +1,5 @@
 // frontend/src/components/LoginPage.jsx
-// Simple but Creative Login Page Design
+// Simple but Creative Login Page Design (Matching Contact Page Style)
 
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Container } from 'react-bootstrap';
@@ -61,11 +61,11 @@ function LoginPage() {
         <div className="login-card">
           {/* Header */}
           <div className="login-header">
-            <div className="brand-logo">
-              <div className="logo-symbol">CL</div>
+            <div className="login-icon">
+              <div className="icon-symbol">🔐</div>
             </div>
             <h1 className="login-title">Welcome Back</h1>
-            <p className="login-subtitle">Sign in to your account</p>
+            <p className="login-subtitle">Sign in to your CHARISM account</p>
           </div>
 
           {/* Form */}
@@ -74,7 +74,7 @@ function LoginPage() {
               <div className="input-wrapper">
                 <Form.Control
                   type="email"
-                  placeholder="Email address"
+                  placeholder="Your email address"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
@@ -88,7 +88,7 @@ function LoginPage() {
               <div className="input-wrapper">
                 <Form.Control
                   type="password"
-                  placeholder="Password"
+                  placeholder="Your password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
@@ -120,6 +120,31 @@ function LoginPage() {
             <Link to="/register" className="link-text">
               Create new account
             </Link>
+          </div>
+
+          {/* Login Info */}
+          <div className="login-info">
+            <div className="info-item">
+              <div className="info-icon">🚀</div>
+              <div className="info-text">
+                <h4>Fast Access</h4>
+                <p>Quick login to your dashboard</p>
+              </div>
+            </div>
+            <div className="info-item">
+              <div className="info-icon">🛡️</div>
+              <div className="info-text">
+                <h4>Secure</h4>
+                <p>Your data is protected</p>
+              </div>
+            </div>
+            <div className="info-item">
+              <div className="info-icon">💻</div>
+              <div className="info-text">
+                <h4>24/7 Access</h4>
+                <p>Login anytime, anywhere</p>
+              </div>
+            </div>
           </div>
         </div>
       </Container>

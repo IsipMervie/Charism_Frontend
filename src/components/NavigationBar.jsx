@@ -17,7 +17,7 @@ function NavigationBar() {
   const [user, setUser] = useState(getUserFromStorage());
   const [role, setRole] = useState(getUserFromStorage()?.role || localStorage.getItem('role'));
   const [schoolSettings, setSchoolSettings] = useState({
-    brandName: 'CommunityLink',
+    brandName: 'CHARISM',
     logo: null
   });
   const navigate = useNavigate();
@@ -62,8 +62,8 @@ function NavigationBar() {
       <Container fluid>
         <div className="d-flex align-items-center">
           <Navbar.Brand as={Link} to="/" className="navbar-brand">
-            <img src={logo} alt="CommunityLink Logo" className="navbar-logo" />
-            <span className="navbar-title">CommunityLink</span>
+            <img src={logo} alt="CHARISM Logo" className="navbar-logo" />
+            <span className="navbar-title">CHARISM</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-nav" className="navbar-toggler" />
         </div>

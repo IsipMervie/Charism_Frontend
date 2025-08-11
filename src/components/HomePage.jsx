@@ -26,9 +26,9 @@ function HomePage() {
             <div className="home-icon">
               <div className="icon-symbol">🌟</div>
             </div>
-            <h1 className="home-title">Welcome to CommunityLink</h1>
+            <h1 className="home-title">Welcome to CHARISM</h1>
             <p className="home-subtitle">
-              Your platform for managing events, tracking participation, and connecting students, staff, and administrators.
+            (Center for the Holistic Advancement of Religious Instruction, Spirituality, and Mission)
             </p>
           </div>
 

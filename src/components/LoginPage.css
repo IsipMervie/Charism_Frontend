@@ -1,4 +1,4 @@
-/* Simple but Creative Login Page Design */
+/* Simple but Creative Login Page Design (Matching Contact Page Style) */
 
 .login-page {
   min-height: 100vh;
@@ -48,7 +48,7 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s ease;
@@ -86,33 +86,30 @@
   margin-bottom: 2.5rem;
 }
 
-.brand-logo {
+.login-icon {
   margin-bottom: 1.5rem;
 }
 
-.logo-symbol {
-  width: 60px;
-  height: 60px;
+.icon-symbol {
+  width: 80px;
+  height: 80px;
   background: linear-gradient(135deg, #38bdf8, #2563eb);
-  border-radius: 16px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  color: white;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 2rem;
   box-shadow: 0 8px 25px rgba(37, 99, 235, 0.35);
   transition: transform 0.3s ease;
 }
 
-.logo-symbol:hover {
+.icon-symbol:hover {
   transform: translateY(-2px);
 }
 
 .login-title {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 0.5rem;
@@ -124,7 +121,7 @@
 
 .login-subtitle {
   color: #64748b;
-  font-size: 0.95rem;
+  font-size: 1rem;
   margin: 0;
 }
 
@@ -232,6 +229,7 @@
 /* Links */
 .login-links {
   text-align: center;
+  margin-bottom: 2rem;
 }
 
 .link-text {
@@ -274,6 +272,59 @@
   padding: 0 1rem;
 }
 
+/* Login Info */
+.login-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.info-item:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+}
+
+.info-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.info-text h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.info-text p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .login-page {
@@ -287,13 +338,18 @@
   }
   
   .login-title {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
   
-  .logo-symbol {
-    width: 50px;
-    height: 50px;
-    font-size: 1.1rem;
+  .icon-symbol {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+  
+  .login-info {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
   }
 }
 
@@ -303,7 +359,7 @@
   }
   
   .login-title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
   
   .form-input {
@@ -312,6 +368,17 @@
   
   .login-button {
     padding: 0.875rem 1.5rem;
+  }
+  
+  .login-info {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .info-item {
+    flex-direction: row;
+    text-align: left;
+    gap: 1rem;
   }
 }
 
@@ -354,7 +421,7 @@
     animation: none;
   }
   
-  .logo-symbol:hover {
+  .icon-symbol:hover {
     transform: none;
   }
   
@@ -370,7 +437,7 @@
     transform: none;
   }
   
-  .link-text:hover {
+  .info-item:hover {
     transform: none;
   }
 }
