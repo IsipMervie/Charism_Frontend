@@ -46,7 +46,7 @@ function EventListPage() {
       const token = localStorage.getItem('token');
       console.log('🔑 Fetching filter options with token:', token ? 'Token exists' : 'No token');
       
-      const response = await fetch('/settings/public', {
+      const response = await fetch('/api/settings/public', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

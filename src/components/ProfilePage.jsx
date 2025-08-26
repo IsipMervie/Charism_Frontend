@@ -35,7 +35,7 @@ function ProfilePage() {
     // Use the configured API base URL instead of hardcoded localhost
     const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
     const uploadsUrl = baseUrl.replace('/api', '');
-    return `${uploadsUrl}/uploads/profile-pictures/${filename}?t=${timestamp}`;
+    return `${uploadsUrl}/api/uploads/profile-pictures/${filename}?t=${timestamp}`;
   };
 
   // Fetch user profile from backend to get the latest profile picture

@@ -186,7 +186,7 @@ function ManageUsersPage() {
   // Get profile picture URL
   const getProfilePictureUrl = (user) => {
     if (user.profilePicture) {
-      return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/profile-pictures/${user.profilePicture}`;
+              return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/uploads/profile-pictures/${user.profilePicture}`;
     }
     return null;
   };
