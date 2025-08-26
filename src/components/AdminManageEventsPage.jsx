@@ -610,7 +610,7 @@ function AdminManageEventsPage() {
                       {event.image && (
                         <div className="event-image-wrapper">
                           <img
-                            src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${event.image}`}
+                            src={`https://charism-backend.onrender.com/uploads/${event.image}`}
                             alt={event.title}
                             className="event-image"
                           />
