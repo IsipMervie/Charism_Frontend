@@ -220,7 +220,7 @@ function EditEventPage() {
               <div className="current-image image-preview">
                 <p>Current Image:</p>
                 <div className="image-frame">
-                  <img src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/uploads/${event.image}`} alt="Current event" />
+                  <img src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${event.image}`} alt="Current event" />
                 </div>
               </div>
             )}
