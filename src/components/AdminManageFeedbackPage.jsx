@@ -18,12 +18,12 @@ function AdminManageFeedbackPage() {
   const [filters, setFilters] = useState({
     search: ''
   });
-  const [pagination, setPagination] = useState(() => ({
+  const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
     itemsPerPage: 20
-  }));
+  });
 
   // Helper function to safely validate pagination state
   const isValidPagination = (paginationState) => {
@@ -38,62 +38,6 @@ function AdminManageFeedbackPage() {
   // Ensure feedback is always an array
   const safeFeedback = Array.isArray(feedback) ? feedback : [];
 
-  // Ensure pagination is always properly formatted with fallback values using useMemo
-  const safePagination = useMemo(() => {
-    try {
-      const basePagination = {
-        currentPage: 1,
-        totalPages: 1,
-        totalItems: 0,
-        itemsPerPage: 20
-      };
-
-      // Extra safety check - ensure pagination exists and is valid
-      if (pagination && isValidPagination(pagination)) {
-        return {
-          ...basePagination,
-          ...pagination
-        };
-      }
-
-      // If pagination is invalid or undefined, ensure we reset it
-      if (pagination && !isValidPagination(pagination)) {
-        console.warn('Invalid pagination state detected, resetting to defaults');
-        setPagination(basePagination);
-      }
-
-      // Always return a valid pagination object
-      return basePagination;
-    } catch (error) {
-      console.error('Error creating safePagination:', error);
-      // Always return a valid pagination object
-      return {
-        currentPage: 1,
-        totalPages: 1,
-        totalItems: 0,
-        itemsPerPage: 20
-      };
-    }
-  }, [pagination]);
-
-  // Fallback safePagination if useMemo fails
-  const finalSafePagination = safePagination || {
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    itemsPerPage: 20
-  };
-
-  // Add a flag to track if pagination is ready
-  const isPaginationReady = finalSafePagination && 
-    typeof finalSafePagination.currentPage === 'number' &&
-    typeof finalSafePagination.totalPages === 'number' &&
-    typeof finalSafePagination.totalItems === 'number' &&
-    typeof finalSafePagination.itemsPerPage === 'number' &&
-    finalSafePagination.currentPage > 0 &&
-    finalSafePagination.totalPages > 0 &&
-    finalSafePagination.itemsPerPage > 0;
-
   // Ensure pagination state is always properly initialized
   useEffect(() => {
     if (!pagination || !isValidPagination(pagination)) {
@@ -106,163 +50,21 @@ function AdminManageFeedbackPage() {
     }
   }, [pagination]);
 
-  // Initialize component data after pagination is ready - only run once
-  useEffect(() => {
-    // Wait for both pagination and finalSafePagination to be ready
-    if (isValidPagination(pagination) && isPaginationReady && !loading) {
-      fetchFeedback();
-    }
-  }, [isPaginationReady]); // Add isPaginationReady dependency
-
+  // Initialize component data
   useEffect(() => {
     setIsVisible(true);
-    // Only fetch feedback after everything is properly initialized
-    if (isValidPagination(pagination) && isPaginationReady) {
-      fetchFeedback();
-    }
+    fetchFeedback();
     fetchStats();
-  }, [isPaginationReady]); // Add isPaginationReady dependency
+  }, []);
 
   // Auto-search effect
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      // Only fetch if everything is ready
-      if (isValidPagination(pagination) && isPaginationReady) {
-        fetchFeedback();
-      }
+      fetchFeedback();
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [filters.search]); // Remove pagination dependency to prevent circular calls
-
-  // If pagination is not ready, show loading state
-  if (!isPaginationReady) {
-    return (
-      <div className="manage-feedback-page">
-        <div className="manage-feedback-background">
-          <div className="background-pattern"></div>
-        </div>
-        <div className={`manage-feedback-container ${isVisible ? 'visible' : ''}`}>
-          <div className="loading-section">
-            <FaSpinner className="loading-spinner" />
-            <h3>Initializing Pagination...</h3>
-            <p>Please wait while we set up the page.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Final safety check - ensure finalSafePagination is always valid
-  if (!finalSafePagination || !isValidPagination(finalSafePagination)) {
-    console.error('finalSafePagination is invalid, resetting pagination state');
-    setPagination({
-      currentPage: 1,
-      totalPages: 1,
-      totalItems: 0,
-      itemsPerPage: 20
-    });
-    return (
-      <div className="manage-feedback-page">
-        <div className="manage-feedback-background">
-          <div className="background-pattern"></div>
-        </div>
-        <div className={`manage-feedback-container ${isVisible ? 'visible' : ''}`}>
-          <div className="loading-section">
-            <FaSpinner className="loading-spinner" />
-            <h3>Initializing...</h3>
-            <p>Please wait while we set up the page.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Final safety check - wrap everything in try-catch to prevent any undefined access
-  try {
-    // Ensure all required properties exist and are valid
-    if (!finalSafePagination || 
-        !finalSafePagination.currentPage || 
-        !finalSafePagination.totalPages || 
-        !finalSafePagination.totalItems || 
-        !finalSafePagination.itemsPerPage) {
-      throw new Error('finalSafePagination is missing required properties');
-    }
-
-    // Additional validation - ensure all properties are numbers
-    if (typeof finalSafePagination.currentPage !== 'number' ||
-        typeof finalSafePagination.totalPages !== 'number' ||
-        typeof finalSafePagination.totalItems !== 'number' ||
-        typeof finalSafePagination.itemsPerPage !== 'number') {
-      throw new Error('finalSafePagination has invalid property types');
-    }
-
-    // Final check - ensure the pagination ready flag is true
-    if (!isPaginationReady) {
-      throw new Error('Pagination is not ready for rendering');
-    }
-  } catch (error) {
-    console.error('Critical pagination error:', error);
-    setPagination({
-      currentPage: 1,
-      totalPages: 1,
-      totalItems: 0,
-      itemsPerPage: 20
-    });
-    return (
-      <div className="manage-feedback-page">
-        <div className="manage-feedback-background">
-          <div className="background-pattern"></div>
-        </div>
-        <div className={`manage-feedback-container ${isVisible ? 'visible' : ''}`}>
-          <div className="loading-section">
-            <FaSpinner className="loading-spinner" />
-            <h3>Error Initializing...</h3>
-            <p>Please refresh the page to try again.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading && safeFeedback.length === 0) {
-    return (
-      <div className="manage-feedback-page">
-        <div className="manage-feedback-background">
-          <div className="background-pattern"></div>
-        </div>
-        <div className={`manage-feedback-container ${isVisible ? 'visible' : ''}`}>
-          <div className="loading-section">
-            <FaSpinner className="loading-spinner" />
-            <h3>Loading Feedback...</h3>
-            <p>Please wait while we fetch the latest feedback.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error && safeFeedback.length === 0) {
-    return (
-      <div className="manage-feedback-page">
-        <div className="manage-feedback-background">
-          <div className="background-pattern"></div>
-        </div>
-        <div className={`manage-feedback-container ${isVisible ? 'visible' : ''}`}>
-          <div className="error-section">
-            <div className="error-message">
-              <FaExclamationTriangle className="error-icon" />
-              <h3>Error Loading Feedback</h3>
-              <p>{error}</p>
-              <button className="retry-button" onClick={fetchFeedback}>
-                Try Again
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  }, [filters.search]);
 
   const fetchStats = async () => {
     try {
@@ -277,47 +79,16 @@ function AdminManageFeedbackPage() {
     setLoading(true);
     setError(null);
     
-    // Ensure pagination state is valid before making the API call
-    if (!pagination || !isValidPagination(pagination)) {
-      setPagination({
-        currentPage: 1,
-        totalPages: 1,
-        totalItems: 0,
-        itemsPerPage: 20
-      });
-    }
-    
-    // Ensure finalSafePagination is available before proceeding
-    if (!finalSafePagination || !isValidPagination(finalSafePagination)) {
-      console.warn('finalSafePagination not ready, waiting for initialization');
-      setLoading(false);
-      return;
-    }
-
-    // Additional safety check - ensure all properties are valid
-    if (!finalSafePagination.currentPage || 
-        !finalSafePagination.totalPages || 
-        !finalSafePagination.totalItems || 
-        !finalSafePagination.itemsPerPage) {
-      console.error('finalSafePagination has invalid properties, aborting fetch');
-      setLoading(false);
-      return;
-    }
-    
     try {
       const token = localStorage.getItem('token');
       
-      // Use safe values for pagination
-      const currentPage = finalSafePagination.currentPage || 1;
-      const itemsPerPage = finalSafePagination.itemsPerPage || 20;
-      
       const params = new URLSearchParams({
-        page: currentPage,
-        limit: itemsPerPage,
+        page: pagination.currentPage || 1,
+        limit: pagination.itemsPerPage || 20,
         ...filters
       });
 
-              const response = await axiosInstance.get(`/feedback/admin/all?${params}`, {
+      const response = await axiosInstance.get(`/feedback/admin/all?${params}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -325,46 +96,16 @@ function AdminManageFeedbackPage() {
       const feedbackData = Array.isArray(response.data.feedback) ? response.data.feedback : [];
       setFeedback(feedbackData);
       
-      // Ensure response.data.pagination is properly formatted
+      // Update pagination if response has pagination data
       if (response.data && response.data.pagination && typeof response.data.pagination === 'object') {
-        try {
-          const newPagination = {
-            currentPage: response.data.pagination.currentPage || 1,
-            totalPages: response.data.pagination.totalPages || 1,
-            totalItems: response.data.pagination.totalItems || 0,
-            itemsPerPage: response.data.pagination.itemsPerPage || 20
-          };
-          
-          // Validate the pagination data before setting it
-          if (newPagination.currentPage && newPagination.totalPages && newPagination.totalItems !== undefined && newPagination.itemsPerPage) {
-            setPagination(newPagination);
-          } else {
-            console.warn('Invalid pagination data received:', newPagination);
-            setPagination({
-              currentPage: 1,
-              totalPages: 1,
-              totalItems: 0,
-              itemsPerPage: 20
-            });
-          }
-        } catch (paginationError) {
-          console.error('Error processing pagination data:', paginationError);
-          setPagination({
-            currentPage: 1,
-            totalPages: 1,
-            totalItems: 0,
-            itemsPerPage: 20
-          });
-        }
-      } else {
-        // No pagination data received, set defaults
-        console.warn('No pagination data received from API, using defaults');
-        setPagination({
-          currentPage: 1,
-          totalPages: 1,
-          totalItems: 0,
-          itemsPerPage: 20
-        });
+        const newPagination = {
+          currentPage: response.data.pagination.currentPage || 1,
+          totalPages: response.data.pagination.totalPages || 1,
+          totalItems: response.data.pagination.totalItems || 0,
+          itemsPerPage: response.data.pagination.itemsPerPage || 20
+        };
+        
+        setPagination(newPagination);
       }
     } catch (err) {
       console.error('Error fetching feedback:', err);
@@ -376,27 +117,16 @@ function AdminManageFeedbackPage() {
 
   const handlePageChange = (pageNumber) => {
     setPagination(prev => ({ 
-      ...(prev || {}), 
-      currentPage: pageNumber,
-      totalPages: prev?.totalPages || 1,
-      totalItems: prev?.totalItems || 0,
-      itemsPerPage: prev?.itemsPerPage || 20
+      ...prev, 
+      currentPage: pageNumber
     }));
   };
-
-  // Remove the problematic useEffect that was causing circular dependency
-  // useEffect(() => {
-  //   fetchFeedback();
-  // }, [pagination.currentPage]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({ ...prev, [filterType]: value }));
     setPagination(prev => ({ 
-      ...(prev || {}), 
-      currentPage: 1,
-      totalPages: prev?.totalPages || 1,
-      totalItems: prev?.totalItems || 0,
-      itemsPerPage: prev?.itemsPerPage || 20
+      ...prev, 
+      currentPage: 1
     }));
   };
 
@@ -405,11 +135,8 @@ function AdminManageFeedbackPage() {
       search: ''
     });
     setPagination(prev => ({ 
-      ...(prev || {}), 
-      currentPage: 1,
-      totalPages: prev?.totalPages || 1,
-      totalItems: prev?.totalItems || 0,
-      itemsPerPage: prev?.itemsPerPage || 20
+      ...prev, 
+      currentPage: 1
     }));
   };
 
@@ -489,7 +216,7 @@ function AdminManageFeedbackPage() {
 
     try {
       const token = localStorage.getItem('token');
-              await axiosInstance.put(`/feedback/admin/${selectedFeedback._id}`, responseData, {
+      await axiosInstance.put(`/feedback/admin/${selectedFeedback._id}`, responseData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -544,6 +271,45 @@ function AdminManageFeedbackPage() {
         return 'secondary';
     }
   };
+
+  if (loading && safeFeedback.length === 0) {
+    return (
+      <div className="manage-feedback-page">
+        <div className="manage-feedback-background">
+          <div className="background-pattern"></div>
+        </div>
+        <div className={`manage-feedback-container ${isVisible ? 'visible' : ''}`}>
+          <div className="loading-section">
+            <FaSpinner className="loading-spinner" />
+            <h3>Loading Feedback...</h3>
+            <p>Please wait while we fetch the latest feedback.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && safeFeedback.length === 0) {
+    return (
+      <div className="manage-feedback-page">
+        <div className="manage-feedback-background">
+          <div className="background-pattern"></div>
+        </div>
+        <div className={`manage-feedback-container ${isVisible ? 'visible' : ''}`}>
+          <div className="error-section">
+            <div className="error-message">
+              <FaExclamationTriangle className="error-icon" />
+              <h3>Error Loading Feedback</h3>
+              <p>{error}</p>
+              <button className="retry-button" onClick={fetchFeedback}>
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="manage-feedback-page">
@@ -692,25 +458,25 @@ function AdminManageFeedbackPage() {
               </div>
               
               {/* Pagination */}
-              {finalSafePagination.totalPages > 1 && (
+              {pagination.totalPages > 1 && (
                 <div className="pagination-wrapper">
             <div className="pagination-info">
-              Showing {((finalSafePagination.currentPage - 1) * finalSafePagination.itemsPerPage) + 1} to {Math.min(finalSafePagination.currentPage * finalSafePagination.itemsPerPage, finalSafePagination.totalItems)} of {finalSafePagination.totalItems} results
+              Showing {((pagination.currentPage - 1) * pagination.itemsPerPage) + 1} to {Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} of {pagination.totalItems} results
             </div>
             <Pagination>
                     <Pagination.First
                       onClick={() => handlePageChange(1)}
-                      disabled={finalSafePagination.currentPage === 1}
+                      disabled={pagination.currentPage === 1}
                     />
                     <Pagination.Prev
-                      onClick={() => handlePageChange(finalSafePagination.currentPage - 1)}
-                      disabled={finalSafePagination.currentPage === 1}
+                      onClick={() => handlePageChange(pagination.currentPage - 1)}
+                      disabled={pagination.currentPage === 1}
                     />
                     
-              {Array.from({ length: finalSafePagination.totalPages }, (_, i) => i + 1).map(page => (
+              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(page => (
                           <Pagination.Item
                   key={page}
-                            active={page === finalSafePagination.currentPage}
+                            active={page === pagination.currentPage}
                             onClick={() => handlePageChange(page)}
                           >
                             {page}
@@ -718,12 +484,12 @@ function AdminManageFeedbackPage() {
                       ))}
                     
                     <Pagination.Next
-                      onClick={() => handlePageChange(finalSafePagination.currentPage + 1)}
-                      disabled={finalSafePagination.currentPage === finalSafePagination.totalPages}
+                      onClick={() => handlePageChange(pagination.currentPage + 1)}
+                      disabled={pagination.currentPage === pagination.totalPages}
                     />
                     <Pagination.Last
-                      onClick={() => handlePageChange(finalSafePagination.totalPages)}
-                      disabled={finalSafePagination.currentPage === finalSafePagination.totalPages}
+                      onClick={() => handlePageChange(pagination.totalPages)}
+                      disabled={pagination.currentPage === pagination.totalPages}
                     />
                   </Pagination>
                 </div>
