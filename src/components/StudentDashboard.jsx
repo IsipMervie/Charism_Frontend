@@ -109,7 +109,7 @@ function StudentDashboard() {
       setSchoolLoading(true);
       try {
         // Use public endpoint that doesn't require authentication
-        const res = await axiosInstance.get('/api/settings/public/school');
+        const res = await axiosInstance.get('/settings/public/school');
         console.log('School data received:', res.data);
         setSchool(res.data);
         setSchoolError('');

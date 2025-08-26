@@ -45,7 +45,7 @@ function AdminDashboard() {
       setSchoolLoading(true);
       try {
         // Use public endpoint that doesn't require admin auth
-        const res = await axiosInstance.get('/api/settings/public/school');
+        const res = await axiosInstance.get('/settings/public/school');
         setSchool(res.data);
         setSchoolError('');
       } catch (err) {

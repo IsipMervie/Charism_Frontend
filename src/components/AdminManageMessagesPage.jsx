@@ -42,7 +42,7 @@ function AdminManageMessagesPage() {
     try {
       const token = localStorage.getItem('token');
       const res = await axiosInstance.get(
-        `/api/contact-us${searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : ''}`,
+        `/contact-us${searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : ''}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       // Ensure res.data is an array
@@ -81,7 +81,7 @@ function AdminManageMessagesPage() {
   const handleMarkAsRead = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axiosInstance.patch(`/api/contact-us/${id}/read`, {}, {
+              await axiosInstance.patch(`/contact-us/${id}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       Swal.fire({ 
@@ -120,7 +120,7 @@ function AdminManageMessagesPage() {
     if (result.isConfirmed) {
       try {
         const token = localStorage.getItem('token');
-        await axiosInstance.delete(`/api/contact-us/${id}`, {
+        await axiosInstance.delete(`/contact-us/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -164,7 +164,7 @@ function AdminManageMessagesPage() {
     setSendingReply(true);
     try {
       const token = localStorage.getItem('token');
-      await axiosInstance.post(`/api/contact-us/${selectedMessage._id}/reply`, 
+              await axiosInstance.post(`/contact-us/${selectedMessage._id}/reply`, 
         { adminResponse: replyText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -218,7 +218,7 @@ function AdminManageMessagesPage() {
     setUpdatingReply(true);
     try {
       const token = localStorage.getItem('token');
-      await axiosInstance.put(`/api/contact-us/${selectedMessage._id}/reply`, 
+              await axiosInstance.put(`/contact-us/${selectedMessage._id}/reply`, 
         { adminResponse: replyText },
         { headers: { Authorization: `Bearer ${token}` } }
       );

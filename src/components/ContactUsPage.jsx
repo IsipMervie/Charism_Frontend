@@ -30,7 +30,7 @@ function ContactUsPage() {
     }
     setLoading(true);
     try {
-      await axiosInstance.post('/api/contact-us', { name, email, message });
+      await axiosInstance.post('/contact-us', { name, email, message });
       Swal.fire({
         icon: 'success',
         title: 'Message Sent Successfully!',
