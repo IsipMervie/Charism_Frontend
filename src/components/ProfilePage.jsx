@@ -30,12 +30,11 @@ function ProfilePage() {
   // Get profile picture URL from user object with cache busting
   const getProfilePictureUrl = (filename) => {
     if (!filename) return null;
-    // Add timestamp to prevent caching
+    
+    // Use the full backend URL for uploads
+    const backendUrl = 'https://charism-backend.onrender.com';
     const timestamp = Date.now();
-    // Use the configured API base URL instead of hardcoded localhost
-    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-    const uploadsUrl = baseUrl.replace('/api', '');
-    return `${uploadsUrl}/uploads/profile-pictures/${filename}?t=${timestamp}`;
+    return `${backendUrl}/uploads/profile-pictures/${filename}?t=${timestamp}`;
   };
 
   // Fetch user profile from backend to get the latest profile picture
