@@ -8,7 +8,7 @@ import {
   FaExclamationTriangle, FaUserGraduate, FaCalendar
 } from 'react-icons/fa';
 import { getEvents, getUserProfile } from '../api/api';
-import axios from 'axios';
+import { axiosInstance } from '../api/api';
 
 import './StudentDashboard.css';
 
@@ -109,7 +109,7 @@ function StudentDashboard() {
       setSchoolLoading(true);
       try {
         // Use public endpoint that doesn't require authentication
-        const res = await axios.get('/api/settings/public/school');
+        const res = await axiosInstance.get('/api/settings/public/school');
         console.log('School data received:', res.data);
         setSchool(res.data);
         setSchoolError('');

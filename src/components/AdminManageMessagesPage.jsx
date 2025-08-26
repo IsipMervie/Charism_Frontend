@@ -2,7 +2,7 @@
 // Simple but Creative Manage Messages Page Design
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { axiosInstance } from '../api/api';
 import { Button, Form, Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { FaEnvelope, FaEnvelopeOpen, FaCalendar, FaTrash, FaCheck, FaSpinner, FaExclamationTriangle, FaEye, FaReply } from 'react-icons/fa';
@@ -22,6 +22,16 @@ function AdminManageMessagesPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [updatingReply, setUpdatingReply] = useState(false);
 
+  // Ensure messages is always an array
+  const safeMessages = Array.isArray(messages) ? messages : [];
+  
+  // Debug logging to help identify issues
+  useEffect(() => {
+    if (!Array.isArray(messages)) {
+      console.warn('Messages is not an array:', messages);
+    }
+  }, [messages]);
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -31,12 +41,15 @@ function AdminManageMessagesPage() {
     setError(null);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get(
+      const res = await axiosInstance.get(
         `/api/contact-us${searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : ''}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMessages(res.data);
+      // Ensure res.data is an array
+      const messagesData = Array.isArray(res.data) ? res.data : [];
+      setMessages(messagesData);
     } catch (err) {
+      console.error('Error fetching messages:', err);
       setError('Failed to load messages. Please try again.');
       setMessages([]);
     }
@@ -68,7 +81,7 @@ function AdminManageMessagesPage() {
   const handleMarkAsRead = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`/api/contact-us/${id}/read`, {}, {
+      await axiosInstance.patch(`/api/contact-us/${id}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       Swal.fire({ 
@@ -107,7 +120,7 @@ function AdminManageMessagesPage() {
     if (result.isConfirmed) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`/api/contact-us/${id}`, {
+        await axiosInstance.delete(`/api/contact-us/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -151,7 +164,7 @@ function AdminManageMessagesPage() {
     setSendingReply(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`/api/contact-us/${selectedMessage._id}/reply`, 
+      await axiosInstance.post(`/api/contact-us/${selectedMessage._id}/reply`, 
         { adminResponse: replyText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -205,7 +218,7 @@ function AdminManageMessagesPage() {
     setUpdatingReply(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`/api/contact-us/${selectedMessage._id}/reply`, 
+      await axiosInstance.put(`/api/contact-us/${selectedMessage._id}/reply`, 
         { adminResponse: replyText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -327,15 +340,15 @@ function AdminManageMessagesPage() {
           </div>
           <div className="message-stats">
             <div className="stat-item">
-              <span className="stat-number">{messages.length}</span>
+              <span className="stat-number">{safeMessages.length}</span>
               <span className="stat-label">Total Messages</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">{messages.filter(m => !m.read).length}</span>
+              <span className="stat-number">{safeMessages.filter(m => !m.read).length}</span>
               <span className="stat-label">Unread</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">{messages.filter(m => m.isReplied).length}</span>
+              <span className="stat-number">{safeMessages.filter(m => m.isReplied).length}</span>
               <span className="stat-label">Replied</span>
             </div>
           </div>
@@ -358,7 +371,7 @@ function AdminManageMessagesPage() {
 
         {/* Messages Section */}
         <div className="messages-section">
-          {messages.length === 0 ? (
+          {safeMessages.length === 0 ? (
             <div className="no-messages">
               <FaEnvelope className="no-messages-icon" />
               <h3>No Messages Found</h3>
@@ -366,7 +379,7 @@ function AdminManageMessagesPage() {
             </div>
           ) : (
             <div className="messages-grid">
-              {messages.map(message => (
+              {safeMessages.map(message => (
                 <div key={message._id} className={`message-card ${getMessageStatus(message)}`}>
                   <div className="message-header">
                     <div className="message-status">

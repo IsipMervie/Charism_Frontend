@@ -7,7 +7,7 @@ import {
   FaBuilding, FaCalendar, FaEdit, FaCrown, FaUserGraduate,
   FaSpinner, FaCheckCircle, FaExclamationTriangle, FaUsers
 } from 'react-icons/fa';
-import axios from 'axios';
+import { axiosInstance } from '../api/api';
 import './ProfilePage.css';
 
 function ProfilePage() {
@@ -32,7 +32,10 @@ function ProfilePage() {
     if (!filename) return null;
     // Add timestamp to prevent caching
     const timestamp = Date.now();
-    return `http://localhost:5000/uploads/profile-pictures/${filename}?t=${timestamp}`;
+    // Use the configured API base URL instead of hardcoded localhost
+    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    const uploadsUrl = baseUrl.replace('/api', '');
+    return `${uploadsUrl}/uploads/profile-pictures/${filename}?t=${timestamp}`;
   };
 
   // Fetch user profile from backend to get the latest profile picture
@@ -41,7 +44,7 @@ function ProfilePage() {
       const token = localStorage.getItem('token');
       if (!token) return null;
       
-      const response = await axios.get(`http://localhost:5000/api/users/${userId}`, {
+      const response = await axiosInstance.get(`/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

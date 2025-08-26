@@ -209,7 +209,7 @@ function EventDetailsPage() {
                       throw new Error('No authentication token found. Please log in again.');
                     }
                     
-                    const response = await fetch(`http://localhost:5000/api/reports/event-attendance/${eventId}`, {
+                    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/reports/event-attendance/${eventId}`, {
                       method: 'GET',
                       headers: {
                         'Authorization': `Bearer ${token}`,
@@ -277,7 +277,7 @@ function EventDetailsPage() {
         {event.image && (
           <div className="event-image-section">
             <img
-              src={`http://localhost:5000/uploads/${event.image}`}
+                                src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/uploads/${event.image}`}
               alt={event.title}
               className="event-image"
             />

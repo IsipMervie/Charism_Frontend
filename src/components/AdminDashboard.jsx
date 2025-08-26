@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Button, Row, Col, Card, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAnalytics } from '../api/api';
-import axios from 'axios';
+import { axiosInstance } from '../api/api';
 import { FaUsers, FaCalendarAlt, FaChartBar, FaTrophy, FaUserCheck, FaEnvelope, FaCog, FaBuilding, FaFile, FaUser, FaFileAlt } from 'react-icons/fa';
 
 import './AdminDashboard.css';
@@ -44,13 +44,12 @@ function AdminDashboard() {
     const fetchSchool = async () => {
       setSchoolLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get('/api/settings/school', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        // Use public endpoint that doesn't require admin auth
+        const res = await axiosInstance.get('/api/settings/public/school');
         setSchool(res.data);
         setSchoolError('');
-      } catch {
+      } catch (err) {
+        console.error('Error fetching school settings:', err);
         setSchoolError('Failed to fetch school info.');
       }
       setSchoolLoading(false);

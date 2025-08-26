@@ -8,7 +8,7 @@ import {
   FaBuilding, FaGraduationCap, FaBell, FaTrophy, FaEdit, FaFile
 } from 'react-icons/fa';
 import { getEvents, getUserProfile } from '../api/api';
-import axios from 'axios';
+import { axiosInstance } from '../api/api';
 
 import './StaffDashboard.css';
 
@@ -98,7 +98,7 @@ function StaffDashboard() {
       setSchoolLoading(true);
       try {
         // Use public endpoint that doesn't require authentication
-        const res = await axios.get('/api/settings/public/school');
+        const res = await axiosInstance.get('/api/settings/public/school');
         console.log('School data received:', res.data);
         setSchool(res.data);
         setSchoolError('');

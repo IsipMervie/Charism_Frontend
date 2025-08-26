@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
-import axios from 'axios';
+import { axiosInstance } from '../api/api';
 import Swal from 'sweetalert2';
 import './ContactUsPage.css';
 
@@ -30,7 +30,7 @@ function ContactUsPage() {
     }
     setLoading(true);
     try {
-      await axios.post('/api/contact-us', { name, email, message });
+      await axiosInstance.post('/api/contact-us', { name, email, message });
       Swal.fire({
         icon: 'success',
         title: 'Message Sent Successfully!',

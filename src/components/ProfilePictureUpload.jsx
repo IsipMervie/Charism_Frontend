@@ -163,7 +163,10 @@ const ProfilePictureUpload = ({
 
   const getProfilePictureUrl = (filename) => {
     if (!filename) return null;
-    return `http://localhost:5000/uploads/profile-pictures/${filename}`;
+    // Use the configured API base URL instead of hardcoded localhost
+    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    const uploadsUrl = baseUrl.replace('/api', '');
+    return `${uploadsUrl}/uploads/profile-pictures/${filename}`;
   };
 
   const currentImageUrl = currentProfilePicture ? getProfilePictureUrl(currentProfilePicture) : null;
