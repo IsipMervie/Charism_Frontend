@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: charism-frontend
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: ./build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://charism-backend.onrender.com/api
