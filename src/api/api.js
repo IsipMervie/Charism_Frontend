@@ -17,6 +17,13 @@ axiosInstance.interceptors.request.use(
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Don't override Content-Type for file uploads
+    if (config.data instanceof FormData) {
+      // Remove the default Content-Type to let the browser set it with boundary
+      delete config.headers['Content-Type'];
+    }
+    
     return config;
   },
   (error) => Promise.reject(error)
@@ -63,6 +70,17 @@ function getUserId() {
 // API Functions
 // =======================
 
+// Generate registration tokens for existing events (admin utility)
+export const generateTokensForExistingEvents = async () => {
+  try {
+    const response = await axiosInstance.post('/events/generate-tokens');
+    return response.data;
+  } catch (error) {
+    console.error('Error generating tokens for existing events:', error);
+    throw new Error('Failed to generate tokens for existing events. Please try again.');
+  }
+};
+
 // Users (Admin/Staff)
 export const getUsers = async (params = {}) => {
   try {
@@ -74,6 +92,8 @@ export const getUsers = async (params = {}) => {
     throw new Error('Failed to fetch users. Please try again.');
   }
 };
+
+
 
 export const deleteUser = async (userId) => {
   try {
@@ -102,7 +122,9 @@ export const addSection = async (name) => {
     return response.data;
   } catch (error) {
     console.error('Error adding section:', error);
-    throw new Error('Failed to add section. Please try again.');
+    console.error('Response status:', error.response?.status);
+    console.error('Response data:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to add section. Please try again.');
   }
 };
 
@@ -133,7 +155,9 @@ export const addYearLevel = async (name) => {
     return response.data;
   } catch (error) {
     console.error('Error adding year level:', error);
-    throw new Error('Failed to add year level. Please try again.');
+    console.error('Response status:', error.response?.status);
+    console.error('Response data:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to add year level. Please try again.');
   }
 };
 
@@ -164,7 +188,9 @@ export const addDepartment = async (name) => {
     return response.data;
   } catch (error) {
     console.error('Error adding department:', error);
-    throw new Error('Failed to add department. Please try again.');
+    console.error('Response status:', error.response?.status);
+    console.error('Response data:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to add department. Please try again.');
   }
 };
 
@@ -205,7 +231,9 @@ export const getAcademicYears = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching academic years:', error);
-    throw new Error('Failed to fetch academic years. Please try again.');
+    console.error('Response status:', error.response?.status);
+    console.error('Response data:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to fetch academic years. Please try again.');
   }
 };
 
@@ -215,7 +243,9 @@ export const createAcademicYear = async (academicYearData) => {
     return response.data;
   } catch (error) {
     console.error('Error creating academic year:', error);
-    throw new Error('Failed to create academic year. Please try again.');
+    console.error('Response status:', error.response?.status);
+    console.error('Response data:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to create academic year. Please try again.');
   }
 };
 
@@ -357,6 +387,16 @@ export const getStudentsByYear = async () => {
   }
 };
 
+export const getStudentsByYearFilterOptions = async () => {
+  try {
+    const response = await axiosInstance.get('/admin/students-by-year-filter-options');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching filter options:', error);
+    throw new Error('Failed to fetch filter options. Please try again.');
+  }
+};
+
 export const getStudents40Hours = async () => {
   try {
     const response = await axiosInstance.get('/admin/students-40-hours');
@@ -394,10 +434,13 @@ export const loginUser = async (email, password) => {
     return response.data;
   } catch (error) {
     console.error('Error logging in:', error);
+    // Preserve the original error structure so frontend can access response data
     if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
+      const customError = new Error(error.response.data.message);
+      customError.response = error.response;
+      throw customError;
     }
-    throw new Error('Failed to log in. Please try again.');
+    throw error;
   }
 };
 
@@ -420,10 +463,13 @@ export const registerUser = async (name, email, password, userId, academicYear, 
     return response.data;
   } catch (error) {
     console.error('Error registering user:', error);
+    // Preserve the original error structure so frontend can access response data
     if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
+      const customError = new Error(error.response.data.message);
+      customError.response = error.response;
+      throw customError;
     }
-    throw new Error('Failed to register. Please try again.');
+    throw error;
   }
 };
 
@@ -431,7 +477,7 @@ export const registerUser = async (name, email, password, userId, academicYear, 
 export const createEvent = async (formData) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axiosInstance.post('/events/create', formData, {
+    const response = await axiosInstance.post('/events/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -512,6 +558,42 @@ export const updateUserProfile = async (profileData) => {
   } catch (error) {
     console.error('Error updating user profile:', error);
     throw new Error('Failed to update user profile. Please try again.');
+  }
+};
+
+// Profile Picture Management
+export const uploadProfilePicture = async (userId, formData) => {
+  try {
+    console.log('=== API uploadProfilePicture Debug ===');
+    console.log('User ID:', userId);
+    console.log('FormData received:', formData);
+    console.log('FormData instanceof FormData:', formData instanceof FormData);
+    
+    // Log FormData entries
+    if (formData instanceof FormData) {
+      for (let [key, value] of formData.entries()) {
+        console.log('FormData entry:', key, value);
+      }
+    }
+    
+    const response = await axiosInstance.post(`/users/${userId}/profile-picture`, formData);
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+    console.error('Error response:', error.response);
+    console.error('Error status:', error.response?.status);
+    console.error('Error data:', error.response?.data);
+    throw new Error('Failed to upload profile picture. Please try again.');
+  }
+};
+
+export const deleteProfilePicture = async (userId) => {
+  try {
+    const response = await axiosInstance.delete(`/users/${userId}/profile-picture`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting profile picture:', error);
+    throw new Error('Failed to delete profile picture. Please try again.');
   }
 };
 
@@ -600,103 +682,7 @@ export const disapproveAttendance = async (eventId, userId, reason) => {
   }
 };
 
-// Reflection Upload
-export const uploadReflection = async (eventId, file, reflectionText) => {
-  try {
-    const userId = getUserId();
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('reflection', reflectionText);
-
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.post(`/events/${eventId}/attendance/${userId}/reflection`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      timeout: 60000, // 60 second timeout for file uploads
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error uploading reflection:', error);
-    if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
-    }
-    throw new Error('Failed to upload reflection. Please try again.');
-  }
-};
-
-// Reflection Download
-export const downloadReflection = async (eventId, userId) => {
-  try {
-    console.log('API: Downloading reflection for event:', eventId, 'user:', userId);
-    const response = await axiosInstance.get(`/events/${eventId}/attendance/${userId}/reflection`, {
-      responseType: 'blob',
-    });
-    
-    console.log('API: Response received, status:', response.status);
-    
-    // Create a blob URL and trigger download
-    const contentType = response.headers['content-type'];
-    const blob = new Blob([response.data], { 
-      type: contentType || 'application/octet-stream' 
-    });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    
-    // Extract filename from response headers
-    const contentDisposition = response.headers['content-disposition'];
-    let filename = 'reflection.pdf';
-    if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-      if (filenameMatch) {
-        filename = filenameMatch[1];
-      }
-    }
-    
-    // If no filename found, use a generic name based on content type
-    if (filename === 'reflection.pdf') {
-      const contentType = response.headers['content-type'];
-      if (contentType) {
-        if (contentType.includes('image/')) {
-          filename = 'reflection_image.jpg';
-        } else if (contentType.includes('video/')) {
-          filename = 'reflection_video.mp4';
-        } else if (contentType.includes('audio/')) {
-          filename = 'reflection_audio.mp3';
-        } else if (contentType.includes('text/')) {
-          filename = 'reflection.txt';
-        } else if (contentType.includes('application/zip')) {
-          filename = 'reflection_archive.zip';
-        } else {
-          filename = 'reflection_file';
-        }
-      }
-    }
-    
-    console.log('API: Downloading file:', filename);
-    console.log('API: Content-Type:', contentType);
-    console.log('API: Blob size:', blob.size);
-    
-    // Ensure text files have proper extension
-    if (contentType && contentType.includes('text/') && !filename.endsWith('.txt')) {
-      filename = filename.replace(/\.[^/.]+$/, '') + '.txt';
-    }
-    
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-    
-    return { success: true };
-  } catch (error) {
-    console.error('API: Error downloading reflection:', error);
-    console.error('API: Error response:', error.response);
-    throw new Error('Failed to download reflection. Please try again.');
-  }
-};
+// Reflection functions removed - no longer needed
 
 // Certificate Generation
 export const generateCertificate = async (userId) => {
@@ -755,7 +741,9 @@ export const getSettings = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching settings:', error);
-    throw new Error('Failed to fetch settings. Please try again.');
+    console.error('Response status:', error.response?.status);
+    console.error('Response data:', error.response?.data);
+    throw new Error(error.response?.data?.message || 'Failed to fetch settings. Please try again.');
   }
 };
 
@@ -778,8 +766,8 @@ export const getPublicSchoolSettings = async () => {
     console.error('Error fetching public school settings:', error);
     // Return default values if API fails
     return {
-      schoolName: 'CommunityLink School',
-      brandName: 'CommunityLink',
+          schoolName: 'CHARISM School',
+    brandName: 'CHARISM',
       logo: null
     };
   }
@@ -1021,5 +1009,335 @@ export const submitContactForm = async (contactData) => {
   } catch (error) {
     console.error('Error submitting contact form:', error);
     throw new Error('Failed to submit contact form. Please try again.');
+  }
+};
+
+// Event Management Functions
+export const toggleEventVisibility = async (eventId) => {
+  try {
+    console.log(`🔄 Toggling event visibility for event: ${eventId}`);
+    const response = await axiosInstance.patch(`/events/${eventId}/toggle-visibility`);
+    console.log('✅ Event visibility toggled successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error toggling event visibility:', error);
+    if (error.response?.status === 404) {
+      throw new Error('Event not found. Please refresh and try again.');
+    } else if (error.response?.status === 403) {
+      throw new Error('Access denied. You do not have permission to modify this event.');
+    } else if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Invalid request. Please check your input.');
+    }
+    throw new Error('Failed to toggle event visibility. Please try again.');
+  }
+};
+
+
+
+export const getAllEventAttachments = async (eventId) => {
+  try {
+    const response = await axiosInstance.get(`/events/${eventId}/attachments`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event attachments:', error);
+    throw new Error('Failed to fetch event attachments. Please try again.');
+  }
+};
+
+export const getPendingRegistrations = async () => {
+  try {
+    console.log('🔍 Fetching pending registrations...');
+    const response = await axiosInstance.get('/events/pending-registrations');
+    console.log('✅ Pending registrations fetched:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error fetching pending registrations:', error);
+    if (error.response?.status === 404) {
+      throw new Error('No pending registrations found.');
+    }
+    throw new Error('Failed to fetch pending registrations. Please try again.');
+  }
+};
+
+export const getPendingRegistrationsForEvent = async (eventId) => {
+  try {
+    const response = await axiosInstance.get(`/events/${eventId}/registrations/pending`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching pending registrations for event:', error);
+    throw new Error('Failed to fetch pending registrations for event. Please try again.');
+  }
+};
+
+export const approveRegistration = async (eventId, userId) => {
+  try {
+    console.log(`✅ Approving registration for event ${eventId}, user ${userId}`);
+    const response = await axiosInstance.put(`/events/${eventId}/registrations/${userId}/approve`);
+    console.log('✅ Registration approved successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error approving registration:', error);
+    if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Cannot approve registration. Event may be full.');
+    }
+    throw new Error('Failed to approve registration. Please try again.');
+  }
+};
+
+export const disapproveRegistration = async (eventId, userId, reason) => {
+  try {
+    console.log(`❌ Disapproving registration for event ${eventId}, user ${userId}`);
+    const response = await axiosInstance.put(`/events/${eventId}/registrations/${userId}/disapprove`, { reason });
+    console.log('✅ Registration disapproved successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error disapproving registration:', error);
+    if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Cannot disapprove registration. Reason is required.');
+    }
+    throw new Error('Failed to disapprove registration. Please try again.');
+  }
+};
+
+export const getAllEventRegistrations = async (eventId) => {
+  try {
+    const response = await axiosInstance.get(`/events/${eventId}/registrations`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event registrations:', error);
+    throw new Error('Failed to fetch event registrations. Please try again.');
+  }
+};
+
+// =======================
+// File Upload API Functions for Event Documentation
+// =======================
+
+export const uploadEventDocumentation = async (eventId, files, description = '') => {
+  try {
+    const formData = new FormData();
+    
+    // Add files to form data
+    files.forEach((file, index) => {
+      formData.append('files', file);
+    });
+    
+    // Add description if provided
+    if (description) {
+      formData.append('description', description);
+    }
+    
+    const response = await axiosInstance.post(`/events/${eventId}/documentation/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading event documentation:', error);
+    if (error.response?.status === 413) {
+      throw new Error('File is too large. Maximum size is 10MB.');
+    } else if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Invalid file type or no files uploaded.');
+    }
+    throw new Error('Failed to upload documentation. Please try again.');
+  }
+};
+
+export const getEventDocumentation = async (eventId) => {
+  try {
+    const response = await axiosInstance.get(`/events/${eventId}/documentation`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event documentation:', error);
+    throw new Error('Failed to fetch event documentation. Please try again.');
+  }
+};
+
+export const downloadDocumentationFile = async (eventId, filename, originalName) => {
+  try {
+    const response = await axiosInstance.get(`/events/${eventId}/documentation/download/${filename}`, {
+      responseType: 'blob',
+    });
+    
+    // Create download link with original filename
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', originalName || filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error downloading documentation file:', error);
+    throw new Error('Failed to download file. Please try again.');
+  }
+};
+
+export const deleteDocumentationFile = async (eventId, filename) => {
+  try {
+    const response = await axiosInstance.delete(`/events/${eventId}/documentation/${filename}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting documentation file:', error);
+    throw new Error('Failed to delete file. Please try again.');
+  }
+};
+
+// =======================
+// Event Completion Management API Functions
+// =======================
+
+export const markEventAsCompleted = async (eventId) => {
+  try {
+    console.log(`✅ Marking event as completed: ${eventId}`);
+    const response = await axiosInstance.patch(`/events/${eventId}/mark-completed`);
+    console.log('✅ Event marked as completed successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error marking event as completed:', error);
+    if (error.response?.status === 404) {
+      throw new Error('Event not found. Please refresh and try again.');
+    } else if (error.response?.status === 403) {
+      throw new Error('Access denied. You do not have permission to modify this event.');
+    } else if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Invalid request. Please check your input.');
+    }
+    throw new Error('Failed to mark event as completed. Please try again.');
+  }
+};
+
+export const markEventAsNotCompleted = async (eventId) => {
+  try {
+    console.log(`🔄 Marking event as NOT completed: ${eventId}`);
+    const response = await axiosInstance.patch(`/events/${eventId}/mark-not-completed`);
+    console.log('✅ Event marked as NOT completed successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error marking event as NOT completed:', error);
+    if (error.response?.status === 404) {
+      throw new Error('Event not found. Please refresh and try again.');
+    } else if (error.response?.status === 403) {
+      throw new Error('Access denied. You do not have permission to modify this event.');
+    } else if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Invalid request. Please check your input.');
+    }
+    throw new Error('Failed to mark event as NOT completed. Please try again.');
+  }
+};
+
+// =======================
+// Public Event Registration API Functions
+// =======================
+
+export const getEventByRegistrationToken = async (token) => {
+  try {
+    const response = await axiosInstance.get(`/events/register/${token}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event by registration token:', error);
+    if (error.response?.status === 404) {
+      throw new Error('Event not found or public registration is not enabled for this event.');
+    } else if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'This event has already passed.');
+    }
+    throw new Error('Failed to fetch event details. Please try again.');
+  }
+};
+
+export const registerForEventWithToken = async (token) => {
+  try {
+    const response = await axiosInstance.post(`/events/register/${token}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering for event with token:', error);
+    if (error.response?.status === 401) {
+      throw new Error('Please log in to register for this event.');
+    } else if (error.response?.status === 404) {
+      throw new Error('Event not found or public registration is not enabled.');
+    } else if (error.response?.status === 400) {
+      throw new Error(error.response.data.message || 'Cannot register for this event.');
+    }
+    throw new Error('Failed to register for event. Please try again.');
+  }
+};
+
+// =======================
+// Feedback API Functions
+// =======================
+
+export const submitFeedback = async (feedbackData) => {
+  try {
+    const response = await axiosInstance.post('/feedback/submit', feedbackData);
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    throw new Error('Failed to submit feedback. Please try again.');
+  }
+};
+
+export const getUserFeedback = async () => {
+  try {
+    const response = await axiosInstance.get('/feedback/my-feedback');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user feedback:', error);
+    throw new Error('Failed to fetch feedback. Please try again.');
+  }
+};
+
+export const getFeedbackById = async (feedbackId) => {
+  try {
+    const response = await axiosInstance.get(`/feedback/${feedbackId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching feedback:', error);
+    throw new Error('Failed to fetch feedback. Please try again.');
+  }
+};
+
+// Admin feedback functions
+export const getAllFeedback = async (params = {}) => {
+  try {
+    const query = new URLSearchParams(params).toString();
+    const response = await axiosInstance.get(`/feedback/admin/all${query ? `?${query}` : ''}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching all feedback:', error);
+    throw new Error('Failed to fetch feedback. Please try again.');
+  }
+};
+
+export const getFeedbackStats = async () => {
+  try {
+    const response = await axiosInstance.get('/feedback/admin/stats');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching feedback stats:', error);
+    throw new Error('Failed to fetch feedback statistics. Please try again.');
+  }
+};
+
+export const updateFeedback = async (feedbackId, updateData) => {
+  try {
+    const response = await axiosInstance.put(`/feedback/admin/${feedbackId}`, updateData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating feedback:', error);
+    throw new Error('Failed to update feedback. Please try again.');
+  }
+};
+
+export const deleteFeedback = async (feedbackId) => {
+  try {
+    const response = await axiosInstance.delete(`/feedback/admin/${feedbackId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting feedback:', error);
+    throw new Error('Failed to delete feedback. Please try again.');
   }
 };

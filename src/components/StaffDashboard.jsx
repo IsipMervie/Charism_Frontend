@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { 
   FaCalendarAlt, FaUsers, FaChartLine, FaCog, FaUserTie, 
   FaClock, FaCheckCircle, FaSpinner, FaExclamationTriangle, 
-  FaBuilding, FaGraduationCap, FaBell, FaTrophy, FaEdit
+  FaBuilding, FaGraduationCap, FaBell, FaTrophy, FaEdit, FaFile
 } from 'react-icons/fa';
 import { getEvents, getUserProfile } from '../api/api';
+import axios from 'axios';
+
 import './StaffDashboard.css';
 
 function StaffDashboard() {
@@ -26,6 +28,10 @@ function StaffDashboard() {
     totalParticipants: 0,
     pendingApprovals: 0
   });
+  const [school, setSchool] = useState(null);
+  const [schoolLoading, setSchoolLoading] = useState(true);
+  const [schoolError, setSchoolError] = useState('');
+
 
   useEffect(() => {
     setIsVisible(true);
@@ -57,6 +63,7 @@ function StaffDashboard() {
           department: userProfile.department || 'General',
           role: userProfile.role || 'Staff'
         });
+
         
         setDashboardData({
           totalEvents,
@@ -76,6 +83,7 @@ function StaffDashboard() {
           department: user.department || 'General',
           role: user.role || 'Staff'
         });
+
         setDashboardData({
           totalEvents: 0,
           activeEvents: 0,
@@ -86,8 +94,26 @@ function StaffDashboard() {
       }
     };
 
+    const fetchSchool = async () => {
+      setSchoolLoading(true);
+      try {
+        // Use public endpoint that doesn't require authentication
+        const res = await axios.get('/api/settings/public/school');
+        console.log('School data received:', res.data);
+        setSchool(res.data);
+        setSchoolError('');
+      } catch (error) {
+        console.error('Error fetching school info:', error);
+        setSchoolError('Failed to fetch school info.');
+      }
+      setSchoolLoading(false);
+    };
+
     fetchDashboardData();
+    fetchSchool();
   }, []);
+
+
 
   if (loading) {
     return (
@@ -126,6 +152,58 @@ function StaffDashboard() {
             <div className="user-badge">
               <FaUserTie className="user-icon" />
               <span>{userData.role}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* School Info Section */}
+        <div className="school-info-section">
+          <div className="school-info-card">
+            <div className="school-logo-section">
+              {schoolLoading ? (
+                <div className="logo-loading">
+                  <FaSpinner className="loading-spinner" />
+                </div>
+              ) : school && school.logo ? (
+                <img
+                  src={`/uploads/${school.logo}`}
+                  alt="School Logo"
+                  className="school-logo"
+                  onError={(e) => {
+                    console.error('Logo failed to load:', e.target.src);
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+              ) : (
+                <div className="logo-placeholder">
+                  <FaBuilding className="logo-icon" />
+                </div>
+              )}
+
+            </div>
+            <div className="school-details">
+              {schoolLoading ? (
+                <div className="logo-loading">
+                  <FaSpinner className="loading-spinner" />
+                </div>
+              ) : school ? (
+                <>
+                  <h3 className="school-name">{school.schoolName || 'University of the Assumption'}</h3>
+                  <div className="school-contact">
+                    <span className="contact-label">Contact Email:</span>
+                    <span className="contact-value">{school.contactEmail || 'ceo@ua.edu.ph'}</span>
+                  </div>
+                </>
+              ) : (
+                <div className="school-fallback">
+                  <h3 className="school-name">University of the Assumption</h3>
+                  <div className="school-contact">
+                    <span className="contact-label">Contact Email:</span>
+                    <span className="contact-value">ceo@ua.edu.ph</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -213,6 +291,17 @@ function StaffDashboard() {
               <div className="action-content">
                 <h3 className="action-title">Settings</h3>
                 <p className="action-description">Manage your account settings and preferences</p>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
+
+            <div className="action-card" onClick={() => navigate('/staff/student-documentation')}>
+              <div className="action-icon">
+                <FaFile />
+              </div>
+              <div className="action-content">
+                <h3 className="action-title">Student Documentation</h3>
+                <p className="action-description">View and manage student documentation uploads</p>
               </div>
               <div className="action-arrow">→</div>
             </div>

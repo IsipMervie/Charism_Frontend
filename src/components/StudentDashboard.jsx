@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   FaCalendarAlt, FaChartLine, FaUser, FaCog, FaGraduationCap, 
-  FaClock, FaTrophy, FaBell, FaSpinner, FaCheckCircle, 
-  FaExclamationTriangle, FaUserGraduate, FaBuilding, FaCalendar
+  FaClock, FaTrophy, FaSpinner, FaCheckCircle, 
+  FaExclamationTriangle, FaUserGraduate, FaCalendar
 } from 'react-icons/fa';
 import { getEvents, getUserProfile } from '../api/api';
+import axios from 'axios';
+
 import './StudentDashboard.css';
 
 function StudentDashboard() {
@@ -23,10 +25,13 @@ function StudentDashboard() {
     section: '',
     academicYear: '',
     totalHours: 0,
-    approvedHours: 0,
-    eventsAttended: 0,
-    upcomingEvents: 0
+    approvedHours: 0
   });
+
+  const [school, setSchool] = useState(null);
+  const [schoolLoading, setSchoolLoading] = useState(true);
+  const [schoolError, setSchoolError] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
 
   useEffect(() => {
     setIsVisible(true);
@@ -36,9 +41,10 @@ function StudentDashboard() {
         // Get user profile data
         const userProfile = await getUserProfile();
         
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        
         // Get events data to calculate participation
         const events = await getEvents();
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
         
         // Filter events where the user is in attendance
         const myEvents = events.filter(event =>
@@ -58,14 +64,7 @@ function StudentDashboard() {
           }
         });
         
-        // Calculate upcoming events
-        const upcomingEvents = events.filter(event => 
-          event.status === 'Active' && 
-          new Date(event.date) > new Date() &&
-          (!event.attendance || !event.attendance.some(a => 
-            a.userId === user._id || (a.userId && a.userId._id === user._id)
-          ))
-        ).length;
+
         
         setUserData({
           name: userProfile.name || user.name || 'Student Name',
@@ -75,10 +74,14 @@ function StudentDashboard() {
           section: userProfile.section || user.section || 'Section A',
           academicYear: userProfile.academicYear || user.academicYear || '2024-2025',
           totalHours: 0, // We'll focus on approved hours
-          approvedHours: approvedHours,
-          eventsAttended: myEvents.length,
-          upcomingEvents: upcomingEvents
+          approvedHours: approvedHours
         });
+        
+        console.log('Calculated approved hours:', approvedHours);
+        console.log('Events found:', myEvents.length);
+        console.log('User ID:', user._id);
+        setProfilePicture(userProfile.profilePicture || user.profilePicture || '');
+
         
         setLoading(false);
       } catch (error) {
@@ -93,15 +96,32 @@ function StudentDashboard() {
           section: user.section || 'Section A',
           academicYear: user.academicYear || '2024-2025',
           totalHours: 0,
-          approvedHours: 0,
-          eventsAttended: 0,
-          upcomingEvents: 0
+          approvedHours: 0
         });
+        
+        console.log('Fallback: Using localStorage data, approved hours set to 0');
+        setProfilePicture(user.profilePicture || '');
         setLoading(false);
       }
     };
 
+    const fetchSchool = async () => {
+      setSchoolLoading(true);
+      try {
+        // Use public endpoint that doesn't require authentication
+        const res = await axios.get('/api/settings/public/school');
+        console.log('School data received:', res.data);
+        setSchool(res.data);
+        setSchoolError('');
+      } catch (error) {
+        console.error('Error fetching school info:', error);
+        setSchoolError('Failed to fetch school info.');
+      }
+      setSchoolLoading(false);
+    };
+
     fetchUserData();
+    fetchSchool();
   }, []);
 
   const isActiveRoute = (path) => {
@@ -157,7 +177,63 @@ function StudentDashboard() {
           <div className="user-info">
             <div className="user-badge">
               <FaUserGraduate className="user-icon" />
-              <span>{userData.yearLevel}</span>
+              <span>{userData.department}</span>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        {/* School Info Section */}
+        <div className="school-info-section">
+          <div className="school-info-card">
+            <div className="school-logo-section">
+              {schoolLoading ? (
+                <div className="logo-loading">
+                  <FaSpinner className="loading-spinner" />
+                </div>
+              ) : school && school.logo ? (
+                <img
+                  src={`/uploads/${school.logo}`}
+                  alt="School Logo"
+                  className="school-logo"
+                  onError={(e) => {
+                    console.error('Logo failed to load:', e.target.src);
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+              ) : (
+                <div className="logo-placeholder">
+                  <FaGraduationCap className="logo-icon" />
+                </div>
+              )}
+
+            </div>
+            <div className="school-details">
+              {schoolLoading ? (
+                <div className="logo-loading">
+                  <FaSpinner className="loading-spinner" />
+                </div>
+              ) : school ? (
+                <>
+                  <h3 className="school-name">{school.schoolName || 'University of the Assumption'}</h3>
+                  <div className="school-contact">
+                    <span className="contact-label">Contact Email:</span>
+                    <span className="contact-value">{school.contactEmail || 'ceo@ua.edu.ph'}</span>
+                  </div>
+                </>
+              ) : (
+                <div className="school-fallback">
+                  <h3 className="school-name">University of the Assumption</h3>
+                  <div className="school-contact">
+                    <span className="contact-label">Contact Email:</span>
+                    <span className="contact-value">ceo@ua.edu.ph</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -174,25 +250,9 @@ function StudentDashboard() {
             </div>
           </div>
 
-          <div className="stat-card">
-            <div className="stat-icon">
-              <FaCalendarAlt />
-            </div>
-            <div className="stat-content">
-              <div className="stat-number">{userData.eventsAttended}</div>
-              <div className="stat-label">Events Attended</div>
-            </div>
-          </div>
 
-          <div className="stat-card">
-            <div className="stat-icon">
-              <FaBell />
-            </div>
-            <div className="stat-content">
-              <div className="stat-number">{userData.upcomingEvents}</div>
-              <div className="stat-label">Upcoming Events</div>
-            </div>
-          </div>
+
+
 
           <div className="stat-card">
             <div className="stat-icon">
@@ -246,6 +306,10 @@ function StudentDashboard() {
             </div>
           </div>
         </div>
+
+
+
+
 
         {/* Quick Actions Section */}
         <div className="actions-section">
@@ -301,37 +365,21 @@ function StudentDashboard() {
               </div>
               <div className="action-arrow">→</div>
             </div>
+
+            <div className="action-card" onClick={() => navigate('/student-documentation')}>
+              <div className="action-icon">
+                📁
+              </div>
+              <div className="action-content">
+                <h3 className="action-title">My Documentation</h3>
+                <p className="action-description">Upload and manage your event documentation files</p>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
           </div>
         </div>
 
-        {/* Academic Info Section */}
-        <div className="academic-section">
-          <div className="academic-header">
-            <h2 className="academic-title">
-              <FaBuilding className="academic-icon" />
-              Academic Information
-            </h2>
-          </div>
 
-          <div className="academic-grid">
-            <div className="academic-item">
-              <div className="academic-label">Department</div>
-              <div className="academic-value">{userData.department}</div>
-            </div>
-            <div className="academic-item">
-              <div className="academic-label">Year Level</div>
-              <div className="academic-value">{userData.yearLevel}</div>
-            </div>
-            <div className="academic-item">
-              <div className="academic-label">Section</div>
-              <div className="academic-value">{userData.section}</div>
-            </div>
-            <div className="academic-item">
-              <div className="academic-label">Academic Year</div>
-              <div className="academic-value">{userData.academicYear}</div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

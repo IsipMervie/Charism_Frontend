@@ -7,7 +7,7 @@
   height: 80px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   transition: all 0.3s ease;
   position: relative;
   z-index: 1000;
@@ -20,16 +20,17 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  margin-left: 0;
+  margin-left: auto;
   margin-right: 0;
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 0;
   transition: all 0.3s ease;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 2rem;
   border-radius: 8px;
   background: #f8f9fa;
   border: 1px solid #e9ecef;
   max-width: 300px;
+  order: 2;
 }
 
 .navbar-brand:hover {
@@ -65,7 +66,7 @@
   color: #1a252f;
 }
 
-/* Super Right Toggler for mobile - No Space */
+/* Super Left Toggler for mobile - No Space */
 .navbar-toggler {
   border: none;
   font-size: 1.2rem;
@@ -74,9 +75,9 @@
   outline: none;
   transition: all 0.3s ease;
   padding: 0.875rem;
-  margin-left: auto;
-  margin-right: 0;
-  order: 2;
+  margin-left: 0;
+  margin-right: auto;
+  order: 1;
   flex-shrink: 0;
   align-self: center;
   position: relative;
@@ -87,7 +88,7 @@
   justify-content: center;
   border-radius: 0;
   border: 1px solid #e9ecef;
-  border-right: none;
+  border-left: none;
   border-top: none;
   border-bottom: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -208,16 +209,29 @@
     height: 70px;
   }
   
+  /* Mobile Layout: Logo left, Hamburger right */
+  .navbar-custom .container-fluid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .navbar-custom .d-flex {
+    justify-content: space-between;
+    width: 100%;
+  }
+  
   .navbar-brand {
     margin-left: 0;
-    flex: 1;
     margin-right: 0;
-    min-width: 0;
+    flex: 0 0 auto;
+    order: 1;
     padding: 0.6rem 1rem;
   }
   
   .navbar-toggler {
-    margin-left: auto;
+    margin-left: 0;
     margin-right: 0;
     order: 2;
     flex-shrink: 0;
@@ -346,7 +360,7 @@ body { padding-top: 80px; }
 .navbar-custom.fixed-top { margin-bottom: 0; }
 
 /* Container spacing */
-.container-fluid { padding-left: 1.5rem; padding-right: 1.5rem; }
+.container-fluid { padding-left: 2rem; padding-right: 2rem; }
 
 /* Brand spacing */
 .navbar-brand { margin-right: 0; }

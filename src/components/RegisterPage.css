@@ -227,7 +227,7 @@
   padding: 1rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  background: #2563eb;
   border: none;
   border-radius: 12px;
   color: white;
@@ -254,6 +254,7 @@
 
 .register-button:hover {
   transform: translateY(-2px);
+  background: #1d4ed8;
   box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
 }
 
@@ -269,6 +270,30 @@
 .button-content {
   position: relative;
   z-index: 1;
+}
+
+/* Override any Bootstrap button styles */
+.btn.register-button,
+button.register-button,
+input[type="submit"].register-button,
+.register-form .btn,
+.register-form button,
+.register-form input[type="submit"] {
+  background-color: #2563eb !important;
+  background-image: none !important;
+  border-color: #2563eb !important;
+  color: white !important;
+}
+
+.btn.register-button:hover,
+button.register-button:hover,
+input[type="submit"].register-button:hover,
+.register-form .btn:hover,
+.register-form button:hover,
+.register-form input[type="submit"]:hover {
+  background-color: #1d4ed8 !important;
+  background-image: none !important;
+  border-color: #1d4ed8 !important;
 }
 
 /* Responsive Design */
@@ -302,6 +327,15 @@
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
   }
+  
+  /* Ensure button is centered on mobile */
+  .register-button {
+    width: 90% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    max-width: 300px !important;
+    box-sizing: border-box !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -319,6 +353,11 @@
   
   .register-button {
     padding: 0.875rem 1.5rem;
+    width: 90% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    max-width: 300px !important;
+    box-sizing: border-box !important;
   }
   
   .section-title {
@@ -378,5 +417,110 @@
   
   .form-input:focus {
     transform: none;
+  }
+}
+
+/* Email Verification Reminder */
+.verification-reminder {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.reminder-icon {
+  font-size: 1.25rem;
+  color: #0ea5e9;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.reminder-text {
+  color: #0c4a6e;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.reminder-text strong {
+  color: #0c4a6e;
+  font-weight: 600;
+}
+
+/* Custom SweetAlert Styles for Email Verification */
+.email-verification-alert {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.email-verification-alert .swal2-title {
+  color: #0f172a;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.email-verification-alert .swal2-html-container {
+  margin: 0;
+}
+
+.email-verification-alert .swal2-html-container ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.email-verification-alert .swal2-html-container li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.email-verification-btn {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 32px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3) !important;
+}
+
+.email-verification-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4) !important;
+}
+
+/* SweetAlert Responsive Design */
+@media (max-width: 768px) {
+  .email-verification-alert {
+    width: 90vw !important;
+    max-width: 500px !important;
+  }
+  
+  .email-verification-alert .swal2-title {
+    font-size: 1.5rem;
+  }
+  
+  .email-verification-alert .swal2-html-container {
+    font-size: 14px;
+  }
+  
+  .email-verification-btn {
+    padding: 10px 24px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .verification-reminder {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .reminder-icon {
+    margin-top: 0;
   }
 }

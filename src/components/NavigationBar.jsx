@@ -75,6 +75,9 @@ function NavigationBar() {
                 <Nav.Link as={Link} to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>
                   Contact
                 </Nav.Link>
+                <Nav.Link as={Link} to="/feedback" className={location.pathname === '/feedback' ? 'active' : ''}>
+                  Feedback
+                </Nav.Link>
                 <Nav.Link as={Link} to="/login" className={location.pathname === '/login' ? 'active' : ''}>
                   Login
                 </Nav.Link>
@@ -96,6 +99,9 @@ function NavigationBar() {
                 <Nav.Link as={Link} to="/my-participation" className={location.pathname === '/my-participation' ? 'active' : ''}>
                   My Participation
                 </Nav.Link>
+                <Nav.Link as={Link} to="/feedback" className={location.pathname === '/feedback' ? 'active' : ''}>
+                  Feedback
+                </Nav.Link>
               </>
             )}
 
@@ -113,6 +119,12 @@ function NavigationBar() {
                 </Nav.Link>
                 <Nav.Link as={Link} to="/staff/create-event" className={location.pathname === '/staff/create-event' ? 'active' : ''}>
                   Create Event
+                </Nav.Link>
+                <Nav.Link as={Link} to="/registration-approval" className={location.pathname === '/registration-approval' ? 'active' : ''}>
+                  Event Registered Approval
+                </Nav.Link>
+                <Nav.Link as={Link} to="/feedback" className={location.pathname === '/feedback' ? 'active' : ''}>
+                  Feedback
                 </Nav.Link>
               </>
             )}
@@ -132,6 +144,9 @@ function NavigationBar() {
                 <NavDropdown.Item as={Link} to="/admin/create-event" active={location.pathname === '/admin/create-event'}>
                   Create Event
                 </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/registration-approval" active={location.pathname === '/registration-approval'}>
+                  Event Registered Approval
+                </NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/admin/manage-messages" active={location.pathname === '/admin/manage-messages'}>
                   Manage Messages
                 </NavDropdown.Item>
@@ -145,10 +160,13 @@ function NavigationBar() {
                   School Settings
                 </NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/admin/registration-management" active={location.pathname === '/admin/registration-management'}>
-                  Registration Management
+                  Manage Registration
                 </NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/students-by-year" active={location.pathname === '/students-by-year'}>
                   Students by Year
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/admin/manage-feedback" active={location.pathname === '/admin/manage-feedback'}>
+                  Manage Feedback
                 </NavDropdown.Item>
               </NavDropdown>
             )}

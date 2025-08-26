@@ -478,24 +478,6 @@ function AnalyticsPage() {
 
             <div className="stats-section mb-4">
               <div className="stat-card" tabIndex={0}>
-                <div className="stat-icon"><FaClock /></div>
-                <div className="stat-content">
-                  <h4>Average Hours per Student</h4>
-                  <p>{getValue('studentsCount') > 0 ? (getValue('totalHours') / getValue('studentsCount')).toFixed(1) : 0}</p>
-                </div>
-              </div>
-              <div className="stat-card" tabIndex={0}>
-                <div className="stat-icon"><FaCheckCircle /></div>
-                <div className="stat-content">
-                  <h4>Approval Rate</h4>
-                  <p>
-                    {getValue('totalAttendance') > 0
-                      ? ((getValue('approvedAttendance') / getValue('totalAttendance')) * 100).toFixed(1)
-                      : 0}%
-                  </p>
-                </div>
-              </div>
-              <div className="stat-card" tabIndex={0}>
                 <div className="stat-icon"><FaCalendarAlt /></div>
                 <div className="stat-content">
                   <h4>Recent Events (30 days)</h4>
@@ -540,34 +522,22 @@ function AnalyticsPage() {
               </Card.Body>
             </Card>
 
-            {selectedDepartment && (
-              <Row>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Students</div>
-                    <div className="h3 mb-0">{departmentDetail?.studentCount ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Events</div>
-                    <div className="h3 mb-0">{departmentDetail?.eventCount ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Approved Attendance</div>
-                    <div className="h3 mb-0">{departmentDetail?.approvedAttendance ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Total Hours</div>
-                    <div className="h3 mb-0">{departmentDetail?.totalHours ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-              </Row>
-            )}
+                         {selectedDepartment && (
+               <Row>
+                 <Col md={6} className="mb-3">
+                   <Card className="shadow-sm border-0 h-100"><Card.Body>
+                     <div className="text-muted">Students</div>
+                     <div className="h3 mb-0">{departmentDetail?.studentCount ?? '—'}</div>
+                   </Card.Body></Card>
+                 </Col>
+                 <Col md={6} className="mb-3">
+                   <Card className="shadow-sm border-0 h-100"><Card.Body>
+                     <div className="text-muted">Events</div>
+                     <div className="h3 mb-0">{departmentDetail?.eventCount ?? '—'}</div>
+                   </Card.Body></Card>
+                 </Col>
+               </Row>
+             )}
           </>
         )}
 
@@ -598,34 +568,22 @@ function AnalyticsPage() {
               </Card.Body>
             </Card>
 
-            {selectedYear && (
-              <Row>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Students</div>
-                    <div className="h3 mb-0">{yearDetail?.studentCount ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Events</div>
-                    <div className="h3 mb-0">{yearDetail?.eventCount ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Approved Attendance</div>
-                    <div className="h3 mb-0">{yearDetail?.approvedAttendance ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-                <Col md={3} className="mb-3">
-                  <Card className="shadow-sm border-0 h-100"><Card.Body>
-                    <div className="text-muted">Total Hours</div>
-                    <div className="h3 mb-0">{yearDetail?.totalHours ?? '—'}</div>
-                  </Card.Body></Card>
-                </Col>
-              </Row>
-            )}
+                         {selectedYear && (
+               <Row>
+                 <Col md={6} className="mb-3">
+                   <Card className="shadow-sm border-0 h-100"><Card.Body>
+                     <div className="text-muted">Students</div>
+                     <div className="h3 mb-0">{yearDetail?.studentCount ?? '—'}</div>
+                   </Card.Body></Card>
+                 </Col>
+                 <Col md={6} className="mb-3">
+                   <Card className="shadow-sm border-0 h-100"><Card.Body>
+                     <div className="text-muted">Events</div>
+                     <div className="h3 mb-0">{yearDetail?.eventCount ?? '—'}</div>
+                   </Card.Body></Card>
+                 </Col>
+               </Row>
+             )}
           </>
         )}
       </Container>

@@ -88,17 +88,94 @@ function RegisterPage() {
     setLoading(true);
     try {
       await registerUser(name, email, password, userId, academicYear, year, section, role, department);
+      
+      // Enhanced success alert with email verification emphasis
       Swal.fire({
         icon: 'success',
-        title: 'Registration Successful',
-        text: 'Please check your email to verify your account.',
+        title: '🎉 Registration Successful!',
+        html: `
+          <div style="text-align: left; padding: 20px;">
+            <p style="margin-bottom: 15px; font-size: 16px; color: #1e293b;">
+              <strong>Welcome to CHARISM!</strong> Your account has been created successfully.
+            </p>
+            
+            <div style="background: #f0f9ff; border: 2px solid #0ea5e9; border-radius: 12px; padding: 20px; margin: 20px 0;">
+              <h4 style="color: #0c4a6e; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                📧 <span>Email Verification Required</span>
+              </h4>
+              <p style="color: #0c4a6e; margin-bottom: 15px; font-size: 15px;">
+                <strong>Important:</strong> You must verify your email address before you can log in.
+              </p>
+              
+              <div style="background: white; border: 1px solid #0ea5e9; border-radius: 8px; padding: 12px; margin: 15px 0;">
+                <p style="color: #0c4a6e; margin: 0; font-size: 14px; font-weight: 600;">
+                  📬 <strong>Check this email address:</strong>
+                </p>
+                <p style="color: #0ea5e9; margin: 5px 0 0 0; font-size: 16px; font-weight: 700; word-break: break-all;">
+                  ${email}
+                </p>
+              </div>
+              
+              <ul style="color: #0c4a6e; margin: 0; padding-left: 20px; font-size: 14px;">
+                <li>Check your email inbox (including spam folder)</li>
+                <li>Click the verification link in the email</li>
+                <li>Return here to log in after verification</li>
+              </ul>
+            </div>
+            
+            ${role === 'Staff' ? `
+              <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                <h4 style="color: #92400e; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                  ⏳ <span>Admin Approval Required</span>
+                </h4>
+                <p style="color: #92400e; font-size: 14px; margin: 0;">
+                  <strong>Note:</strong> Staff accounts require administrator approval. 
+                  You'll receive another email once your account is approved.
+                </p>
+              </div>
+            ` : ''}
+            
+            <p style="color: #64748b; font-size: 14px; margin-top: 20px; font-style: italic;">
+              <strong>Need help?</strong> Check your spam folder or contact support if you don't receive the email within 5 minutes.
+            </p>
+          </div>
+        `,
+        confirmButtonText: 'Got it!',
+        confirmButtonColor: '#0ea5e9',
+        width: '600px',
+        customClass: {
+          popup: 'email-verification-alert',
+          confirmButton: 'email-verification-btn'
+        }
       });
+      
       navigate('/login');
     } catch (err) {
+      const errorMessage = err?.message || err?.response?.data?.message;
+      let title = 'Registration Failed';
+      let icon = 'error';
+      let text = 'An unexpected error occurred. Please try again.';
+      
+      if (errorMessage) {
+        if (errorMessage.includes('User already exists')) {
+          title = 'Account Already Exists';
+          text = 'An account with this email address already exists. Please try logging in instead.';
+          icon = 'warning';
+        } else if (errorMessage.includes('Error registering user')) {
+          title = 'Registration Error';
+          text = 'There was a problem creating your account. Please check your information and try again.';
+          icon = 'error';
+        } else {
+          text = errorMessage;
+        }
+      }
+      
       Swal.fire({
-        icon: 'error',
-        title: 'Registration Failed',
-        text: err?.message || err?.response?.data?.message || 'Error registering user. Please try again.',
+        icon: icon,
+        title: title,
+        text: text,
+        confirmButtonColor: icon === 'error' ? '#ef4444' : '#f59e0b',
+        confirmButtonText: 'OK'
       });
     }
     setLoading(false);
@@ -330,6 +407,15 @@ function RegisterPage() {
                 {loading ? 'Creating account...' : 'Create Account'}
               </span>
             </Button>
+            
+            {/* Email Verification Reminder */}
+            <div className="verification-reminder">
+              <div className="reminder-icon">📧</div>
+              <div className="reminder-text">
+                <strong>Important:</strong> After registration, you'll receive a verification email. 
+                You must verify your email before you can log in. The Email will send by "nexacore91@gmail.com"
+              </div>
+            </div>
           </Form>
         </div>
       </Container>

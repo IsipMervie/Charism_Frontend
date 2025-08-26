@@ -13,11 +13,14 @@ function EditEventPage() {
     title: '',
     description: '',
     date: '',
-    time: '',
+    startTime: '',
+    endTime: '',
     location: '',
     maxParticipants: '',
     hours: '',
-    image: null
+    image: null,
+    requiresApproval: true,
+    isPublicRegistrationEnabled: false
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -33,11 +36,14 @@ function EditEventPage() {
           title: data.title || '',
           description: data.description || '',
           date: data.date ? data.date.slice(0, 10) : '',
-          time: data.time || '',
+          startTime: data.startTime || '',
+          endTime: data.endTime || '',
           location: data.location || '',
           maxParticipants: data.maxParticipants || '',
           hours: data.hours || '',
-          image: null
+          image: null,
+          requiresApproval: data.requiresApproval !== undefined ? data.requiresApproval : true,
+          isPublicRegistrationEnabled: data.isPublicRegistrationEnabled || false
         });
         setLoading(false);
       } catch (err) {
@@ -76,16 +82,25 @@ function EditEventPage() {
       Swal.fire({ icon: 'error', title: 'Invalid Hours', text: 'Event hours must be greater than 0.' });
       return;
     }
+    
+    // Validate time
+    if (form.startTime && form.endTime && form.startTime >= form.endTime) {
+      Swal.fire({ icon: 'error', title: 'Invalid Time', text: 'End time must be after start time.' });
+      return;
+    }
     setSaving(true);
     try {
       const formData = new FormData();
       formData.append('title', form.title);
       formData.append('description', form.description);
       formData.append('date', form.date);
-      formData.append('time', form.time);
+      formData.append('startTime', form.startTime);
+      formData.append('endTime', form.endTime);
       formData.append('location', form.location);
       formData.append('maxParticipants', form.maxParticipants);
       formData.append('hours', form.hours);
+      formData.append('requiresApproval', form.requiresApproval);
+      formData.append('isPublicRegistrationEnabled', form.isPublicRegistrationEnabled);
       if (form.image) formData.append('image', form.image);
 
       await updateEvent(eventId, formData);
@@ -112,6 +127,8 @@ function EditEventPage() {
       if (result.isConfirmed) navigate('/admin/manage-events');
     });
   };
+
+
 
   if (loading) {
     return (
@@ -161,10 +178,19 @@ function EditEventPage() {
               <label htmlFor="date"><FaCalendar /> Date</label>
               <input type="date" id="date" name="date" value={form.date} onChange={handleChange} required />
             </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="startTime"><FaClock /> Start Time</label>
+              <input type="time" id="startTime" name="startTime" value={form.startTime} onChange={handleChange} required step="900" />
+              <div className="form-text">Select the start time (12-hour format)</div>
+            </div>
 
             <div className="form-group">
-              <label htmlFor="time"><FaClock /> Time</label>
-              <input type="time" id="time" name="time" value={form.time} onChange={handleChange} required />
+              <label htmlFor="endTime"><FaClock /> End Time</label>
+              <input type="time" id="endTime" name="endTime" value={form.endTime} onChange={handleChange} required step="900" />
+              <div className="form-text">Select the end time (12-hour format)</div>
             </div>
           </div>
 
@@ -177,6 +203,7 @@ function EditEventPage() {
             <div className="form-group">
               <label htmlFor="maxParticipants"><FaUsers /> Available Slots</label>
               <input type="number" id="maxParticipants" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} required min="1" placeholder="Enter number of slots" />
+              <div className="form-text">Maximum number of approved participants. Pending registrations don't count toward this limit.</div>
             </div>
 
             <div className="form-group">
@@ -205,6 +232,30 @@ function EditEventPage() {
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={form.requiresApproval}
+                onChange={(e) => setForm(prev => ({ ...prev, requiresApproval: e.target.checked }))}
+              />
+              Require staff/admin approval for student registrations
+            </label>
+            <div className="form-text">If checked, students must wait for approval before they can time in/out</div>
+          </div>
+
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={form.isPublicRegistrationEnabled}
+                onChange={(e) => setForm(prev => ({ ...prev, isPublicRegistrationEnabled: e.target.checked }))}
+              />
+              Enable public registration for this event
+            </label>
+            <div className="form-text">If enabled, anyone with the registration link can view and register for this event</div>
           </div>
 
           <div className="form-actions">

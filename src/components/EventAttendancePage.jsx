@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { getEvents, joinEvent, timeIn, timeOut, getPublicSettings } from '../api/api';
+import React, { useState, useEffect, useCallback, memo } from 'react';
+import { getEvents, joinEvent, timeIn, timeOut, getPublicSettings, generateReport } from '../api/api';
 import Swal from 'sweetalert2';
-import ReflectionUploadModal from './ReflectionUploadModal';
 import { FaSearch, FaCalendar, FaClock, FaUsers, FaMapMarkerAlt, FaSpinner, FaExclamationTriangle, FaFilter, FaEye, FaDownload } from 'react-icons/fa';
+import { formatTimeRange12Hour } from '../utils/timeUtils';
 import './EventAttendancePage.css';
 
-function EventAttendancePage() {
+const EventAttendancePage = memo(() => {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
   const [joinedEvents, setJoinedEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
-  const [showReflectionModal, setShowReflectionModal] = useState(false);
-  const [reflectionEventId, setReflectionEventId] = useState(null);
   const role = localStorage.getItem('role');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   
@@ -33,16 +31,29 @@ function EventAttendancePage() {
 
   // Helper to determine event status
   const getEventStatus = (event) => {
+    // Check if admin has manually marked the event as completed
+    if (event.status === 'Completed') {
+      return 'completed';
+    }
+    
     const now = new Date();
     const eventDate = new Date(event.date);
-    if (eventDate < now && event.attendance && event.attendance.some(a => a.timeOut)) {
+    const eventStartTime = new Date(`${eventDate.toDateString()} ${event.startTime || '00:00'}`);
+    const eventEndTime = new Date(`${eventDate.toDateString()} ${event.endTime || '23:59'}`);
+    
+    // Check if event time has completely passed
+    if (eventEndTime < now) {
+      // Event time has passed - automatically mark as completed
       return 'completed';
-    } else if (eventDate < now) {
-      return 'past';
-    } else if (eventDate.toDateString() === now.toDateString()) {
-      return 'today';
-    } else {
+    } else if (eventStartTime > now) {
+      // Event hasn't started yet - it's upcoming
       return 'upcoming';
+    } else if (eventStartTime <= now && eventEndTime > now) {
+      // Event is currently happening - it's ongoing
+      return 'ongoing';
+    } else {
+      // Event date has passed but time logic didn't catch it - it's past
+      return 'past';
     }
   };
 
@@ -50,7 +61,7 @@ function EventAttendancePage() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'upcoming': return 'status-upcoming';
-      case 'today': return 'status-today';
+      case 'ongoing': return 'status-ongoing';
       case 'past': return 'status-past';
       case 'completed': return 'status-completed';
       default: return 'status-upcoming';
@@ -58,13 +69,26 @@ function EventAttendancePage() {
   };
 
   // Refresh events and joined events
-  const refreshEvents = async () => {
+  const refreshEvents = useCallback(async () => {
+    console.log('EventAttendancePage: refreshEvents called');
+    console.log('EventAttendancePage: Current state before refresh:', { 
+      eventsCount: events.length,
+      loading,
+      error 
+    });
+    
     setLoading(true);
     try {
+      console.log('EventAttendancePage: Fetching events and settings...');
       const [eventsData, settingsData] = await Promise.all([
         getEvents(),
         getPublicSettings()
       ]);
+      
+      console.log('EventAttendancePage: Received data:', { 
+        eventsCount: eventsData.length,
+        settingsData: !!settingsData 
+      });
       
       setEvents(eventsData);
       
@@ -81,34 +105,43 @@ function EventAttendancePage() {
           )
           .map(event => event._id);
         setJoinedEvents(joined);
+        console.log('EventAttendancePage: Updated joined events:', joined);
       }
-      setLoading(false);
+      
+      console.log('EventAttendancePage: Refresh completed successfully');
     } catch (err) {
-      setError('Could not load events.');
+      console.error('EventAttendancePage: Error refreshing events:', err);
+      setError('Failed to load events. Please try again.');
+    } finally {
       setLoading(false);
     }
-  };
-
-  const handleFilterChange = (field, value) => {
-    setPdfFilters(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  }, [role, user._id]);
 
   useEffect(() => {
+    console.log('EventAttendancePage: useEffect triggered, role:', role);
     refreshEvents();
     // eslint-disable-next-line
-  }, [role]);
+  }, [role, refreshEvents]);
 
-  // Join Event
-  const handleJoin = async (eventId) => {
+  const handleFilterChange = useCallback((field, value) => {
+    setPdfFilters(prev => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleSearchChange = useCallback((e) => {
+    setSearch(e.target.value);
+  }, []);
+
+  const handleFilterSelect = useCallback((newFilter) => {
+    setFilter(newFilter);
+  }, []);
+
+  const handleJoin = useCallback(async (eventId) => {
     const event = events.find(e => e._id === eventId);
     if (!event) return;
 
     const eventDate = new Date(event.date);
-    const eventTime = event.time || '00:00';
-    const eventDateTime = new Date(`${eventDate.toDateString()} ${eventTime}`);
+    const eventTime = formatTimeRange12Hour(event.startTime, event.endTime);
+    const eventDateTime = new Date(`${eventDate.toDateString()} ${event.startTime || '00:00'}`);
     const now = new Date();
 
     const result = await Swal.fire({
@@ -117,7 +150,7 @@ function EventAttendancePage() {
         <div style="text-align: left;">
           <p><strong>Event:</strong> ${event.title}</p>
           <p><strong>Date:</strong> ${eventDate.toLocaleDateString()}</p>
-          <p><strong>Time:</strong> ${event.time || 'TBD'}</p>
+          <p><strong>Time:</strong> ${formatTimeRange12Hour(event.startTime, event.endTime)}</p>
           <p><strong>Location:</strong> ${event.location || 'TBD'}</p>
           <p><strong>Service Hours:</strong> ${event.hours} hours</p>
           <br>
@@ -126,7 +159,6 @@ function EventAttendancePage() {
             <ul style="margin: 5px 0 0 0; padding-left: 20px; color: #856404;">
               <li>Don't time in if the event hasn't started yet</li>
               <li>Make sure to time out when you leave</li>
-              <li>Upload your reflection after completing the event</li>
             </ul>
           </div>
         </div>
@@ -157,16 +189,15 @@ function EventAttendancePage() {
         text: 'Failed to register for event. Please try again.' 
       });
     }
-  };
+  }, [events, refreshEvents]);
 
-  // Time In
-  const handleTimeIn = async (eventId) => {
+  const handleTimeIn = useCallback(async (eventId) => {
     const event = events.find(e => e._id === eventId);
     if (!event) return;
 
     const eventDate = new Date(event.date);
-    const eventTime = event.time || '00:00';
-    const eventDateTime = new Date(`${eventDate.toDateString()} ${eventTime}`);
+    const eventTime = formatTimeRange12Hour(event.startTime, event.endTime);
+    const eventDateTime = new Date(`${eventDate.toDateString()} ${event.startTime || '00:00'}`);
     const now = new Date();
 
     // Check if event has started
@@ -211,10 +242,9 @@ function EventAttendancePage() {
         text: err.message || 'Failed to record Time In. Please try again.'
       });
     }
-  };
+  }, [events, refreshEvents]);
 
-  // Time Out
-  const handleTimeOut = async (eventId) => {
+  const handleTimeOut = useCallback(async (eventId) => {
     const event = events.find(e => e._id === eventId);
     if (!event) return;
 
@@ -262,95 +292,79 @@ function EventAttendancePage() {
         text: err.message || 'Failed to record Time Out. Please try again.'
       });
     }
-  };
+  }, [events, user._id, refreshEvents]);
 
   // PDF Download Handler (Admin/Staff only)
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = useCallback(async () => {
     try {
       // Build query parameters for PDF generation
-      const params = new URLSearchParams();
+      const params = {};
       
-      if (pdfFilters.status) params.append('status', pdfFilters.status);
-      if (pdfFilters.dateFrom) params.append('dateFrom', pdfFilters.dateFrom);
-      if (pdfFilters.dateTo) params.append('dateTo', pdfFilters.dateTo);
-      if (pdfFilters.location) params.append('location', pdfFilters.location);
-      if (pdfFilters.department) params.append('department', pdfFilters.department);
+      if (pdfFilters.status) params.status = pdfFilters.status;
+      if (pdfFilters.dateFrom) params.dateFrom = pdfFilters.dateFrom;
+      if (pdfFilters.dateTo) params.dateTo = pdfFilters.dateTo;
+      if (pdfFilters.location) params.location = pdfFilters.location;
+      if (pdfFilters.department) params.department = pdfFilters.department;
       
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/reports/event-list?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      // Use the generateReport API function
+      await generateReport('event-list', params);
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'PDF Downloaded',
+        text: 'Event list PDF has been downloaded successfully!'
       });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to download PDF');
-      }
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'event-list.pdf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
     } catch (err) {
+      console.error('PDF download error:', err);
       Swal.fire({
         icon: 'error',
         title: 'Download Failed',
         text: `Could not download PDF: ${err.message}`
       });
     }
-  };
+  }, [pdfFilters]);
 
-  // Filter events by status and search
+  // Filter events by status, search, and department restrictions
   const filteredEvents = events.filter(event => {
+    // Search filter
     const matchesSearch = event.title.toLowerCase().includes(search.toLowerCase()) ||
       event.description.toLowerCase().includes(search.toLowerCase()) ||
       (event.location && event.location.toLowerCase().includes(search.toLowerCase()));
+    
+    // Status filter
     const status = getEventStatus(event);
-    return (filter === 'all' || filter === status) && matchesSearch;
-  });
-
-  // Open modal for reflection/attachment upload
-  const handleUploadReflection = (eventId) => {
-    const event = events.find(e => e._id === eventId);
-    const att = event && event.attendance.find(a => (a.userId === user._id || (a.userId && a.userId._id === user._id)));
-
-    // Allow re-uploading - show warning if already uploaded
-    if (att && (att.reflection || att.attachment)) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Update Reflection',
-        text: 'You have already uploaded a reflection for this event. This will replace your previous submission.',
-        showCancelButton: true,
-        confirmButtonText: 'Continue',
-        cancelButtonText: 'Cancel'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          setReflectionEventId(eventId);
-          setShowReflectionModal(true);
-        }
+    const matchesStatus = filter === 'all' || filter === status;
+    
+    // Department restriction filter (only for students)
+    let matchesDepartment = true;
+    if (role === 'Student') {
+      const userDepartment = user.department;
+      console.log(`🔍 Department check for event "${event.title}":`, {
+        userDepartment,
+        eventDepartment: event.department,
+        eventDepartments: event.departments,
+        isForAllDepartments: event.isForAllDepartments
       });
-      return;
+      
+      if (event.isForAllDepartments) {
+        matchesDepartment = true; // All departments can access
+        console.log(`✅ Event "${event.title}" is for all departments`);
+      } else if (event.departments && event.departments.length > 0) {
+        // Check if user's department is in the allowed departments array
+        matchesDepartment = event.departments.includes(userDepartment);
+        console.log(`🔍 Event "${event.title}" departments: ${event.departments.join(', ')}, User: ${userDepartment}, Match: ${matchesDepartment}`);
+      } else if (event.department) {
+        // Check if user's department matches the single department
+        matchesDepartment = event.department === userDepartment;
+        console.log(`🔍 Event "${event.title}" department: ${event.department}, User: ${userDepartment}, Match: ${matchesDepartment}`);
+      } else {
+        matchesDepartment = true; // No department restriction
+        console.log(`✅ Event "${event.title}" has no department restriction`);
+      }
     }
-
-    setReflectionEventId(eventId);
-    setShowReflectionModal(true);
-  };
-
-  const handleReflectionSuccess = () => {
-    setShowReflectionModal(false);
-    setReflectionEventId(null);
-    refreshEvents();
-    Swal.fire({ 
-      icon: 'success', 
-      title: 'Upload Successful!', 
-      text: 'Your reflection/attachment has been uploaded successfully.' 
-    });
-  };
+    
+    return matchesSearch && matchesStatus && matchesDepartment;
+  });
 
   // Loading state
   if (loading) {
@@ -399,7 +413,7 @@ function EventAttendancePage() {
             type="text"
             placeholder="Search events by title, description, or location..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             className="search-input"
           />
         </div>
@@ -408,12 +422,12 @@ function EventAttendancePage() {
           <FaFilter className="filter-icon" />
           <select 
             value={filter} 
-            onChange={e => setFilter(e.target.value)}
+            onChange={e => handleFilterSelect(e.target.value)}
             className="filter-select"
           >
             <option value="all">All Events</option>
             <option value="upcoming">Upcoming</option>
-            <option value="today">Today</option>
+            <option value="ongoing">Ongoing</option>
             <option value="past">Past</option>
             <option value="completed">Completed</option>
           </select>
@@ -448,7 +462,7 @@ function EventAttendancePage() {
               >
                 <option value="">All Status</option>
                 <option value="upcoming">Upcoming</option>
-                <option value="today">Today</option>
+                <option value="ongoing">Ongoing</option>
                 <option value="past">Past</option>
                 <option value="completed">Completed</option>
               </select>
@@ -518,7 +532,17 @@ function EventAttendancePage() {
               const maxParticipants = typeof event.maxParticipants === 'number' ? event.maxParticipants : 0;
               const attendanceCount = Array.isArray(event.attendance) ? event.attendance.length : 0;
               const availableSlots = maxParticipants > 0 ? maxParticipants - attendanceCount : 0;
-              const isAvailable = event.status === 'Active' && availableSlots > 0;
+              
+              // Check if event is available for registration (not completed, has slots, time hasn't passed, and event has started)
+              const now = new Date();
+              const eventDate = new Date(event.date);
+              const eventStartTime = new Date(`${eventDate.toDateString()} ${event.startTime || '00:00'}`);
+              const eventEndTime = new Date(`${eventDate.toDateString()} ${event.endTime || '23:59'}`);
+              const isTimeExpired = eventEndTime < now;
+              const hasNotStarted = eventStartTime > now;
+              const hasAvailableSlots = maxParticipants === 0 || availableSlots > 0;
+              const eventStatus = getEventStatus(event);
+              const isAvailable = eventStatus !== 'completed' && event.status !== 'Completed' && hasAvailableSlots && !isTimeExpired && !hasNotStarted;
 
               return (
                 <div key={event._id} className="event-card">
@@ -531,8 +555,8 @@ function EventAttendancePage() {
                         className="event-image"
                       />
                       <div className="event-status">
-                        <span className={`status-badge ${getStatusColor(status)}`}>
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        <span className={`status-badge ${getStatusColor(eventStatus)}`}>
+                          {eventStatus.charAt(0).toUpperCase() + eventStatus.slice(1)}
                         </span>
                       </div>
                     </div>
@@ -549,7 +573,7 @@ function EventAttendancePage() {
                       </div>
                       <div className="meta-item">
                         <FaClock className="meta-icon" />
-                        <span>{event.time || 'TBD'}</span>
+                                                  <span>{formatTimeRange12Hour(event.startTime, event.endTime)}</span>
                       </div>
                       <div className="meta-item">
                         <FaMapMarkerAlt className="meta-icon" />
@@ -565,19 +589,53 @@ function EventAttendancePage() {
 
                     <p className="event-description">{event.description}</p>
                     
+                    {/* Department Access Indicator */}
+                    <div className="department-access">
+                      <strong>Available for: </strong>
+                      {event.isForAllDepartments ? (
+                        <span className="all-departments">All Departments</span>
+                      ) : event.departments && event.departments.length > 0 ? (
+                        <span className="specific-departments">
+                          {event.departments.join(', ')}
+                        </span>
+                      ) : event.department ? (
+                        <span className="single-department">{event.department}</span>
+                      ) : (
+                        <span className="no-department">No restrictions</span>
+                      )}
+                    </div>
+
                     <div className="event-hours">
                       <strong>Service Hours: {event.hours} hours</strong>
                     </div>
 
                     {/* Event Actions */}
                     <div className="event-actions">
-                      {role === 'Student' && !isJoined && isAvailable && (
-                        <button 
-                          className="action-btn primary-btn"
-                          onClick={() => handleJoin(event._id)}
-                        >
-                          Register for Event
-                        </button>
+                      {role === 'Student' && !isJoined && (
+                        <>
+                          {isAvailable ? (
+                            <button 
+                              className="action-btn primary-btn"
+                              onClick={() => handleJoin(event._id)}
+                            >
+                              Register for Event
+                            </button>
+                          ) : (
+                            <div className="event-unavailable">
+                              {eventStatus === 'completed' ? (
+                                <span className="unavailable-reason">Event Completed - Time Has Passed</span>
+                              ) : event.status === 'Completed' ? (
+                                <span className="unavailable-reason">Event Manually Completed</span>
+                              ) : hasNotStarted ? (
+                                <span className="unavailable-reason">Registration Not Open - Event Hasn't Started Yet</span>
+                              ) : isTimeExpired ? (
+                                <span className="unavailable-reason">Registration Closed - Event Time Has Passed</span>
+                              ) : (
+                                <span className="unavailable-reason">No Available Slots</span>
+                              )}
+                            </div>
+                          )}
+                        </>
                       )}
                       
                       {role === 'Student' && isJoined && (
@@ -621,16 +679,6 @@ function EventAttendancePage() {
                               )}
                             </div>
                           )}
-
-                          {/* Reflection Upload */}
-                          {att && att.timeOut && (
-                            <button 
-                              className="action-btn primary-btn reflection-btn"
-                              onClick={() => handleUploadReflection(event._id)}
-                            >
-                              {att.reflection || att.attachment ? 'Update Reflection/Attachment' : 'Upload Reflection/Attachment'}
-                            </button>
-                          )}
                         </div>
                       )}
                       
@@ -650,16 +698,8 @@ function EventAttendancePage() {
           </div>
         )}
       </div>
-
-      {/* Reflection Upload Modal */}
-      <ReflectionUploadModal
-        show={showReflectionModal}
-        onClose={() => { setShowReflectionModal(false); setReflectionEventId(null); }}
-        eventId={reflectionEventId}
-        onSuccess={handleReflectionSuccess}
-      />
     </div>
   );
-}
+});
 
 export default EventAttendancePage;

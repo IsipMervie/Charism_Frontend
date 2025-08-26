@@ -4,9 +4,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Form, Spinner, Alert, Modal, Row, Col, Card, Badge } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import { FaSearch, FaUsers, FaEdit, FaTrash, FaFilter, FaSort, FaUser, FaEnvelope, FaIdCard, FaBuilding, FaGraduationCap, FaCalendar, FaBell, FaEye, FaCrown, FaUserTie, FaUserGraduate } from 'react-icons/fa';
+import { FaUsers, FaEdit, FaTrash, FaFilter, FaSort, FaUser, FaEnvelope, FaIdCard, FaBuilding, FaGraduationCap, FaCalendar, FaBell, FaEye, FaCrown, FaUserTie, FaUserGraduate, FaImage, FaTimes } from 'react-icons/fa';
 import {
-  getUsers, updateUser, deleteUser, getSettings
+  getUsers, updateUser, deleteUser
 } from '../api/api';
 import './ManageUsersPage.css';
 
@@ -19,6 +19,8 @@ function ManageUsersPage() {
   const [editUser, setEditUser] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
 
   // Client-side sorting & pagination
@@ -26,12 +28,6 @@ function ManageUsersPage() {
   const [sortDir, setSortDir] = useState('asc');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  
-  // Dynamic options from settings
-  const [departmentOptions, setDepartmentOptions] = useState([]);
-  const [yearOptions, setYearOptions] = useState([]);
-  const [academicYearOptions, setAcademicYearOptions] = useState([]);
-  const [sectionOptions, setSectionOptions] = useState([]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -53,22 +49,8 @@ function ManageUsersPage() {
     setLoading(false);
   };
 
-  // Fetch settings for dynamic options
-  const fetchSettings = async () => {
-    try {
-      const settings = await getSettings();
-      setDepartmentOptions(settings.departments?.filter(d => d.isActive).map(d => d.name) || []);
-      setYearOptions(settings.yearLevels?.filter(y => y.isActive).map(y => y.name) || []);
-      setAcademicYearOptions(settings.academicYears?.filter(a => a.isActive).map(a => a.name) || []);
-      setSectionOptions(settings.sections?.filter(s => s.isActive).map(s => s.name) || []);
-    } catch (err) {
-      console.error('Error fetching settings:', err);
-    }
-  };
-
   useEffect(() => {
     fetchUsers();
-    fetchSettings();
   }, [roleFilter]);
 
   // Search handler
@@ -76,9 +58,16 @@ function ManageUsersPage() {
     setSearch(e.target.value);
   };
 
-  // Filter handler
+  // Filter handlers
   const handleRoleFilter = (e) => {
     setRoleFilter(e.target.value);
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearch('');
+    setRoleFilter('');
+    setPage(1);
   };
 
   // Search on enter or button
@@ -86,6 +75,12 @@ function ManageUsersPage() {
     e.preventDefault();
     setPage(1);
     fetchUsers();
+  };
+
+  // View user profile
+  const handleViewProfile = (user) => {
+    setSelectedUser(user);
+    setShowProfileModal(true);
   };
 
   // Edit user
@@ -100,30 +95,41 @@ function ManageUsersPage() {
       year: user.year || '',
       section: user.section || '',
       department: user.department || '',
-      approvalStatus: user.approvalStatus || 'pending',
+      approvalStatus: user.approvalStatus || 'pending'
     });
     setShowEditModal(true);
   };
 
-  // Edit form change
+  // Handle edit form changes
   const handleEditFormChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setEditForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value
     }));
   };
 
-  // Save edit
+  // Save edit changes
   const handleEditSave = async () => {
     try {
       await updateUser(editUser._id, editForm);
+      Swal.fire({
+        icon: 'success',
+        title: 'User Updated!',
+        text: 'User information has been updated successfully.',
+        confirmButtonColor: '#10b981',
+        confirmButtonText: 'Great!'
+      });
       setShowEditModal(false);
-      setEditUser(null);
       fetchUsers();
-      Swal.fire({ icon: 'success', title: 'User updated!' });
     } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update user.' });
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: err.message || 'Failed to update user. Please try again.',
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'OK'
+      });
     }
   };
 
@@ -131,73 +137,112 @@ function ManageUsersPage() {
   const handleDelete = async (userId) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
-      text: 'This will permanently delete the user.',
+      text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'Cancel'
     });
-    if (!result.isConfirmed) return;
 
-    try {
-      await deleteUser(userId);
-      fetchUsers();
-      Swal.fire({ icon: 'success', title: 'User deleted!' });
-    } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete user.' });
+    if (result.isConfirmed) {
+      try {
+        await deleteUser(userId);
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'User has been deleted successfully.',
+          confirmButtonColor: '#10b981',
+          confirmButtonText: 'Great!'
+        });
+        fetchUsers();
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Delete Failed',
+          text: err.message || 'Failed to delete user. Please try again.',
+          confirmButtonColor: '#ef4444',
+          confirmButtonText: 'OK'
+        });
+      }
     }
   };
 
-  // Sorting helpers
-  const requestSort = (key) => {
-    if (sortBy === key) {
-      setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortBy(key);
-      setSortDir('asc');
-    }
-  };
-
-  const getSortIndicator = (key) => {
-    if (sortBy !== key) return '';
-    return sortDir === 'asc' ? ' ▲' : ' ▼';
-  };
-
-  const sortedUsers = [...users].sort((a, b) => {
-    const dir = sortDir === 'asc' ? 1 : -1;
-    const getValue = (obj, key) => {
-      const value = obj[key];
-      if (value === undefined || value === null) return '';
-      return String(value).toLowerCase();
-    };
-    const va = getValue(a, sortBy);
-    const vb = getValue(b, sortBy);
-    if (va < vb) return -1 * dir;
-    if (va > vb) return 1 * dir;
-    return 0;
-  });
-
-  const totalPages = Math.max(1, Math.ceil(sortedUsers.length / pageSize));
-  const currentPage = Math.min(page, totalPages);
-  const startIdx = (currentPage - 1) * pageSize;
-  const paginatedUsers = sortedUsers.slice(startIdx, startIdx + pageSize);
-
+  // Get role icon
   const getRoleIcon = (role) => {
     switch (role) {
-      case 'Admin': return <FaCrown />;
-      case 'Staff': return <FaUserTie />;
-      case 'Student': return <FaUserGraduate />;
-      default: return <FaUser />;
+      case 'Admin':
+        return <FaCrown className="role-icon admin" />;
+      case 'Staff':
+        return <FaUserTie className="role-icon staff" />;
+      case 'Student':
+        return <FaUserGraduate className="role-icon student" />;
+      default:
+        return <FaUser className="role-icon" />;
     }
   };
+
+  // Get profile picture URL
+  const getProfilePictureUrl = (user) => {
+    if (user.profilePicture) {
+      return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/profile-pictures/${user.profilePicture}`;
+    }
+    return null;
+  };
+
+  // Get profile picture fallback
+  const getProfilePictureFallback = (user) => {
+    if (user.profilePicture) {
+      return (
+        <img 
+          src={getProfilePictureUrl(user)} 
+          alt={`${user.name}'s profile`}
+          className="profile-picture"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+      );
+    }
+    return (
+      <div className="profile-picture-fallback">
+        {getRoleIcon(user.role)}
+      </div>
+    );
+  };
+
+  // Sort and paginate users
+  const sortedUsers = [...users].sort((a, b) => {
+    let aVal = a[sortBy] || '';
+    let bVal = b[sortBy] || '';
+    
+    if (sortBy === 'name' || sortBy === 'email') {
+      aVal = aVal.toLowerCase();
+      bVal = bVal.toLowerCase();
+    }
+    
+    if (sortDir === 'asc') {
+      return aVal > bVal ? 1 : -1;
+    } else {
+      return aVal < bVal ? 1 : -1;
+    }
+  });
+
+  const totalPages = Math.ceil(sortedUsers.length / pageSize);
+  const currentPage = page;
+  const startIndex = (page - 1) * pageSize;
+  const paginatedUsers = sortedUsers.slice(startIndex, startIndex + pageSize);
 
   if (loading) {
     return (
       <div className="manage-users-page">
         <div className="loading-section">
-          <div className="loading-spinner"></div>
-          <h3>Loading Users</h3>
-          <p>Please wait while we fetch the user data...</p>
+          <div className="loading-spinner">
+            <Spinner animation="border" role="status" className="spinner" />
+            <p>Please wait while we fetch the user data...</p>
+          </div>
         </div>
       </div>
     );
@@ -262,20 +307,23 @@ function ManageUsersPage() {
         <div className="search-filters-section">
           <Form onSubmit={handleSearchSubmit} className="search-filters-form">
             <div className="search-box">
-              <Form.Control
-                type="text"
-                placeholder="Search by name or email..."
-                value={search}
-                onChange={handleSearch}
-                className="search-input"
-              />
-              <Button type="submit" className="search-button">
-                <FaSearch className="button-icon" />
-                <span>Search</span>
-              </Button>
+              <div className="search-input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={search}
+                  onChange={handleSearch}
+                  className="search-input"
+                />
+              </div>
             </div>
             <div className="filters-box">
-              <Form.Select value={roleFilter} onChange={handleRoleFilter} className="filter-select">
+              <Form.Select 
+                value={roleFilter} 
+                onChange={handleRoleFilter} 
+                className="filter-select"
+                aria-label="Filter users by role"
+              >
                 <option value="">All Roles</option>
                 <option value="Admin">Admin</option>
                 <option value="Staff">Staff</option>
@@ -291,16 +339,31 @@ function ManageUsersPage() {
             <span className="user-count">{users.length} users found</span>
           </div>
           <div className="toolbar-controls">
-            <Form.Select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="sort-select">
+            <Form.Select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)} 
+              className="sort-select"
+              aria-label="Sort users by field"
+            >
               <option value="name">Sort by: Name</option>
               <option value="email">Sort by: Email</option>
               <option value="role">Sort by: Role</option>
             </Form.Select>
-            <Form.Select value={sortDir} onChange={(e) => setSortDir(e.target.value)} className="sort-direction">
+            <Form.Select 
+              value={sortDir} 
+              onChange={(e) => setSortDir(e.target.value)} 
+              className="sort-direction"
+              aria-label="Sort direction"
+            >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </Form.Select>
-            <Form.Select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} className="page-size">
+            <Form.Select 
+              value={pageSize} 
+              onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} 
+              className="page-size"
+              aria-label="Users per page"
+            >
               <option value={10}>10 per page</option>
               <option value={20}>20 per page</option>
               <option value={50}>50 per page</option>
@@ -320,67 +383,92 @@ function ManageUsersPage() {
             <div className="users-grid">
               {paginatedUsers.map(user => (
                 <div key={user._id} className="user-card">
+                  {/* User Card Header with Enhanced Design */}
                   <div className="user-card-header">
-                    <div className="user-avatar">
-                      {getRoleIcon(user.role)}
+                    <div className="user-profile-section">
+                      <div className="user-profile-picture">
+                        {getProfilePictureFallback(user)}
+                        {user.profilePicture && (
+                          <div className="profile-picture-fallback" style={{ display: 'none' }}>
+                            {getRoleIcon(user.role)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="user-info">
+                        <h3 className="user-name">{user.name}</h3>
+                        <p className="user-email">{user.email}</p>
+                        <div className="user-meta">
+                          <span className="user-id-badge">
+                            <FaIdCard className="meta-icon" />
+                            {user.userId || 'No ID'}
+                          </span>
+                          <span className="member-since">
+                            <FaCalendar className="meta-icon" />
+                            Member since {new Date(user.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="user-info">
-                      <h3 className="user-name">{user.name}</h3>
-                      <p className="user-email">{user.email}</p>
-                    </div>
-                    <div className="user-role">
+                    <div className="user-role-section">
                       <span className={`role-badge ${user.role.toLowerCase()}`}>
+                        {getRoleIcon(user.role)}
                         {user.role}
                       </span>
+                      {user.role === 'Staff' && (
+                        <span className={`approval-status-badge ${user.approvalStatus}`}>
+                          {user.approvalStatus === 'approved' ? '✓ Approved' : 
+                           user.approvalStatus === 'rejected' ? '✗ Rejected' : '⏳ Pending'}
+                        </span>
+                      )}
                     </div>
                   </div>
 
+                  {/* User Card Content with Better Layout */}
                   <div className="user-card-content">
-                    <div className="user-details">
-                      <div className="detail-item">
-                        <FaIdCard className="detail-icon" />
-                        <span className="detail-label">User ID:</span>
-                        <span className="detail-value">{user.userId || '-'}</span>
-                      </div>
+                    <div className="user-details-grid">
                       <div className="detail-item">
                         <FaBuilding className="detail-icon" />
-                        <span className="detail-label">Department:</span>
-                        <span className="detail-value">{user.department || '-'}</span>
+                        <div className="detail-content">
+                          <span className="detail-label">Department</span>
+                          <span className="detail-value">{user.department || 'Not specified'}</span>
+                        </div>
                       </div>
                       <div className="detail-item">
                         <FaGraduationCap className="detail-icon" />
-                        <span className="detail-label">Section:</span>
-                        <span className="detail-value">{user.section || '-'}</span>
+                        <div className="detail-content">
+                          <span className="detail-label">Section</span>
+                          <span className="detail-value">{user.section || 'Not specified'}</span>
+                        </div>
                       </div>
                       <div className="detail-item">
                         <FaCalendar className="detail-icon" />
-                        <span className="detail-label">Year:</span>
-                        <span className="detail-value">{user.year || '-'}</span>
+                        <div className="detail-content">
+                          <span className="detail-label">Year Level</span>
+                          <span className="detail-value">{user.year || 'Not specified'}</span>
+                        </div>
                       </div>
                       <div className="detail-item">
                         <FaCalendar className="detail-icon" />
-                        <span className="detail-label">Academic Year:</span>
-                        <span className="detail-value">{user.academicYear || '-'}</span>
+                        <div className="detail-content">
+                          <span className="detail-label">Academic Year</span>
+                          <span className="detail-value">{user.academicYear || 'Not specified'}</span>
+                        </div>
                       </div>
                     </div>
 
-                    {user.role === 'Staff' && (
-                      <div className="approval-status">
-                        <span className={`status-badge ${user.approvalStatus}`}>
-                          {user.approvalStatus === 'approved' ? 'Approved' : user.approvalStatus === 'rejected' ? 'Rejected' : 'Pending'}
-                        </span>
-                      </div>
-                    )}
+
                   </div>
 
+                  {/* Enhanced Action Buttons */}
                   <div className="user-card-actions">
+                    <Button className="action-button view-button" onClick={() => handleViewProfile(user)}>
+                      View Profile
+                    </Button>
                     <Button className="action-button edit-button" onClick={() => handleEdit(user)}>
-                      <FaEdit className="button-icon" />
-                      <span>Edit</span>
+                      Edit User
                     </Button>
                     <Button className="action-button delete-button" onClick={() => handleDelete(user._id)}>
-                      <FaTrash className="button-icon" />
-                      <span>Delete</span>
+                      Delete
                     </Button>
                   </div>
                 </div>
@@ -411,6 +499,104 @@ function ManageUsersPage() {
             </div>
           </div>
         )}
+
+        {/* User Profile Modal */}
+        <Modal show={showProfileModal} onHide={() => setShowProfileModal(false)} className="profile-modal" size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>User Profile</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedUser && (
+              <div className="profile-content">
+                <div className="profile-header">
+                  <div className="profile-picture-large">
+                    {getProfilePictureFallback(selectedUser)}
+                    {selectedUser.profilePicture && (
+                      <div className="profile-picture-fallback-large" style={{ display: 'none' }}>
+                        {getRoleIcon(selectedUser.role)}
+                      </div>
+                    )}
+                  </div>
+                  <div className="profile-info">
+                    <h2 className="profile-name">{selectedUser.name}</h2>
+                    <p className="profile-email">{selectedUser.email}</p>
+                    <span className={`role-badge-large ${selectedUser.role.toLowerCase()}`}>
+                      {selectedUser.role}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="profile-details">
+                  <div className="detail-row">
+                    <div className="detail-group">
+                      <label>User ID</label>
+                      <span>{selectedUser.userId || 'Not provided'}</span>
+                    </div>
+                    <div className="detail-group">
+                      <label>Department</label>
+                      <span>{selectedUser.department || 'Not specified'}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="detail-row">
+                    <div className="detail-group">
+                      <label>Section</label>
+                      <span>{selectedUser.section || 'Not specified'}</span>
+                    </div>
+                    <div className="detail-group">
+                      <label>Year Level</label>
+                      <span>{selectedUser.year || 'Not specified'}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="detail-row">
+                    <div className="detail-group">
+                      <label>Academic Year</label>
+                      <span>{selectedUser.academicYear || 'Not specified'}</span>
+                    </div>
+                    <div className="detail-group">
+                      <label>Email Verified</label>
+                      <span className={selectedUser.isVerified ? 'verified' : 'not-verified'}>
+                        {selectedUser.isVerified ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {selectedUser.role === 'Staff' && (
+                    <div className="detail-row">
+                      <div className="detail-group">
+                        <label>Approval Status</label>
+                        <span className={`status-badge-large ${selectedUser.approvalStatus}`}>
+                          {selectedUser.approvalStatus === 'approved' ? 'Approved' : 
+                           selectedUser.approvalStatus === 'rejected' ? 'Rejected' : 'Pending'}
+                        </span>
+                      </div>
+                      <div className="detail-group">
+                        <label>Approval Date</label>
+                        <span>{selectedUser.approvalDate ? new Date(selectedUser.approvalDate).toLocaleDateString() : 'Not approved yet'}</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="detail-row">
+                    <div className="detail-group">
+                      <label>Member Since</label>
+                      <span>{new Date(selectedUser.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowProfileModal(false)} className="close-button">
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => { setShowProfileModal(false); handleEdit(selectedUser); }} className="edit-profile-button">
+              Edit Profile
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         {/* Edit User Modal */}
         <Modal show={showEditModal} onHide={() => setShowEditModal(false)} className="edit-modal">
@@ -475,9 +661,12 @@ function ManageUsersPage() {
                     className="form-input"
                   >
                     <option value="">Select Department</option>
-                    {departmentOptions.map(dept => (
-                      <option key={dept} value={dept}>{dept}</option>
-                    ))}
+                    <option value="Nursing">Nursing</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Business">Business</option>
+                    <option value="Education">Education</option>
+                    <option value="Arts and Sciences">Arts and Sciences</option>
+                    <option value="Computer Studies">Computer Studies</option>
                   </Form.Select>
                 </Form.Group>
               )}
@@ -492,9 +681,12 @@ function ManageUsersPage() {
                       className="form-input"
                     >
                       <option value="">Select Academic Year</option>
-                      {academicYearOptions.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
+                      <option value="2020-2021">2020-2021</option>
+                      <option value="2021-2022">2021-2022</option>
+                      <option value="2022-2023">2022-2023</option>
+                      <option value="2023-2024">2023-2024</option>
+                      <option value="2024-2025">2024-2025</option>
+                      <option value="2025-2026">2025-2026</option>
                     </Form.Select>
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -506,9 +698,11 @@ function ManageUsersPage() {
                       className="form-input"
                     >
                       <option value="">Select Year Level</option>
-                      {yearOptions.map(yearOption => (
-                        <option key={yearOption} value={yearOption}>{yearOption}</option>
-                      ))}
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="4th Year">4th Year</option>
+                      <option value="5th Year">5th Year</option>
                     </Form.Select>
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -520,9 +714,12 @@ function ManageUsersPage() {
                       className="form-input"
                     >
                       <option value="">Select Section</option>
-                      {sectionOptions.map(section => (
-                        <option key={section} value={section}>{section}</option>
-                      ))}
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
                     </Form.Select>
                   </Form.Group>
                 </>

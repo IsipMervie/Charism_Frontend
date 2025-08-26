@@ -1,36 +1,48 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+
+// Components
 import NavigationBar from './components/NavigationBar';
+import PrivateRoute from './components/PrivateRoute';
+
+// Pages
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
-import ForgotPasswordPage from './components/ForgotPasswordPage';
 import EventListPage from './components/EventListPage';
 import EventDetailsPage from './components/EventDetailsPage';
-import EditEventPage from './components/EditEventPage'; // <-- Import the edit page
+import CreateEventPage from './components/CreateEventPage';
+import EditEventPage from './components/EditEventPage';
+import EventAttendancePage from './components/EventAttendancePage';
+import EventParticipantsPage from './components/EventParticipants';
+import MyParticipationPage from './components/MyParticipationPage';
 import AdminDashboard from './components/AdminDashboard';
 import StaffDashboard from './components/StaffDashboard';
 import StudentDashboard from './components/StudentDashboard';
-import AdminManageEventsPage from './components/AdminManageEventsPage';
-import AnalyticsPage from './components/AnalyticsPage';
-import Students40HoursPage from './components/Students40HoursPage';
-import StudentsByYearPage from './components/StudentsByYearPage';
-import ProfilePage from './components/ProfilePage';
-import SettingsPage from './components/SettingsPage';
-import ChangePasswordPage from './components/ChangePasswordPage';
-import PrivateRoute from './components/PrivateRoute';
-import VerifyEmailPage from './components/VerifyEmailPage';
-import ResetPasswordPage from './components/ResetPasswordPage';
-import ContactUsPage from './components/ContactUsPage';
-import MyParticipationPage from './components/MyParticipationPage';
-import AdminManageMessagesPage from './components/AdminManageMessagesPage';
-import EventAttendancePage from './components/EventAttendancePage';
-import CreateEventPage from './components/CreateEventPage';
 import ManageUsersPage from './components/ManageUsersPage';
+import AdminManageEventsPage from './components/AdminManageEventsPage';
+import AdminManageMessagesPage from './components/AdminManageMessagesPage';
+import AnalyticsPage from './components/AnalyticsPage';
+import SettingsPage from './components/SettingsPage';
 import SchoolSettingsPage from './components/SchoolSettingsPage';
-import EventParticipantsPage from './components/EventParticipants';
-import StaffApprovalPage from './components/StaffApprovalPage';
+import ContactUsPage from './components/ContactUsPage';
+import ForgotPasswordPage from './components/ForgotPasswordPage';
+import ResetPasswordPage from './components/ResetPasswordPage';
+import VerifyEmailPage from './components/VerifyEmailPage';
+import ChangePasswordPage from './components/ChangePasswordPage';
+import RegistrationApprovalPage from './components/RegistrationApprovalPage';
 import RegistrationManagementPage from './components/RegistrationManagementPage';
+import StaffApprovalPage from './components/StaffApprovalPage';
+import StudentsByYearPage from './components/StudentsByYearPage';
+import Students40HoursPage from './components/Students40HoursPage';
+import SimpleEventList from './components/SimpleEventList';
+import ProfilePage from './components/ProfilePage';
+import StudentDocumentationPage from './components/StudentDocumentationPage';
+import AdminViewStudentDocumentation from './components/AdminViewStudentDocumentation';
+import PublicEventRegistrationPage from './components/PublicEventRegistrationPage';
+import FeedbackPage from './components/FeedbackPage';
+import AdminManageFeedbackPage from './components/AdminManageFeedbackPage';
 
 function App() {
   return (
@@ -44,6 +56,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/events" element={<EventListPage />} />
         <Route path="/events/:eventId" element={<EventDetailsPage />} /> {/* View Details */}
+        <Route path="/events/register/:token" element={<PublicEventRegistrationPage />} /> {/* Public Registration */}
         <Route
           path="/events/:eventId/participants"
           element={
@@ -63,6 +76,8 @@ function App() {
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/contact" element={<ContactUsPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/simple-events" element={<SimpleEventList />} />
 
         {/* Admin routes */}
         <Route
@@ -86,6 +101,14 @@ function App() {
           element={
             <PrivateRoute requiredRoles={['Admin']}>
               <AdminManageMessagesPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/manage-feedback"
+          element={
+            <PrivateRoute requiredRoles={['Admin']}>
+              <AdminManageFeedbackPage />
             </PrivateRoute>
           }
         />
@@ -121,12 +144,29 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/admin/registration-approvals"
+          element={
+            <PrivateRoute requiredRoles={['Admin']}>
+              <RegistrationApprovalPage />
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="/admin/staff-approvals"
           element={
             <PrivateRoute requiredRoles={['Admin']}>
               <StaffApprovalPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin/student-documentation"
+          element={
+            <PrivateRoute requiredRoles={['Admin']}>
+              <AdminViewStudentDocumentation />
             </PrivateRoute>
           }
         />
@@ -157,7 +197,24 @@ function App() {
           }
         />
 
+        <Route
+          path="/staff/student-documentation"
+          element={
+            <PrivateRoute requiredRoles={['Staff']}>
+              <AdminViewStudentDocumentation />
+            </PrivateRoute>
+          }
+        />
+
         {/* Shared Admin/Staff routes */}
+        <Route
+          path="/registration-approval"
+          element={
+            <PrivateRoute requiredRoles={['Admin', 'Staff']}>
+              <RegistrationApprovalPage />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/analytics"
           element={
@@ -197,6 +254,14 @@ function App() {
           element={
             <PrivateRoute requiredRoles={['Student']}>
               <MyParticipationPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/student-documentation"
+          element={
+            <PrivateRoute requiredRoles={['Student']}>
+              <StudentDocumentationPage />
             </PrivateRoute>
           }
         />

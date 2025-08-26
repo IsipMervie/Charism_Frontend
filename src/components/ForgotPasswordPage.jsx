@@ -106,7 +106,7 @@ function ForgotPasswordPage() {
               <div className="help-icon">📧</div>
               <div className="help-text">
                 <h4>Check Your Email</h4>
-                <p>Look for an email from CommunityLink with your reset link</p>
+                <p>Look for an email from CHARISM with your reset link</p>
               </div>
             </div>
             <div className="help-item">

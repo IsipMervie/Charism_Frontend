@@ -188,7 +188,7 @@
   padding: 1rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  background: #2563eb;
   border: none;
   border-radius: 12px;
   color: white;
@@ -215,6 +215,7 @@
 
 .contact-button:hover {
   transform: translateY(-2px);
+  background: #1d4ed8;
   box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
 }
 
@@ -230,6 +231,30 @@
 .button-content {
   position: relative;
   z-index: 1;
+}
+
+/* Override any Bootstrap button styles */
+.btn.contact-button,
+button.contact-button,
+input[type="submit"].contact-button,
+.contact-form .btn,
+.contact-form button,
+.contact-form input[type="submit"] {
+  background-color: #2563eb !important;
+  background-image: none !important;
+  border-color: #2563eb !important;
+  color: white !important;
+}
+
+.btn.contact-button:hover,
+button.contact-button:hover,
+input[type="submit"].contact-button:hover,
+.contact-form .btn:hover,
+.contact-form button:hover,
+.contact-form input[type="submit"]:hover {
+  background-color: #1d4ed8 !important;
+  background-image: none !important;
+  border-color: #1d4ed8 !important;
 }
 
 /* Contact Info */
@@ -309,6 +334,15 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
+  
+  /* Ensure button is centered on mobile */
+  .contact-button {
+    width: 90% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    max-width: 300px !important;
+    box-sizing: border-box !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -326,6 +360,11 @@
   
   .contact-button {
     padding: 0.875rem 1.5rem;
+    width: 90% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    max-width: 300px !important;
+    box-sizing: border-box !important;
   }
   
   .info-item {

@@ -231,29 +231,50 @@
   margin: 0 auto;
 }
 
+
+
+
+
 .search-box {
   display: flex;
   gap: 0.75rem;
   flex: 1;
+  min-width: 400px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 1.1rem;
+  z-index: 1;
 }
 
 .search-input {
-  flex: 1;
-  padding: 1.25rem 1.5rem;
-  font-size: 1.1rem;
+  width: 100%;
+  padding: 1rem 1.25rem 1rem 3rem;
+  font-size: 1rem;
   border: 2px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 12px;
   background: #ffffff;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
   color: #1e293b;
   font-weight: 500;
+  min-width: 300px;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-  transform: translateY(-2px);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
 }
 
 .search-input::placeholder {
@@ -262,21 +283,23 @@
 }
 
 .search-button {
-  padding: 1.25rem 2rem;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
   color: white;
   border: none;
-  border-radius: 16px;
-  font-weight: 700;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   position: relative;
   overflow: hidden;
+  min-width: 100px;
+  justify-content: center;
 }
 
 .search-button::before {
@@ -286,8 +309,8 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s ease;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.8s ease;
 }
 
 .search-button:hover::before {
@@ -295,8 +318,9 @@
 }
 
 .search-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
 }
 
 .button-icon {
@@ -325,6 +349,22 @@
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
   transform: translateY(-2px);
 }
+
+
+
+/* Filter Select Options Styling */
+.filter-select option {
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #1e293b;
+}
+
+.filter-select option:hover {
+  background: #f1f5f9;
+}
+
+
 
 /* Toolbar Section */
 .toolbar-section {
@@ -379,19 +419,23 @@
 
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 2.5rem;
 }
 
 /* User Card */
 .user-card {
   background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
   border: 1px solid #f1f5f9;
   overflow: hidden;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  backdrop-filter: blur(10px);
 }
 
 .user-card::before {
@@ -407,8 +451,9 @@
 }
 
 .user-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+  border-color: #e2e8f0;
 }
 
 .user-card:hover::before {
@@ -417,25 +462,56 @@
 
 .user-card-header {
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
   padding: 2rem;
   background: linear-gradient(135deg, #f8fafc, #f1f5f9);
   border-bottom: 1px solid #e2e8f0;
+  position: relative;
 }
 
-.user-avatar {
-  width: 70px;
-  height: 70px;
+.user-profile-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.user-profile-picture {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-picture {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.2);
+  transition: all 0.4s ease;
+}
+
+.profile-picture-fallback {
+  width: 80px;
+  height: 80px;
   background: linear-gradient(135deg, #38bdf8, #2563eb);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
   color: white;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  border: 4px solid #ffffff;
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.2);
   transition: all 0.4s ease;
+}
+
+.user-card:hover .profile-picture,
+.user-card:hover .profile-picture-fallback {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 35px rgba(37, 99, 235, 0.3);
 }
 
 .user-card:hover .user-avatar {
@@ -444,31 +520,90 @@
 
 .user-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .user-name {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
   line-height: 1.2;
+  background: linear-gradient(135deg, #1e293b, #475569);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .user-email {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #64748b;
   margin: 0;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.user-role {
+.user-email::before {
+  content: '📧';
+  font-size: 0.9rem;
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-id-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #475569;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+.member-since {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #92400e;
+  font-weight: 500;
+  border: 1px solid #fbbf24;
+}
+
+.meta-icon {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.user-role-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-end;
   flex-shrink: 0;
 }
 
 .role-badge {
-  padding: 0.6rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
   border-radius: 25px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.75px;
@@ -490,27 +625,66 @@
   color: white;
 }
 
+.approval-status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.approval-status-badge.approved {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.approval-status-badge.rejected {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.approval-status-badge.pending {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
 /* User Card Content */
 .user-card-content {
   padding: 2rem;
-}
-
-.user-details {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.user-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
 }
 
 .detail-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
 }
 
-.detail-item:last-child {
-  border-bottom: none;
+.detail-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
 }
 
 .detail-icon {
@@ -521,19 +695,84 @@
   flex-shrink: 0;
 }
 
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
 .detail-label {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   color: #64748b;
   font-weight: 600;
-  min-width: 120px;
-  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .detail-value {
   font-size: 0.95rem;
   color: #1e293b;
   font-weight: 600;
-  flex: 1;
+}
+
+.user-stats-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  color: #2563eb;
+  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .approval-status {
@@ -571,26 +810,34 @@
 .user-card-actions {
   display: flex;
   gap: 1rem;
-  padding: 1.5rem 2rem;
-  background: #f8fafc;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
   border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  justify-content: center;
+  border-radius: 0 0 24px 24px;
 }
 
 .action-button {
   flex: 1;
-  padding: 1rem 1.5rem;
+  min-width: 120px;
+  max-width: 150px;
+  padding: 0.875rem 1rem;
   border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 700;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
+  color: white !important;
+  text-decoration: none;
 }
 
 .action-button::before {
@@ -604,6 +851,17 @@
   transition: left 0.6s ease;
 }
 
+/* Button Focus States */
+.action-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Button Active States */
+.action-button:active {
+  transform: translateY(0);
+}
+
 .action-button:hover::before {
   left: 100%;
 }
@@ -612,24 +870,64 @@
   transform: translateY(-2px);
 }
 
+/* Enhanced Button Icon Styling */
+.action-button .button-icon {
+  font-size: 1.1rem;
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  transition: transform 0.2s ease;
+}
+
+.action-button:hover .button-icon {
+  transform: scale(1.1);
+}
+
+/* Force all child elements in action buttons to inherit white color */
+.action-button * {
+  color: white !important;
+}
+
+.view-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.view-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+}
+
 .edit-button {
-  background: linear-gradient(135deg, #6366f1, #a855f7);
-  color: white;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .edit-button:hover {
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
 }
 
 .delete-button {
   background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .delete-button:hover {
-  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
 }
 
 /* No Users */
@@ -877,6 +1175,428 @@
   box-shadow: 0 10px 30px rgba(37, 99, 235, 0.45);
 }
 
+/* Profile Picture Styles */
+.user-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.user-profile-picture {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 3px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-picture-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #6b7280;
+  font-size: 1.5rem;
+}
+
+.profile-picture-fallback .role-icon {
+  font-size: 1.8rem;
+}
+
+.profile-picture-fallback .role-icon.admin {
+  color: #f59e0b;
+}
+
+.profile-picture-fallback .role-icon.staff {
+  color: #10b981;
+}
+
+.profile-picture-fallback .role-icon.student {
+  color: #3b82f6;
+}
+
+/* Profile Modal Styles */
+.profile-modal .modal-content {
+  border-radius: 20px;
+  border: none;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.profile-modal .modal-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem 2rem;
+}
+
+.profile-modal .modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.profile-modal .modal-body {
+  padding: 2rem;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-picture-large {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 4px solid #e5e7eb;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.profile-picture-fallback-large {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #6b7280;
+  font-size: 3rem;
+}
+
+.profile-picture-fallback-large .role-icon {
+  font-size: 3.5rem;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.profile-email {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+}
+
+.role-badge-large {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-badge-large.admin {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border: 1px solid #fbbf24;
+}
+
+.role-badge-large.staff {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.role-badge-large.student {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e40af;
+  border: 1px solid #3b82f6;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.detail-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-group span {
+  font-size: 1rem;
+  color: #1f2937;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.detail-group span.verified {
+  color: #059669;
+  background: #d1fae5;
+  border-color: #10b981;
+}
+
+.detail-group span.not-verified {
+  color: #dc2626;
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+.status-badge-large {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge-large.approved {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.status-badge-large.rejected {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  border: 1px solid #f87171;
+}
+
+.status-badge-large.pending {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border: 1px solid #fbbf24;
+}
+
+.profile-modal .modal-footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 1.5rem 2rem;
+  gap: 1rem;
+}
+
+.close-button {
+  background: #6b7280;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  background: #4b5563;
+  transform: translateY(-1px);
+}
+
+.edit-profile-button {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.edit-profile-button:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+/* View Button Styles */
+.view-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  color: white !important;
+}
+
+.view-button .button-icon {
+  font-size: 1rem;
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+}
+
+/* Responsive Design for Profile Modal */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .profile-picture-large {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .profile-picture-fallback-large {
+    font-size: 2.5rem;
+  }
+  
+  .profile-picture-fallback-large .role-icon {
+    font-size: 3rem;
+  }
+  
+  .profile-name {
+    font-size: 1.5rem;
+  }
+  
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .profile-modal .modal-body {
+    padding: 1.5rem;
+  }
+  
+  .profile-modal .modal-header,
+  .profile-modal .modal-footer {
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-picture-large {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-picture-fallback-large {
+    font-size: 2rem;
+  }
+  
+  .profile-picture-fallback-large .role-icon {
+    font-size: 2.5rem;
+  }
+  
+  .profile-name {
+    font-size: 1.25rem;
+  }
+  
+  .profile-email {
+    font-size: 1rem;
+  }
+  
+  .user-card {
+    min-height: 260px;
+  }
+  
+  .user-card-header {
+    padding: 1rem;
+  }
+  
+  .user-profile-picture .profile-picture,
+  .user-profile-picture .profile-picture-fallback {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .user-name {
+    font-size: 1.25rem;
+  }
+  
+  .user-email {
+    font-size: 0.9rem;
+  }
+  
+  .user-meta {
+    gap: 0.25rem;
+  }
+  
+  .user-id-badge,
+  .member-since {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  .user-card-content {
+    padding: 1.5rem;
+  }
+  
+  .user-details-grid {
+    gap: 0.75rem;
+  }
+  
+  .detail-item {
+    padding: 0.75rem;
+  }
+  
+  .user-stats-section {
+    padding: 1rem;
+  }
+  
+  .stat-item {
+    padding: 0.75rem;
+  }
+  
+  .user-card-actions {
+    padding: 1rem;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .manage-users-page {
@@ -918,6 +1638,57 @@
     gap: 1rem;
   }
   
+  .users-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .user-card {
+    min-height: 280px;
+  }
+  
+  .user-card-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .user-profile-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .user-role-section {
+    align-items: center;
+    width: 100%;
+  }
+  
+  .user-details-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .user-stats-section {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .user-card-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem;
+  }
+  
+  .action-button {
+    max-width: none;
+    width: 100%;
+  }
+  
   .search-box {
     width: 100%;
   }
@@ -954,10 +1725,16 @@
   
   .user-card-actions {
     flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
   }
   
   .action-button {
     width: 100%;
+    max-width: none;
+    min-width: auto;
+    padding: 1rem;
+    font-size: 1rem;
   }
   
   .pagination-section {
@@ -997,6 +1774,16 @@
   
   .user-stats {
     grid-template-columns: 1fr;
+  }
+  
+  .user-card-actions {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .action-button {
+    padding: 0.875rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -1048,5 +1835,537 @@
   .action-button::before,
   .search-button::before {
     display: none;
+  }
+}
+
+/* User Card Actions - Enhanced for React Bootstrap compatibility */
+.user-card-actions {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.user-card-actions .btn.action-button {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.4s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.user-card-actions .btn.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.user-card-actions .btn.action-button:hover::before {
+  left: 100%;
+}
+
+.user-card-actions .btn.action-button:hover {
+  transform: translateY(-2px) !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+.user-card-actions .btn.action-button:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3) !important;
+  outline: none !important;
+}
+
+.user-card-actions .btn.action-button:active {
+  transform: translateY(0) !important;
+}
+
+/* View Button - Green */
+.user-card-actions .btn.action-button.view-button {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: white !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+}
+
+.user-card-actions .btn.action-button.view-button:hover {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  color: white !important;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4) !important;
+}
+
+.user-card-actions .btn.action-button.view-button:focus {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  color: white !important;
+}
+
+/* Edit Button - Blue */
+.user-card-actions .btn.action-button.edit-button {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: white !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3) !important;
+  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+}
+
+.user-card-actions .btn.action-button.edit-button:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: white !important;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4) !important;
+}
+
+.user-card-actions .btn.action-button.edit-button:focus {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: white !important;
+}
+
+/* Delete Button - Red */
+.user-card-actions .btn.action-button.delete-button {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: white !important;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3) !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+}
+
+.user-card-actions .btn.action-button.delete-button:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  color: white !important;
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4) !important;
+}
+
+.user-card-actions .btn.action-button.delete-button:focus {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  color: white !important;
+}
+
+/* Button Icon Styling */
+.user-card-actions .btn.action-button .button-icon {
+  font-size: 1.1rem !important;
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  transition: transform 0.2s ease;
+}
+
+.user-card-actions .btn.action-button:hover .button-icon {
+  transform: scale(1.1);
+}
+
+/* Button Text Styling */
+.user-card-actions .btn.action-button span {
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+}
+
+/* Mobile Button Enhancements */
+@media (max-width: 768px) {
+  .action-button {
+    min-width: 100px;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.85rem;
+  }
+  
+  .action-button .button-icon {
+    font-size: 1rem !important;
+  }
+  
+  .action-button span {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* EMERGENCY: Force button visibility and colors - Highest priority */
+.user-card-actions .btn.action-button,
+.user-card-actions .btn.action-button.view-button,
+.user-card-actions .btn.action-button.edit-button,
+.user-card-actions .btn.action-button.delete-button {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* Force delete button text to be white */
+.user-card-actions .btn.action-button.delete-button,
+.user-card-actions .btn.action-button.delete-button span,
+.user-card-actions .btn.action-button.delete-button * {
+  color: white !important;
+}
+
+.user-card-actions .btn.action-button .button-icon,
+.user-card-actions .btn.action-button svg,
+.user-card-actions .btn.action-button i {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* Force view button icon to be visible */
+.user-card-actions .btn.action-button.view-button .button-icon,
+.user-card-actions .btn.action-button.view-button svg,
+.user-card-actions .btn.action-button.view-button i,
+.user-card-actions .btn.action-button.view-button .fa-eye {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  font-size: 1.1rem !important;
+}
+
+/* Desktop view icon fixes - highest priority */
+.action-button .button-icon,
+.action-button svg,
+.action-button i,
+.action-button .fa-eye,
+.action-button .fa-edit,
+.action-button .fa-trash {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* Specific eye icon fix for desktop */
+.view-button .fa-eye,
+.view-button .button-icon,
+.view-button svg {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  font-size: 1.1rem !important;
+}
+
+.user-card-actions .btn.action-button span {
+  color: white !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+
+/* Additional button element styling */
+.user-card-actions .btn.action-button *,
+.user-card-actions .btn.action-button.view-button *,
+.user-card-actions .btn.action-button.edit-button *,
+.user-card-actions .btn.action-button.delete-button * {
+  color: white !important;
+}
+
+/* Force all icons in all buttons to be white */
+.user-card-actions .btn.action-button .fa-eye,
+.user-card-actions .btn.action-button .fa-edit,
+.user-card-actions .btn.action-button .fa-trash {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+}
+
+/* ULTIMATE: Force all button icons to be white everywhere */
+.action-button .fa-eye,
+.action-button .fa-edit,
+.action-button .fa-trash,
+.view-button .fa-eye,
+.edit-button .fa-edit,
+.delete-button .fa-trash {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+@media (max-width: 480px) {
+  .action-button {
+    min-width: 90px;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .action-button .button-icon {
+    font-size: 0.9rem !important;
+  }
+  
+  .action-button span {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Mobile button icon and text visibility fixes */
+@media (max-width: 768px) {
+  .user-card-actions .btn.action-button .button-icon,
+  .user-card-actions .btn.action-button .fa-eye,
+  .user-card-actions .btn.action-button .fa-edit,
+  .user-card-actions .btn.action-button .fa-trash {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    opacity: 1 !important;
+    font-size: 1rem !important;
+  }
+  
+  .user-card-actions .btn.action-button span {
+    color: white !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+  }
+}
+
+/* EMERGENCY: Force all mobile icons to be white - Maximum priority */
+@media (max-width: 768px) {
+  /* Force ALL icons in action buttons to be white on mobile */
+  .action-button svg,
+  .action-button .button-icon,
+  .action-button i,
+  .action-button .fa-eye,
+  .action-button .fa-edit,
+  .action-button .fa-trash,
+  .action-button path,
+  .action-button g {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    opacity: 1 !important;
+  }
+  
+  /* Force all child elements to inherit white color */
+  .action-button * {
+    color: white !important;
+  }
+  
+  /* Override any conflicting styles */
+  .action-button,
+  .view-button,
+  .edit-button,
+  .delete-button {
+    color: white !important;
+  }
+}
+
+/* Pagination Button Overrides */
+.pagination-controls .btn.pagination-button {
+  padding: 0.75rem 1.25rem !important;
+  background: #ffffff !important;
+  color: #1e293b !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.pagination-controls .btn.pagination-button:hover:not(:disabled) {
+  background: #2563eb !important;
+  color: white !important;
+  border-color: #2563eb !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3) !important;
+}
+
+.pagination-controls .btn.pagination-button:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background: #f1f5f9 !important;
+  color: #94a3b8 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.pagination-controls .btn.pagination-button:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3) !important;
+  outline: none !important;
+}
+
+/* Search Button Override */
+.search-button.btn {
+  padding: 1.25rem 2rem !important;
+  background: linear-gradient(135deg, #6366f1, #a855f7) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 16px !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  transition: all 0.4s ease !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+}
+
+.search-button.btn:hover {
+  background: linear-gradient(135deg, #5b21b6, #7c3aed) !important;
+  color: white !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4) !important;
+  text-decoration: none !important;
+}
+
+.search-button.btn:focus {
+  background: linear-gradient(135deg, #5b21b6, #7c3aed) !important;
+  color: white !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3) !important;
+  outline: none !important;
+}
+
+/* Retry Button Override */
+.retry-button.btn {
+  padding: 1rem 2rem !important;
+  background: linear-gradient(135deg, #38bdf8, #2563eb) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.4s ease !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3) !important;
+  text-decoration: none !important;
+}
+
+.retry-button.btn:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.45) !important;
+  text-decoration: none !important;
+}
+
+.retry-button.btn:focus {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: white !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3) !important;
+  outline: none !important;
+}
+
+/* EMERGENCY: Force button styling - Maximum priority */
+.action-button,
+.view-button,
+.edit-button,
+.delete-button {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+.action-button .button-icon,
+.action-button svg,
+.action-button i,
+.action-button .fa-eye,
+.action-button .fa-edit,
+.action-button .fa-trash {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.action-button span {
+  color: white !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+
+/* Force all child elements to be white */
+.action-button *,
+.view-button *,
+.edit-button *,
+.delete-button * {
+  color: white !important;
+}
+
+/* Mobile emergency fixes */
+@media (max-width: 768px) {
+  .action-button,
+  .view-button,
+  .edit-button,
+  .delete-button {
+    color: white !important;
+  }
+  
+  .action-button .button-icon,
+  .action-button .fa-eye,
+  .action-button .fa-edit,
+  .action-button .fa-trash {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    opacity: 1 !important;
+  }
+  
+  .action-button span {
+    color: white !important;
+  }
+}
+
+/* Mobile Button Sizing and Centering */
+@media (max-width: 768px) {
+  .user-card-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    align-items: center;
+  }
+  
+  .user-card-actions .btn.action-button {
+    min-width: 80px;
+    max-width: 120px;
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    gap: 0.5rem;
+    flex: none;
+    width: auto;
+  }
+  
+  .user-card-actions .btn.action-button span {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Center the buttons container */
+  .user-card-actions {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  /* Make buttons more compact */
+  .user-card-actions .btn.action-button.view-button,
+  .user-card-actions .btn.action-button.edit-button,
+  .user-card-actions .btn.action-button.delete-button {
+    padding: 0.5rem 0.875rem;
+    min-height: 36px;
   }
 }

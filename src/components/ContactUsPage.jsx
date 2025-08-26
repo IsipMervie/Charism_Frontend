@@ -33,8 +33,9 @@ function ContactUsPage() {
       await axios.post('/api/contact-us', { name, email, message });
       Swal.fire({
         icon: 'success',
-        title: 'Message Sent',
-        text: 'Your message has been sent successfully!',
+        title: 'Message Sent Successfully!',
+        text: 'Thank you for contacting us!',
+        confirmButtonText: 'Great!'
       });
       setName('');
       setEmail('');

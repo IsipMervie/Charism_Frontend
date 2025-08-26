@@ -2,10 +2,12 @@
 // Simple but Creative Event Details Page Design
 
 import React, { useState, useEffect } from 'react';
-import { getEventDetails, approveAttendance, disapproveAttendance, downloadReflection } from '../api/api';
-import { useParams, useNavigate } from 'react-router-dom';
+import { getEventDetails, approveAttendance, disapproveAttendance } from '../api/api';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { FaCalendar, FaClock, FaMapMarkerAlt, FaUsers, FaDownload, FaEye, FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { formatTimeRange12Hour } from '../utils/timeUtils';
+
 import './EventDetailsPage.css';
 
 function EventDetailsPage() {
@@ -14,6 +16,7 @@ function EventDetailsPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const navigate = useNavigate();
   const role = localStorage.getItem('role');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -30,15 +33,6 @@ function EventDetailsPage() {
     // Check if student has timed out
     if (!participant?.timeOut) {
       Swal.fire('Cannot Approve', 'Student has not timed out yet. Attendance can only be approved after time-out.', 'warning');
-      return;
-    }
-
-    // Check if student has uploaded a reflection (either text or attachment)
-    const hasReflection = participant?.reflection && participant.reflection.trim() !== '';
-    const hasAttachment = participant?.attachment && participant.attachment.trim() !== '';
-    
-    if (!hasReflection && !hasAttachment) {
-      Swal.fire('Cannot Approve', 'Student has not uploaded a reflection or attachment yet. Attendance can only be approved after reflection submission.', 'warning');
       return;
     }
 
@@ -64,7 +58,6 @@ function EventDetailsPage() {
     }
   };
 
-  // Handle disapprove attendance with feedback
   const handleDisapprove = async (userId) => {
     const { value: reason } = await Swal.fire({
       title: 'Reason for Disapproval',
@@ -99,56 +92,6 @@ function EventDetailsPage() {
           Swal.fire('Error', 'Failed to disapprove attendance.', 'error');
         }
       }
-    } else {
-      Swal.fire('Error', 'Reason is required to disapprove attendance.', 'error');
-    }
-  };
-
-  // Handle downloading reflection (Admin/Staff only)
-  const handleDownloadReflection = async (userId) => {
-    try {
-      console.log('Downloading reflection for user:', userId);
-      await downloadReflection(eventId, userId);
-      Swal.fire('Success', 'Reflection downloaded successfully!', 'success');
-    } catch (err) {
-      console.error('Download error:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Download Failed',
-        text: 'Could not download reflection. Please try again.'
-      });
-    }
-  };
-
-  // Handle PDF Download for attendance (Admin/Staff only)
-  const handleDownloadAttendancePDF = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/reports/event-attendance/${eventId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to download PDF');
-      }
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `event-attendance-${eventId}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Download Failed',
-        text: `Could not download attendance PDF: ${err.message}`
-      });
     }
   };
 
@@ -235,7 +178,7 @@ function EventDetailsPage() {
                 </div>
                 <div className="meta-item">
                   <FaClock className="meta-icon" />
-                  <span>{event.time || 'N/A'}</span>
+                  <span>{formatTimeRange12Hour(event.startTime, event.endTime)}</span>
                 </div>
                 <div className="meta-item">
                   <FaMapMarkerAlt className="meta-icon" />
@@ -256,10 +199,75 @@ function EventDetailsPage() {
             <div className="download-section">
               <button
                 className="download-pdf-button"
-                onClick={handleDownloadAttendancePDF}
+                disabled={downloading}
+                onClick={async () => {
+                  try {
+                    setDownloading(true);
+                    const token = localStorage.getItem('token');
+                    
+                    if (!token) {
+                      throw new Error('No authentication token found. Please log in again.');
+                    }
+                    
+                    const response = await fetch(`http://localhost:5000/api/reports/event-attendance/${eventId}`, {
+                      method: 'GET',
+                      headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/pdf'
+                      }
+                    });
+                    
+                    if (!response.ok) {
+                      if (response.status === 401) {
+                        throw new Error('Authentication failed. Please log in again.');
+                      } else if (response.status === 404) {
+                        throw new Error('Event not found or no attendance data available.');
+                      } else if (response.status === 500) {
+                        throw new Error('Server error. Please try again later.');
+                      } else {
+                        throw new Error(`Download failed. Status: ${response.status}`);
+                      }
+                    }
+                    
+                    // Check if response is actually a PDF
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('pdf')) {
+                      console.warn('Response is not a PDF:', contentType);
+                    }
+                    
+                    const blob = await response.blob();
+                    
+                    // Create a more descriptive filename
+                    const eventTitle = event.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                    const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : 'unknown-date';
+                    const filename = `event-attendance-${eventTitle}-${eventDate}-${eventId}.pdf`;
+                    
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    console.log('PDF downloaded successfully:', filename);
+                  } catch (error) {
+                    console.error('Download failed:', error);
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Download Failed',
+                      text: error.message,
+                      confirmButtonText: 'OK'
+                    });
+                  } finally {
+                    setDownloading(false);
+                  }
+                }}
               >
                 <FaDownload className="button-icon" />
-                <span>Download Attendance PDF</span>
+                <span>{downloading ? 'Downloading...' : 'Download Attendance PDF'}</span>
               </button>
             </div>
           )}
@@ -346,11 +354,11 @@ function EventDetailsPage() {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Department</th>
-                    <th>Status</th>
+                    <th>Registration Status</th>
+                    <th>Attendance Status</th>
                     <th>Time In</th>
                     <th>Time Out</th>
                     {(role === 'Admin' || role === 'Staff') && <th>Actions</th>}
-                    {(role === 'Admin' || role === 'Staff') && <th>Reflection</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -359,6 +367,16 @@ function EventDetailsPage() {
                       <td>{att.userId?.name || 'Unknown'}</td>
                       <td>{att.userId?.email || 'N/A'}</td>
                       <td>{att.userId?.department || 'N/A'}</td>
+                      <td>
+                        <span className={`status-badge ${att.registrationApproved ? 'approved' : 'pending'}`}>
+                          {att.registrationApproved ? 'Approved' : 'Pending'}
+                        </span>
+                        {att.registrationApprovedAt && (
+                          <div className="approval-date">
+                            <small>Approved: {new Date(att.registrationApprovedAt).toLocaleDateString()}</small>
+                          </div>
+                        )}
+                      </td>
                       <td>
                         <span className={`status-badge ${att.status?.toLowerCase()}`}>
                           {att.status || 'Pending'}
@@ -401,23 +419,6 @@ function EventDetailsPage() {
                           )}
                         </td>
                       ) : null}
-                      {(role === 'Admin' || role === 'Staff') ? (
-                        att.attachment ? (
-                          <td>
-                            <button 
-                              className="download-reflection-button"
-                              onClick={() => handleDownloadReflection(att.userId?._id || att.userId)}
-                            >
-                              <FaDownload className="button-icon" />
-                              <span>Download Reflection</span>
-                            </button>
-                          </td>
-                        ) : (
-                          <td>
-                            <span className="no-attachment">No attachment</span>
-                          </td>
-                        )
-                      ) : null}
                     </tr>
                   ))}
                 </tbody>
@@ -431,6 +432,10 @@ function EventDetailsPage() {
             </div>
           )}
         </div>
+
+
+
+
 
         {/* Back Button */}
         <div className="back-section">

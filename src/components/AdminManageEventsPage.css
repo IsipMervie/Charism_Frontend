@@ -89,6 +89,20 @@
   }
 }
 
+@media (max-width: 767px) {
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  
+  .action-button.primary-button,
+  .action-button.secondary-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .header-content {
   display: flex;
   align-items: center;
@@ -165,20 +179,93 @@
   font-size: 1.1rem;
 }
 
-/* Search Section */
-.search-section {
+/* Header Actions */
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.action-button.primary-button {
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  color: white;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+}
+
+.action-button.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+}
+
+.action-button.secondary-button {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.action-button.secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+.action-button.warning-button {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.action-button.warning-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Search and Filter Section */
+.search-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .search-filter-section {
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.5rem;
+  }
 }
 
 .search-box {
   position: relative;
   max-width: 500px;
-  margin: 0 auto;
+  width: 100%;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.filter-box {
+  position: relative;
+  min-width: 200px;
 }
 
 .search-input {
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 1rem 1.25rem 1rem 3rem;
   font-size: 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
@@ -196,6 +283,135 @@
 
 .search-input::placeholder {
   color: #94a3b8;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  color: #1e293b;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  transform: translateY(-1px);
+}
+
+.clear-filters-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  border: 2px solid #ef4444;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.clear-filters-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.clear-filters-btn.large {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+/* Events Summary */
+.events-summary {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Results Header */
+.results-header {
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.results-header h3 {
+  margin: 0 0 1rem 0;
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.active-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter-tag {
+  padding: 0.5rem 1rem;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid #bfdbfe;
 }
 
 /* Events Section */
@@ -264,6 +480,11 @@
   color: #1e40af;
 }
 
+.status-ongoing {
+  background: #fef3c7;
+  color: #92400e;
+}
+
 .status-today {
   background: #fef3c7;
   color: #92400e;
@@ -278,6 +499,8 @@
   background: #d1fae5;
   color: #065f46;
 }
+
+
 
 /* Event Content */
 .event-content {
@@ -312,19 +535,29 @@
   font-size: 0.9rem;
 }
 
+.capacity-details {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 5px;
+  font-weight: normal;
+}
+
 .event-details {
   background: #f8fafc;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
   border-left: 3px solid #2563eb;
+  text-align: center !important;
 }
 
 .detail-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
   margin-bottom: 0.5rem;
+  gap: 0.5rem;
+  text-align: center;
 }
 
 .detail-item:last-child {
@@ -343,65 +576,358 @@
   font-weight: 600;
 }
 
-/* Action Buttons */
+
+
+/* Action Buttons - Simple Design */
 .action-buttons {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
 .action-button {
-  flex: 1;
-  min-width: 100px;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
+  min-width: 80px;
+  justify-content: center;
+  text-decoration: none;
+  user-select: none;
 }
 
 .action-button:hover {
+  opacity: 0.8;
   transform: translateY(-1px);
 }
 
-.edit-button {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+.action-button:active {
+  transform: translateY(0);
 }
 
-.edit-button:hover {
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+/* Simple Button Colors */
+.edit-button {
+  background: #10b981;
+  color: white;
 }
 
 .view-button {
-  background: linear-gradient(135deg, #38bdf8, #2563eb);
-  color: white;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+  background: #6b7280 !important;
+  color: white !important;
 }
 
 .view-button:hover {
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+  background: #4b5563 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+.share-button {
+  background: #3b82f6;
+  color: white;
+}
+
+.disable-button {
+  background: #f59e0b;
+  color: white;
+}
+
+.enable-button {
+  background: #10b981;
+  color: white;
+}
+
+.complete-button {
+  background: #059669;
+  color: white;
+}
+
+.not-complete-button {
+  background: #2563eb;
+  color: white;
 }
 
 .delete-button {
+  background: #dc2626;
+  color: white;
+}
+
+/* Completed Notice Styles */
+.completed-notice {
+  background: #f0fdf4;
+  border-left: 3px solid #22c55e;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+.completed-status {
+  color: #166534;
+  font-weight: 700;
+}
+
+/* Button Icons */
+.button-icon {
+  font-size: 0.875rem;
+}
+
+/* Focus States for Accessibility */
+.action-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-button {
+    width: 100%;
+  }
+}
+
+/* Additional Button Designs with Same Theme */
+.action-button.info-button {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.info-button:hover {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+}
+
+.action-button.success-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.success-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.action-button.danger-button {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  border: none;
+  transition: all 0.3s ease;
 }
 
-.delete-button:hover {
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+.action-button.danger-button:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
 }
 
-.button-icon {
-  font-size: 0.9rem;
+.action-button.warning-button {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.warning-button:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.action-button.secondary-button {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.secondary-button:hover {
+  background: linear-gradient(135deg, #4b5563, #374151);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(107, 114, 128, 0.3);
+}
+
+.action-button.light-button {
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  color: #374151;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.light-button:hover {
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(243, 244, 246, 0.3);
+}
+
+.action-button.dark-button {
+  background: linear-gradient(135deg, #1f2937, #111827);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.dark-button:hover {
+  background: linear-gradient(135deg, #111827, #0f172a);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(31, 41, 55, 0.3);
+}
+
+.action-button.purple-button {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.purple-button:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}
+
+.action-button.pink-button {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.pink-button:hover {
+  background: linear-gradient(135deg, #db2777, #be185d);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+}
+
+.action-button.indigo-button {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.indigo-button:hover {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.action-button.teal-button {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.teal-button:hover {
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(20, 184, 166, 0.3);
+}
+
+.action-button.rose-button {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.rose-button:hover {
+  background: linear-gradient(135deg, #e11d48, #be123c);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3);
+}
+
+.action-button.cyan-button {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.cyan-button:hover {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+}
+
+.action-button.lime-button {
+  background: linear-gradient(135deg, #84cc16, #65a30d);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.lime-button:hover {
+  background: linear-gradient(135deg, #65a30d, #4d7c0a);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(132, 204, 22, 0.3);
+}
+
+.action-button.amber-button {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.amber-button:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.action-button.emerald-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.emerald-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.action-button.violet-button {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.violet-button:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}
+
+.action-button.fuchsia-button {
+  background: linear-gradient(135deg, #d946ef, #c026d3);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-button.fuchsia-button:hover {
+  background: linear-gradient(135deg, #c026d3, #a21caf);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(217, 70, 239, 0.3);
 }
 
 /* No Events */
@@ -559,12 +1085,192 @@
   }
 }
 
+/* Responsive adjustments for action buttons */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .action-button {
+    min-width: auto;
+    width: 100%;
+  }
+
+  /* Force white icons on mobile for all action buttons */
+  .action-button .button-icon,
+  .action-button svg,
+  .action-button i,
+  .action-button .fa-edit,
+  .action-button .fa-eye,
+  .action-button .fa-share,
+  .action-button .fa-eye-slash,
+  .action-button .fa-trash,
+  .action-button .fa-check,
+  .action-button .fa-times,
+  .action-button .fa-ban,
+  .action-button .fa-play,
+  .action-button .fa-pause {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+  }
+
+  /* Force icon color for React Icons on mobile */
+  .action-button svg path,
+  .action-button svg rect,
+  .action-button svg circle,
+  .action-button svg g,
+  .action-button svg * {
+    fill: white !important;
+    stroke: white !important;
+    color: white !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .action-button span {
+    display: inline;
+    font-size: 0.75rem;
+  }
+  
+  .action-button .button-icon {
+    font-size: 0.9rem;
+    color: white !important;
+  }
+
+  /* Force white icons on small mobile for all action buttons */
+  .action-button .button-icon,
+  .action-button svg,
+  .action-button i,
+  .action-button .fa-edit,
+  .action-button .fa-eye,
+  .action-button .fa-share,
+  .action-button .fa-eye-slash,
+  .action-button .fa-trash,
+  .action-button .fa-check,
+  .action-button .fa-times,
+  .action-button .fa-ban,
+  .action-button .fa-play,
+  .action-button .fa-pause {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+  }
+
+  /* Force icon color for React Icons on small mobile */
+  .action-button svg path,
+  .action-button svg rect,
+  .action-button svg circle,
+  .action-button svg g,
+  .action-button svg * {
+    fill: white !important;
+    stroke: white !important;
+    color: white !important;
+  }
+}
+
 /* Focus States for Accessibility */
 .action-button:focus,
 .search-input:focus,
 .create-event-button:focus {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
+}
+
+/* Share Button Styles */
+.action-button.share-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+}
+
+.action-button.share-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+/* Registration Link Styles */
+.registration-link {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.registration-link .detail-label {
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.link-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.registration-url {
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  flex: 1;
+  min-width: 200px;
+  word-break: break-all;
+}
+
+.copy-link-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.copy-link-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.copy-link-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments for registration link */
+@media (max-width: 768px) {
+  .link-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .registration-url {
+    min-width: auto;
+    font-size: 0.8rem;
+  }
+  
+  .copy-link-btn {
+    align-self: flex-start;
+  }
 }
 
 /* Reduced Motion Support */
@@ -595,6 +1301,95 @@
   
   .loading-spinner {
     animation: none;
+  }
+  
+  .copy-link-btn:hover {
+    transform: none;
+  }
+}
+
+/* CRITICAL: Force all button icons to be white on mobile */
+@media (max-width: 768px) {
+  .action-button *,
+  .action-button svg *,
+  .action-button i,
+  .action-button .button-icon,
+  .action-button .fa-edit,
+  .action-button .fa-eye,
+  .action-button .fa-share,
+  .action-button .fa-eye-slash,
+  .action-button .fa-trash,
+  .action-button .fa-check,
+  .action-button .fa-times,
+  .action-button .fa-ban,
+  .action-button .fa-play,
+  .action-button .fa-pause {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+  }
+}
+
+/* ULTRA CRITICAL: Maximum specificity for mobile icon colors */
+@media (max-width: 768px) {
+  .manage-events-page .action-button svg,
+  .manage-events-page .action-button svg *,
+  .manage-events-page .action-button .button-icon,
+  .manage-events-page .action-button i,
+  .manage-events-page .action-button .fa-edit,
+  .manage-events-page .action-button .fa-eye,
+  .manage-events-page .action-button .fa-share,
+  .manage-events-page .action-button .fa-eye-slash,
+  .manage-events-page .action-button .fa-trash,
+  .manage-events-page .action-button .fa-check,
+  .manage-events-page .action-button .fa-times,
+  .manage-events-page .action-button .fa-ban,
+  .manage-events-page .action-button .fa-play,
+  .manage-events-page .action-button .fa-pause {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    background-color: transparent !important;
+  }
+  
+  /* Target all possible SVG elements */
+  .manage-events-page .action-button svg path,
+  .manage-events-page .action-button svg rect,
+  .manage-events-page .action-button svg circle,
+  .manage-events-page .action-button svg g,
+  .manage-events-page .action-button svg polygon,
+  .manage-events-page .action-button svg line,
+  .manage-events-page .action-button svg ellipse,
+  .manage-events-page .action-button svg text {
+    fill: white !important;
+    stroke: white !important;
+    color: white !important;
+  }
+}
+
+/* FINAL OVERRIDE: Force white icons on mobile with maximum specificity */
+@media (max-width: 768px) {
+  .manage-events-page .events-section .action-buttons .action-button svg,
+  .manage-events-page .events-section .action-buttons .action-button svg *,
+  .manage-events-page .events-section .action-buttons .action-button .button-icon,
+  .manage-events-page .events-section .action-buttons .action-button i {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+    background-color: transparent !important;
+  }
+  
+  .manage-events-page .events-section .action-buttons .action-button svg path,
+  .manage-events-page .events-section .action-buttons .action-button svg rect,
+  .manage-events-page .events-section .action-buttons .action-button svg circle,
+  .manage-events-page .events-section .action-buttons .action-button svg g,
+  .manage-events-page .events-section .action-buttons .action-button svg polygon,
+  .manage-events-page .events-section .action-buttons .action-button svg line,
+  .manage-events-page .events-section .action-buttons .action-button svg ellipse,
+  .manage-events-page .events-section .action-buttons .action-button svg text {
+    fill: white !important;
+    stroke: white !important;
+    color: white !important;
   }
 }
 

@@ -139,7 +139,7 @@ function Students40HoursPage() {
   return (
     <div className="students-40-hours-page">
       <div className="students-40-container">
-        <h2>Students with 40+ Hours</h2>
+        <h2>Completed Students In Community Service</h2>
         <p className="students-40-subtitle">Download a filtered report or browse the list below.</p>
 
         <div className="students-40-controls">
@@ -242,12 +242,12 @@ function Students40HoursPage() {
         {error ? (
           <Alert variant="danger">{error}</Alert>
         ) : filteredStudents.length === 0 ? (
-          <Alert variant="info">No students with 40+ hours found.</Alert>
+          <Alert variant="info">No students completed found.</Alert>
         ) : (
           <Card className="students-40-results-card">
             <Card.Header className="students-40-results-header">
               <h5 className="mb-0">
-                Students with 40+ Hours ({filteredStudents.length} found)
+                Students Completed Community Service ({filteredStudents.length} found)
               </h5>
             </Card.Header>
             <Card.Body style={{ padding: 0 }}>

@@ -129,6 +129,36 @@
   line-height: 1.5;
 }
 
+/* User Info in Header */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+
+
+
+
+
+
+
+
+
+
 /* School Info Card */
 .school-info-card {
   background: #ffffff;
@@ -236,90 +266,126 @@
   border-left: 4px solid #ef4444;
 }
 
-/* Action Buttons Grid */
-.action-buttons-grid {
+/* Actions Section */
+.actions-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.actions-header {
+  margin-bottom: 2rem;
+}
+
+.actions-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.actions-icon {
+  color: #2563eb;
+  font-size: 1.25rem;
+}
+
+.actions-subtitle {
+  color: #64748b;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-.action-button {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
-  background: #ffffff;
-  border: 2px solid #e2e8f0;
+.action-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.action-button::before {
+.action-card::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #38bdf8, #2563eb);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+  transition: left 0.5s ease;
 }
 
-.action-button:hover::before {
-  transform: scaleX(1);
+.action-card:hover::before {
+  left: 100%;
 }
 
-.action-button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #2563eb;
+.action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.95);
 }
 
-.button-icon {
-  font-size: 1.5rem;
-  color: #2563eb;
-  transition: transform 0.3s ease;
+.action-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  flex-shrink: 0;
 }
 
-.action-button:hover .button-icon {
-  transform: scale(1.1);
+.action-content {
+  flex: 1;
 }
 
-.button-text {
-  color: #1e293b;
+.action-title {
+  font-size: 1.2rem;
   font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
 }
 
-/* Button Color Variants */
-.manage-users-button:hover {
-  border-color: #3b82f6;
+.action-description {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.9rem;
 }
 
-.manage-users-button:hover .button-icon {
-  color: #3b82f6;
+.action-arrow {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: #2563eb;
+  font-size: 1.25rem;
+  font-weight: 600;
+  transition: transform 0.3s ease;
 }
 
-.manage-events-button:hover {
-  border-color: #8b5cf6;
-}
-
-.manage-events-button:hover .button-icon {
-  color: #8b5cf6;
-}
-
-.analytics-button:hover {
-  border-color: #06b6d4;
-}
-
-.analytics-button:hover .button-icon {
-  color: #06b6d4;
+.action-card:hover .action-arrow {
+  transform: translateX(5px);
 }
 
 .completed-button:hover {
@@ -327,7 +393,9 @@
 }
 
 .completed-button:hover .button-icon {
-  color: #10b981;
+  color: #10b981 !important;
+  fill: #10b981 !important;
+  stroke: #10b981 !important;
 }
 
 .staff-approvals-button:hover {
@@ -335,7 +403,9 @@
 }
 
 .staff-approvals-button:hover .button-icon {
-  color: #f59e0b;
+  color: #f59e0b !important;
+  fill: #f59e0b !important;
+  stroke: #f59e0b !important;
 }
 
 .manage-messages-button:hover {
@@ -343,7 +413,9 @@
 }
 
 .manage-messages-button:hover .button-icon {
-  color: #ef4444;
+  color: #ef4444 !important;
+  fill: #ef4444 !important;
+  stroke: #ef4444 !important;
 }
 
 .school-settings-button:hover {
@@ -351,8 +423,91 @@
 }
 
 .school-settings-button:hover .button-icon {
-  color: #6b7280;
+  color: #6b7280 !important;
+  fill: #6b7280 !important;
+  stroke: #6b7280 !important;
 }
+
+.student-documentation-button:hover {
+  border-color: #8b5cf6;
+}
+
+.student-documentation-button:hover .button-icon {
+  color: #8b5cf6 !important;
+  fill: #8b5cf6 !important;
+  stroke: #8b5cf6 !important;
+}
+
+/* Ensure student documentation button icon is always visible */
+.student-documentation-button .button-icon,
+.student-documentation-button svg,
+.student-documentation-button .fa,
+.student-documentation-button .fas {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Specific class for student documentation icon */
+.student-doc-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  position: relative !important;
+  z-index: 10 !important;
+  color: #2563eb !important;
+  fill: #2563eb !important;
+  stroke: #2563eb !important;
+}
+
+/* Fallback icon styles */
+.fallback-icon {
+  display: none !important;
+}
+
+/* Show fallback icon if main icon fails */
+.student-documentation-button:not(:has(.student-doc-icon:not([style*="display: none"]))) .fallback-icon {
+  display: inline-block !important;
+}
+
+/* Debug styles for student documentation button */
+.student-documentation-button {
+  position: relative;
+  min-height: 70px;
+}
+
+.student-documentation-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid transparent;
+  pointer-events: none;
+}
+
+/* Ensure proper icon positioning */
+.student-documentation-button .button-icon {
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  text-align: center;
+  line-height: 1;
+}
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -377,6 +532,8 @@
     gap: 1rem;
   }
   
+
+  
   .school-info-content {
     flex-direction: column;
     text-align: center;
@@ -391,13 +548,25 @@
     height: 80px;
   }
   
-  .action-buttons-grid {
+  .actions-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   
-  .action-button {
-    padding: 1.25rem 1.5rem;
+  .action-card {
+    padding: 1.5rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .action-content {
+    text-align: center;
+  }
+  
+  .action-arrow {
+    position: static;
+    margin-top: 0.5rem;
   }
 }
 
@@ -410,6 +579,8 @@
     font-size: 1rem;
   }
   
+
+  
   .school-info-card {
     padding: 1.5rem;
   }
@@ -418,13 +589,20 @@
     font-size: 1.25rem;
   }
   
-  .action-button {
-    padding: 1rem 1.25rem;
-    font-size: 0.9rem;
+  .action-card {
+    padding: 1.25rem;
   }
   
-  .button-icon {
-    font-size: 1.25rem;
+  .action-title {
+    font-size: 1.1rem;
+  }
+  
+  .action-description {
+    font-size: 0.85rem;
+  }
+  
+  .actions-section {
+    padding: 1.5rem;
   }
 }
 
@@ -462,5 +640,15 @@
   
   .action-button:hover .button-icon {
     transform: none;
+  }
+  
+  /* Ensure icons remain visible even with reduced motion */
+  .action-button .button-icon,
+  .action-button svg,
+  .action-button .fa,
+  .action-button .fas {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
   }
 }

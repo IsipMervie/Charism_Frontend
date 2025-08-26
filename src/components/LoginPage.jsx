@@ -35,17 +35,66 @@ function LoginPage() {
         timer: 1500,
         showConfirmButton: false,
       });
-      switch (user.role) {
-        case 'Admin': navigate('/admin/dashboard'); break;
-        case 'Staff': navigate('/staff/dashboard'); break;
-        case 'Student': navigate('/student/dashboard'); break;
-        default: navigate('/');
+      
+      // Check if there's a redirect URL stored
+      const redirectUrl = localStorage.getItem('redirectAfterLogin');
+      if (redirectUrl) {
+        localStorage.removeItem('redirectAfterLogin');
+        navigate(redirectUrl);
+      } else {
+        switch (user.role) {
+          case 'Admin': navigate('/admin/dashboard'); break;
+          case 'Staff': navigate('/staff/dashboard'); break;
+          case 'Student': navigate('/student/dashboard'); break;
+          default: navigate('/');
+        }
       }
     } catch (err) {
+      console.log('Login error details:', {
+        message: err?.message,
+        response: err?.response?.data,
+        status: err?.response?.status,
+        hasResponse: !!err?.response,
+        responseMessage: err?.response?.data?.message
+      });
+      
+      const errorMessage = err?.response?.data?.message || err?.message;
+      let title = 'Login Failed';
+      let icon = 'error';
+      let text = 'An unexpected error occurred. Please try again.';
+      
+      if (errorMessage) {
+        if (errorMessage.includes('User not found')) {
+          title = 'Account Not Found';
+          text = 'This email address is not registered. Please check your email or create a new account.';
+          icon = 'warning';
+        } else if (errorMessage.includes('Please verify your email')) {
+          title = 'Email Not Verified';
+          text = 'Please check your email and click the verification link before logging in.';
+          icon = 'info';
+        } else if (errorMessage.includes('pending admin approval')) {
+          title = 'Account Pending Approval';
+          text = 'Your account is waiting for administrator approval. You will receive an email once approved.';
+          icon = 'info';
+        } else if (errorMessage.includes('Invalid credentials')) {
+          title = 'Invalid Password';
+          text = 'The password you entered is incorrect. Please try again.';
+          icon = 'error';
+        } else if (errorMessage.includes('Error logging in')) {
+          title = 'Server Error';
+          text = 'There was a problem with the server. Please try again later.';
+          icon = 'error';
+        } else {
+          text = errorMessage;
+        }
+      }
+      
       Swal.fire({
-        icon: 'error',
-        title: 'Login Failed',
-        text: err?.response?.data?.message || 'Invalid credentials. Please try again.',
+        icon: icon,
+        title: title,
+        text: text,
+        confirmButtonColor: icon === 'error' ? '#ef4444' : '#3b82f6',
+        confirmButtonText: 'OK'
       });
     }
     setLoading(false);

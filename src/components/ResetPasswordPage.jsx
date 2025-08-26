@@ -121,31 +121,7 @@ function ResetPasswordPage() {
             </Button>
           </Form>
 
-          {/* Security Tips */}
-          <div className="security-tips">
-            <div className="tips-header">
-              <div className="tips-icon">💡</div>
-              <h4>Password Tips</h4>
-            </div>
-            <div className="tips-list">
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Use at least 8 characters</span>
-              </div>
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Include uppercase and lowercase letters</span>
-              </div>
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Add numbers and special characters</span>
-              </div>
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Avoid common words or phrases</span>
-              </div>
-            </div>
-          </div>
+
         </div>
       </Container>
     </div>

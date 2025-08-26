@@ -6,7 +6,8 @@ import { Container, Button, Row, Col, Card, Spinner, Alert } from 'react-bootstr
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAnalytics } from '../api/api';
 import axios from 'axios';
-import { FaUsers, FaCalendarAlt, FaChartBar, FaTrophy, FaUserCheck, FaEnvelope, FaCog, FaBuilding } from 'react-icons/fa';
+import { FaUsers, FaCalendarAlt, FaChartBar, FaTrophy, FaUserCheck, FaEnvelope, FaCog, FaBuilding, FaFile, FaUser, FaFileAlt } from 'react-icons/fa';
+
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -17,7 +18,9 @@ function AdminDashboard() {
   const [school, setSchool] = useState(null);
   const [schoolLoading, setSchoolLoading] = useState(true);
   const [schoolError, setSchoolError] = useState('');
+
   const [isVisible, setIsVisible] = useState(false);
+
 
   useEffect(() => {
     setIsVisible(true);
@@ -52,8 +55,11 @@ function AdminDashboard() {
       }
       setSchoolLoading(false);
     };
+
     fetchSchool();
   }, []);
+
+
 
   const isActiveRoute = (path) => {
     return location.pathname === path;
@@ -77,7 +83,15 @@ function AdminDashboard() {
               <p className="header-subtitle">Welcome to the Admin Dashboard</p>
             </div>
           </div>
+          <div className="user-info">
+            <div className="user-badge">
+              <FaUser className="user-icon" />
+              <span>Admin</span>
+            </div>
+          </div>
         </div>
+
+
 
         {/* School Info Card */}
         <div className="school-info-card">
@@ -121,63 +135,143 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Action Buttons Grid */}
-        <div className="action-buttons-grid">
-          <button 
-            className="action-button manage-users-button"
-            onClick={() => navigate('/admin/manage-users')}
-          >
-            <FaUsers className="button-icon" />
-            <span className="button-text">Manage Users</span>
-          </button>
+        {/* Actions Section */}
+        <div className="actions-section">
+          <div className="actions-header">
+            <h3 className="actions-title">
+              <FaCog className="actions-icon" />
+              Quick Actions
+            </h3>
+            <p className="actions-subtitle">Access all admin tools and features</p>
+          </div>
+          
+          <div className="actions-grid">
+            <div 
+              className="action-card"
+              onClick={() => navigate('/admin/manage-users')}
+            >
+              <div className="action-icon">
+                <FaUsers />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Manage Users</div>
+                <div className="action-description">Add, edit, and manage user accounts and permissions</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
 
-          <button 
-            className="action-button manage-events-button"
-            onClick={() => navigate('/admin/manage-events')}
-          >
-            <FaCalendarAlt className="button-icon" />
-            <span className="button-text">Manage Events</span>
-          </button>
+            <div 
+              className="action-card"
+              onClick={() => navigate('/admin/manage-events')}
+            >
+              <div className="action-icon">
+                <FaCalendarAlt />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Manage Events</div>
+                <div className="action-description">Create, edit, and manage community service events</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
 
-          <button 
-            className="action-button analytics-button"
-            onClick={() => navigate('/analytics')}
-          >
-            <FaChartBar className="button-icon" />
-            <span className="button-text">Analytics</span>
-          </button>
+            <div 
+              className="action-card"
+              onClick={() => navigate('/analytics')}
+            >
+              <div className="action-icon">
+                <FaChartBar />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Analytics</div>
+                <div className="action-description">View detailed reports and statistics</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
 
-          <button 
-            className="action-button completed-button"
-            onClick={() => navigate('/students-40-hours')}
-          >
-            <FaTrophy className="button-icon" />
-            <span className="button-text">Completed</span>
-          </button>
+            <div 
+              className="action-card"
+              onClick={() => navigate('/students-40-hours')}
+            >
+              <div className="action-icon">
+                <FaTrophy />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Completed</div>
+                <div className="action-description">View students who completed 40 hours</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
 
-          <button 
-            className="action-button staff-approvals-button"
-            onClick={() => navigate('/admin/staff-approvals')}
-          >
-            <FaUserCheck className="button-icon" />
-            <span className="button-text">Staff Approvals</span>
-          </button>
+            <div 
+              className="action-card"
+              onClick={() => navigate('/admin/staff-approvals')}
+            >
+              <div className="action-icon">
+                <FaUserCheck />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Staff Approvals</div>
+                <div className="action-description">Review and approve staff registrations</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
 
-          <button 
-            className="action-button manage-messages-button"
-            onClick={() => navigate('/admin/manage-messages')}
-          >
-            <FaEnvelope className="button-icon" />
-            <span className="button-text">Manage Messages</span>
-          </button>
+            <div 
+              className="action-card"
+              onClick={() => navigate('/admin/manage-messages')}
+            >
+              <div className="action-icon">
+                <FaEnvelope />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Manage Messages</div>
+                <div className="action-description">Handle contact form submissions and communications</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
 
-          <button 
-            className="action-button school-settings-button"
-            onClick={() => navigate('/admin/school-settings')}
-          >
-            <FaCog className="button-icon" />
-            <span className="button-text">School Settings</span>
-          </button>
+            <div 
+              className="action-card"
+              onClick={() => navigate('/admin/school-settings')}
+            >
+              <div className="action-icon">
+                <FaCog />
+              </div>
+              <div className="action-content">
+                <div className="action-title">School Settings</div>
+                <div className="action-description">Configure school information and system settings</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
+
+            <div 
+              className="action-card"
+              onClick={() => navigate('/admin/student-documentation')}
+            >
+              <div className="action-icon">
+                <FaFile />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Student Documentation</div>
+                <div className="action-description">Review and manage student documentation</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
+
+            <div 
+              className="action-card"
+              onClick={() => navigate('/admin/registration-approvals')}
+            >
+              <div className="action-icon">
+                <FaUserCheck />
+              </div>
+              <div className="action-content">
+                <div className="action-title">Event Registration Approval</div>
+                <div className="action-description">Review and approve student event registrations</div>
+              </div>
+              <div className="action-arrow">→</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

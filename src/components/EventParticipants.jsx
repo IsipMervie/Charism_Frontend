@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getEventParticipants, approveAttendance, disapproveAttendance, downloadReflection } from '../api/api';
+import { getEventParticipants, approveAttendance, disapproveAttendance } from '../api/api';
 import Swal from 'sweetalert2';
-import { FaDownload, FaCheck, FaTimes, FaEdit } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaDownload, FaEye } from 'react-icons/fa';
 import './EventParticipantsPage.css';
 
 function EventParticipantsPage() {
@@ -31,15 +31,6 @@ function EventParticipantsPage() {
     // Check if student has timed out
     if (!participant.timeOut) {
       Swal.fire('Cannot Approve', 'Student has not timed out yet. Attendance can only be approved after time-out.', 'warning');
-      return;
-    }
-
-    // Check if student has uploaded a reflection (either text or attachment)
-    const hasReflection = participant.reflection && participant.reflection.trim() !== '';
-    const hasAttachment = participant.attachment && participant.attachment.trim() !== '';
-    
-    if (!hasReflection && !hasAttachment) {
-      Swal.fire('Cannot Approve', 'Student has not uploaded a reflection or attachment yet. Attendance can only be approved after reflection submission.', 'warning');
       return;
     }
 
@@ -106,18 +97,6 @@ function EventParticipantsPage() {
     }
   };
 
-  const handleDownloadReflection = async (userId) => {
-    const participant = participants.find(p => p.userId._id === userId || p.userId === userId);
-    
-    try {
-      await downloadReflection(eventId, userId);
-      Swal.fire('Success', 'Reflection downloaded successfully!', 'success');
-    } catch (err) {
-      console.error('Download error:', err);
-      Swal.fire('Error', 'Failed to download reflection. Please try again.', 'error');
-    }
-  };
-
   return (
     <div className="event-participants-container">
       <div className="event-participants-card">
@@ -129,9 +108,9 @@ function EventParticipantsPage() {
             <th>Name</th>
             <th>Email</th>
             <th>Department</th>
+            <th>Registration</th>
             <th>Time In/Out</th>
             <th>Status</th>
-            <th>Reflection</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -141,6 +120,16 @@ function EventParticipantsPage() {
               <td>{participant.userId.name}</td>
               <td>{participant.userId.email}</td>
               <td>{participant.userId.department}</td>
+              <td>
+                <span className={`status-badge ${participant.registrationApproved ? 'approved' : 'pending'}`}>
+                  {participant.registrationApproved ? 'Approved' : 'Pending'}
+                </span>
+                {participant.registrationApprovedAt && (
+                  <div className="approval-date">
+                    <small>Approved: {new Date(participant.registrationApprovedAt).toLocaleDateString()}</small>
+                  </div>
+                )}
+              </td>
               <td>
                 <div className="time-status">
                   <div className="time-in">
@@ -162,40 +151,14 @@ function EventParticipantsPage() {
                 )}
               </td>
               <td>
-                <div className="reflection-status">
-                  {(participant.reflection || participant.attachment) ? (
-                    <span className="reflection-uploaded" title={
-                      participant.attachment ? 
-                        (participant.reflection ? 'Attachment and reflection text uploaded' : 'Attachment uploaded') :
-                        'Reflection text uploaded'
-                    }>
-                      ✓ {participant.attachment ? 'Attachment' : 'Reflection'} uploaded
-                    </span>
-                  ) : (
-                    <span className="reflection-missing">✗ No reflection/attachment</span>
-                  )}
-                  {(participant.attachment || participant.reflection) && (
-                    <button 
-                      className="download-reflection-btn"
-                      onClick={() => handleDownloadReflection(participant.userId._id || participant.userId)}
-                      title={participant.attachment ? "Download Attachment" : "Download Reflection Text"}
-                    >
-                      <FaDownload /> Download
-                    </button>
-                  )}
-                </div>
-              </td>
-              <td>
                 <div className="action-buttons">
                   {participant.status === 'Pending' && (
                     <>
                       <button 
-                        className={`approve-btn ${!participant.timeOut || (!participant.reflection && !participant.attachment) ? 'disabled' : ''}`}
+                        className={`approve-btn ${!participant.timeOut ? 'disabled' : ''}`}
                         onClick={() => handleApprove(participant.userId._id || participant.userId)}
-                        title={!participant.timeOut ? 'Cannot approve: Student has not timed out' : 
-                               (!participant.reflection && !participant.attachment) ? 'Cannot approve: Student has not uploaded reflection or attachment' : 
-                               'Approve Attendance'}
-                        disabled={!participant.timeOut || (!participant.reflection && !participant.attachment)}
+                        title={!participant.timeOut ? 'Cannot approve: Student has not timed out' : 'Approve Attendance'}
+                        disabled={!participant.timeOut}
                       >
                         <FaCheck />
                       </button>
@@ -211,12 +174,10 @@ function EventParticipantsPage() {
                   {(participant.status === 'Approved' || participant.status === 'Disapproved') && (
                     <>
                       <button 
-                        className={`approve-btn ${!participant.timeOut || (!participant.reflection && !participant.attachment) ? 'disabled' : ''}`}
+                        className={`approve-btn ${!participant.timeOut ? 'disabled' : ''}`}
                         onClick={() => handleApprove(participant.userId._id || participant.userId)}
-                        title={!participant.timeOut ? 'Cannot approve: Student has not timed out' : 
-                               (!participant.reflection && !participant.attachment) ? 'Cannot approve: Student has not uploaded reflection or attachment' : 
-                               'Change to Approved'}
-                        disabled={!participant.timeOut || (!participant.reflection && !participant.attachment)}
+                        title={!participant.timeOut ? 'Cannot approve: Student has not timed out' : 'Change to Approved'}
+                        disabled={!participant.timeOut}
                       >
                         <FaCheck />
                       </button>

@@ -177,19 +177,20 @@
 }
 
 /* Button */
+.login-container .login-card .login-form .login-button,
 .login-button {
-  width: 100%;
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  background: linear-gradient(135deg, #38bdf8, #2563eb);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  width: 100% !important;
+  padding: 1rem 2rem !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  background: #2563eb !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
 .login-button::before {
@@ -208,8 +209,9 @@
 }
 
 .login-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+  transform: translateY(-2px) !important;
+  background: #1d4ed8 !important;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35) !important;
 }
 
 .login-button:active {
@@ -224,6 +226,30 @@
 .button-content {
   position: relative;
   z-index: 1;
+}
+
+/* Override any Bootstrap button styles */
+.btn.login-button,
+button.login-button,
+input[type="submit"].login-button,
+.login-form .btn,
+.login-form button,
+.login-form input[type="submit"] {
+  background-color: #2563eb !important;
+  background-image: none !important;
+  border-color: #2563eb !important;
+  color: white !important;
+}
+
+.btn.login-button:hover,
+button.login-button:hover,
+input[type="submit"].login-button:hover,
+.login-form .btn:hover,
+.login-form button:hover,
+.login-form input[type="submit"]:hover {
+  background-color: #1d4ed8 !important;
+  background-image: none !important;
+  border-color: #1d4ed8 !important;
 }
 
 /* Links */
@@ -351,6 +377,15 @@
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
   }
+  
+  /* Ensure button is centered on mobile */
+  .login-button {
+    width: 90% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    max-width: 300px !important;
+    box-sizing: border-box !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -368,6 +403,11 @@
   
   .login-button {
     padding: 0.875rem 1.5rem;
+    width: 90% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    max-width: 300px !important;
+    box-sizing: border-box !important;
   }
   
   .login-info {

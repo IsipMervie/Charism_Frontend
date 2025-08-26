@@ -156,7 +156,7 @@ function SchoolSettingsPage() {
                   name="schoolName"
                   value={settings.schoolName}
                   onChange={handleChange}
-                  placeholder="e.g., CommunityLink School"
+                  placeholder="e.g., CHARISM School"
                   className="form-input"
                   required
                 />
@@ -174,7 +174,7 @@ function SchoolSettingsPage() {
                   name="contactEmail"
                   value={settings.contactEmail}
                   onChange={handleChange}
-                  placeholder="e.g., info@communitylink.edu"
+                  placeholder="e.g., info@charism.edu"
                   className="form-input"
                   required
                 />
@@ -192,7 +192,7 @@ function SchoolSettingsPage() {
                   name="brandName"
                   value={settings.brandName}
                   onChange={handleChange}
-                  placeholder="e.g., CommunityLink"
+                  placeholder="e.g., CHARISM"
                   className="form-input"
                 />
                 <p className="form-hint">Optional brand name for the application</p>

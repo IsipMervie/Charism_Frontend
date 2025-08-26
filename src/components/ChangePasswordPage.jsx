@@ -141,31 +141,7 @@ function ChangePasswordPage() {
             </Button>
           </Form>
 
-          {/* Security Tips */}
-          <div className="security-tips">
-            <div className="tips-header">
-              <div className="tips-icon">💡</div>
-              <h4>Password Security Tips</h4>
-            </div>
-            <div className="tips-list">
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Use a unique password for each account</span>
-              </div>
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Include a mix of letters, numbers, and symbols</span>
-              </div>
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Avoid using personal information</span>
-              </div>
-              <div className="tip-item">
-                <div className="tip-icon">✅</div>
-                <span>Consider using a password manager</span>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
