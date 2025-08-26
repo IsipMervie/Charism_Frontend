@@ -89,7 +89,10 @@ function AdminManageFeedbackPage() {
     typeof finalSafePagination.currentPage === 'number' &&
     typeof finalSafePagination.totalPages === 'number' &&
     typeof finalSafePagination.totalItems === 'number' &&
-    typeof finalSafePagination.itemsPerPage === 'number';
+    typeof finalSafePagination.itemsPerPage === 'number' &&
+    finalSafePagination.currentPage > 0 &&
+    finalSafePagination.totalPages > 0 &&
+    finalSafePagination.itemsPerPage > 0;
 
   // Ensure pagination state is always properly initialized
   useEffect(() => {
