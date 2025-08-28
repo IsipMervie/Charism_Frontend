@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { getEventDetails, approveAttendance, disapproveAttendance } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { FaCalendar, FaClock, FaMapMarkerAlt, FaUsers, FaDownload, FaEye, FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { FaCalendar, FaClock, FaMapMarkerAlt, FaUsers, FaDownload, FaEye, FaCheck, FaTimes, FaArrowLeft, FaSignInAlt } from 'react-icons/fa';
 import { formatTimeRange12Hour } from '../utils/timeUtils';
 
 import './EventDetailsPage.css';
@@ -18,8 +18,28 @@ function EventDetailsPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const navigate = useNavigate();
-  const role = localStorage.getItem('role');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  // Get user info safely
+  const getRole = () => {
+    try {
+      return localStorage.getItem('role');
+    } catch (e) {
+      return null;
+    }
+  };
+  
+  const getUser = () => {
+    try {
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (e) {
+      return null;
+    }
+  };
+  
+  const role = getRole();
+  const user = getUser();
+  const isAuthenticated = !!localStorage.getItem('token');
   
   useEffect(() => {
     setIsVisible(true);
@@ -27,6 +47,11 @@ function EventDetailsPage() {
 
   // Handle approve attendance with confirmation
   const handleApprove = async (userId) => {
+    if (!isAuthenticated) {
+      Swal.fire('Authentication Required', 'Please log in to perform this action.', 'info');
+      return;
+    }
+    
     // Find the participant in the event
     const participant = event?.attendance?.find(p => p.userId._id === userId || p.userId === userId);
     
@@ -59,6 +84,11 @@ function EventDetailsPage() {
   };
 
   const handleDisapprove = async (userId) => {
+    if (!isAuthenticated) {
+      Swal.fire('Authentication Required', 'Please log in to perform this action.', 'info');
+      return;
+    }
+    
     const { value: reason } = await Swal.fire({
       title: 'Reason for Disapproval',
       input: 'textarea',
@@ -103,7 +133,14 @@ function EventDetailsPage() {
         setEvent(eventData);
         setError('');
       } catch (err) {
-        setError('Error fetching event details');
+        console.error('Error fetching event:', err);
+        if (err.response?.status === 404) {
+          setError('Event not found');
+        } else if (err.response?.status === 403) {
+          setError('This event is not available for viewing');
+        } else {
+          setError('Error fetching event details');
+        }
       } finally {
         setLoading(false);
       }
@@ -178,274 +215,147 @@ function EventDetailsPage() {
                 </div>
                 <div className="meta-item">
                   <FaClock className="meta-icon" />
-                  <span>{formatTimeRange12Hour(event.startTime, event.endTime)}</span>
+                  <span>
+                    {event.startTime && event.endTime 
+                      ? formatTimeRange12Hour(event.startTime, event.endTime)
+                      : 'Time not specified'
+                    }
+                  </span>
                 </div>
                 <div className="meta-item">
                   <FaMapMarkerAlt className="meta-icon" />
-                  <span>{event.location || 'N/A'}</span>
+                  <span>{event.location || 'Location not specified'}</span>
                 </div>
                 <div className="meta-item">
                   <FaUsers className="meta-icon" />
-                  <span>
-                    {availableSlots > 0 ? `${availableSlots} slots available` : 'No slots available'}
-                  </span>
+                  <span>{availableSlots} slots available</span>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Download PDF Button for Admin/Staff */}
-          {(role === 'Admin' || role === 'Staff') && (
-            <div className="download-section">
-              <button
-                className="download-pdf-button"
-                disabled={downloading}
-                onClick={async () => {
-                  try {
-                    setDownloading(true);
-                    const token = localStorage.getItem('token');
-                    
-                    if (!token) {
-                      throw new Error('No authentication token found. Please log in again.');
-                    }
-                    
-                    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/reports/event-attendance/${eventId}`, {
-                      method: 'GET',
-                      headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/pdf'
-                      }
-                    });
-                    
-                    if (!response.ok) {
-                      if (response.status === 401) {
-                        throw new Error('Authentication failed. Please log in again.');
-                      } else if (response.status === 404) {
-                        throw new Error('Event not found or no attendance data available.');
-                      } else if (response.status === 500) {
-                        throw new Error('Server error. Please try again later.');
-                      } else {
-                        throw new Error(`Download failed. Status: ${response.status}`);
-                      }
-                    }
-                    
-                    // Check if response is actually a PDF
-                    const contentType = response.headers.get('content-type');
-                    if (!contentType || !contentType.includes('pdf')) {
-                      console.warn('Response is not a PDF:', contentType);
-                    }
-                    
-                    const blob = await response.blob();
-                    
-                    // Create a more descriptive filename
-                    const eventTitle = event.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                    const eventDate = event.date ? new Date(event.date).toISOString().split('T')[0] : 'unknown-date';
-                    const filename = `event-attendance-${eventTitle}-${eventDate}-${eventId}.pdf`;
-                    
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-                    
-                    console.log('PDF downloaded successfully:', filename);
-                  } catch (error) {
-                    console.error('Download failed:', error);
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Download Failed',
-                      text: error.message,
-                      confirmButtonText: 'OK'
-                    });
-                  } finally {
-                    setDownloading(false);
-                  }
-                }}
+          {/* Action Buttons */}
+          <div className="event-actions">
+            <button 
+              onClick={() => navigate('/events')}
+              className="back-button"
+            >
+              <FaArrowLeft /> Back to Events
+            </button>
+            
+            {!isAuthenticated && (
+              <button 
+                onClick={() => navigate('/login')}
+                className="login-button"
               >
-                <FaDownload className="button-icon" />
-                <span>{downloading ? 'Downloading...' : 'Download Attendance PDF'}</span>
+                <FaSignInAlt /> Login to Participate
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Event Content */}
+        <div className="event-content">
+          <div className="event-description">
+            <h3>Event Description</h3>
+            <p>{event.description || 'No description available.'}</p>
+          </div>
+
+          {/* Event Details Grid */}
+          <div className="event-details-grid">
+            <div className="detail-card">
+              <h4>Event Hours</h4>
+              <p>{event.hours || 0} hours</p>
+            </div>
+            <div className="detail-card">
+              <h4>Status</h4>
+              <span className={`status-badge status-${event.status?.toLowerCase()}`}>
+                {event.status || 'Unknown'}
+              </span>
+            </div>
+            <div className="detail-card">
+              <h4>Department</h4>
+              <p>{event.isForAllDepartments ? 'All Departments' : (event.departments?.join(', ') || 'Not specified')}</p>
+            </div>
+            <div className="detail-card">
+              <h4>Registration</h4>
+              <p>{event.requiresApproval ? 'Requires Approval' : 'Auto-approved'}</p>
+            </div>
+          </div>
+
+          {/* Public Registration Notice */}
+          {!isAuthenticated && event.isPublicRegistrationEnabled && (
+            <div className="public-registration-notice">
+              <h4>🎉 Public Registration Available!</h4>
+              <p>This event allows public registration. You can participate without creating an account!</p>
+              <button 
+                onClick={() => navigate(`/events/register/${event.publicRegistrationToken}`)}
+                className="public-register-button"
+              >
+                Register for Event
               </button>
             </div>
           )}
-        </div>
 
-        {/* Event Image */}
-        {event.image && (
-          <div className="event-image-section">
-            <img
-              src={`https://charism-backend.onrender.com/uploads/${event.image}`}
-              alt={event.title}
-              className="event-image"
-            />
-          </div>
-        )}
-
-        {/* Event Details */}
-        <div className="event-details-section">
-          <div className="event-description">
-            <h3 className="section-title">Description</h3>
-            <p className="description-text">{event.description}</p>
-          </div>
-
-          <div className="event-info-grid">
-            <div className="info-card">
-              <h4 className="card-title">Event Information</h4>
-              <div className="info-item">
-                <span className="info-label">Date:</span>
-                <span className="info-value">{event.date ? new Date(event.date).toLocaleDateString() : 'N/A'}</span>
+          {/* Admin/Staff Actions */}
+          {isAuthenticated && (role === 'Admin' || role === 'Staff') && (
+            <div className="admin-actions">
+              <h3>Admin Actions</h3>
+              <div className="action-buttons">
+                <button 
+                  onClick={() => navigate(`/events/${eventId}/edit`)}
+                  className="edit-button"
+                >
+                  Edit Event
+                </button>
+                <button 
+                  onClick={() => navigate(`/events/${eventId}/participants`)}
+                  className="participants-button"
+                >
+                  View Participants
+                </button>
               </div>
-              <div className="info-item">
-                <span className="info-label">Time:</span>
-                <span className="info-value">{event.time || 'N/A'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Location:</span>
-                <span className="info-value">{event.location || 'N/A'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Service Hours:</span>
-                <span className="info-value">{event.hours} hours</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Status:</span>
-                <span className={`status-badge ${isAvailable ? 'available' : 'unavailable'}`}>
-                  {isAvailable ? 'Available' : 'Unavailable'}
-                </span>
-              </div>
-            </div>
-
-            <div className="info-card">
-              <h4 className="card-title">Participation</h4>
-              <div className="info-item">
-                <span className="info-label">Total Participants:</span>
-                <span className="info-value">{attendanceCount}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Attended:</span>
-                <span className="info-value">{attendedParticipants.length}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Available Slots:</span>
-                <span className="info-value">{availableSlots > 0 ? availableSlots : 'None'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Max Participants:</span>
-                <span className="info-value">{maxParticipants > 0 ? maxParticipants : 'Unlimited'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Participants Section */}
-        <div className="participants-section">
-          <div className="section-header">
-            <h3 className="section-title">Participants ({attendanceCount})</h3>
-          </div>
-
-          {event.attendance && event.attendance.length > 0 ? (
-            <div className="participants-table-container">
-              <table className="participants-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Department</th>
-                    <th>Registration Status</th>
-                    <th>Attendance Status</th>
-                    <th>Time In</th>
-                    <th>Time Out</th>
-                    {(role === 'Admin' || role === 'Staff') && <th>Actions</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {event.attendance.map(att => (
-                    <tr key={att.userId?._id || att.userId} className={`status-${att.status?.toLowerCase()}`}>
-                      <td>{att.userId?.name || 'Unknown'}</td>
-                      <td>{att.userId?.email || 'N/A'}</td>
-                      <td>{att.userId?.department || 'N/A'}</td>
-                      <td>
-                        <span className={`status-badge ${att.registrationApproved ? 'approved' : 'pending'}`}>
-                          {att.registrationApproved ? 'Approved' : 'Pending'}
-                        </span>
-                        {att.registrationApprovedAt && (
-                          <div className="approval-date">
-                            <small>Approved: {new Date(att.registrationApprovedAt).toLocaleDateString()}</small>
-                          </div>
-                        )}
-                      </td>
-                      <td>
-                        <span className={`status-badge ${att.status?.toLowerCase()}`}>
-                          {att.status || 'Pending'}
-                        </span>
-                        {att.reason && (
-                          <div className="reason-text">
-                            <small>Reason: {att.reason}</small>
-                          </div>
-                        )}
-                      </td>
-                      <td>{att.timeIn ? new Date(att.timeIn).toLocaleString() : '-'}</td>
-                      <td>{att.timeOut ? new Date(att.timeOut).toLocaleString() : '-'}</td>
-                      {(role === 'Admin' || role === 'Staff') ? (
-                        <td>
-                          <div className="action-buttons">
-                            <button
-                              className="action-button approve-button"
-                              onClick={() => handleApprove(att.userId?._id || att.userId)}
-                              title={att.status === 'Approved' ? 'Already Approved' : 'Approve Attendance'}
-                            >
-                              <FaCheck className="button-icon" />
-                            </button>
-                            <button
-                              className="action-button disapprove-button"
-                              onClick={() => handleDisapprove(att.userId?._id || att.userId)}
-                              title={att.status === 'Disapproved' ? 'Already Disapproved' : 'Disapprove Attendance'}
-                            >
-                              <FaTimes className="button-icon" />
-                            </button>
-                          </div>
-                          {(att.status === 'Approved' || att.status === 'Disapproved') && (
-                            <div className="status-indicator">
-                              {att.status === 'Approved' && (
-                                <span className="status-approved">✓ Approved</span>
-                              )}
-                              {att.status === 'Disapproved' && (
-                                <span className="status-disapproved">✗ Disapproved</span>
-                              )}
-                            </div>
-                          )}
-                        </td>
-                      ) : null}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="no-participants">
-              <div className="no-participants-icon">👥</div>
-              <h4>No Participants Yet</h4>
-              <p>This event hasn't been joined by any students yet.</p>
             </div>
           )}
-        </div>
 
-
-
-
-
-        {/* Back Button */}
-        <div className="back-section">
-          <button 
-            className="back-button"
-            onClick={() => navigate('/events')}
-          >
-            <FaArrowLeft className="button-icon" />
-            <span>Back to Events</span>
-          </button>
+          {/* Attendance List (Admin/Staff only) */}
+          {isAuthenticated && (role === 'Admin' || role === 'Staff') && event.attendance && event.attendance.length > 0 && (
+            <div className="attendance-section">
+              <h3>Event Attendance</h3>
+              <div className="attendance-list">
+                {event.attendance.map((attendance, index) => (
+                  <div key={index} className="attendance-item">
+                    <div className="attendance-info">
+                      <span className="student-name">
+                        {attendance.userId?.name || 'Unknown Student'}
+                      </span>
+                      <span className="attendance-status">
+                        Status: {attendance.status || 'Pending'}
+                      </span>
+                    </div>
+                    <div className="attendance-actions">
+                      {attendance.status === 'Pending' && (
+                        <>
+                          <button 
+                            onClick={() => handleApprove(attendance.userId?._id || attendance.userId)}
+                            className="approve-button"
+                          >
+                            <FaCheck /> Approve
+                          </button>
+                          <button 
+                            onClick={() => handleDisapprove(attendance.userId?._id || attendance.userId)}
+                            className="disapprove-button"
+                          >
+                            <FaTimes /> Disapprove
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

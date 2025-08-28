@@ -18,39 +18,65 @@ function ForgotPasswordPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!email.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Email Required',
+        text: 'Please enter your email address.',
+      });
+      return;
+    }
+    
     setLoading(true);
     try {
-      await axios.post('/api/auth/forgot-password', { email });
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'Password reset link sent! Check your email.',
+      // Use the correct API endpoint
+      const response = await axios.post(`${process.env.REACT_APP_API_URL || ''}/api/auth/forgot-password`, { 
+        email: email.trim() 
       });
-      setEmail('');
-    } catch (err) {
-      const msg = err.response?.data?.message || '';
-      if (
-        msg.toLowerCase().includes('old password') ||
-        msg.toLowerCase().includes('previous password')
-      ) {
+      
+      if (response.data && response.data.message) {
         Swal.fire({
-          icon: 'warning',
-          title: "Don't Use Old Password",
-          text: 'You cannot use your old password. Please enter a new one.',
+          icon: 'success',
+          title: '📧 Reset Link Sent!',
+          text: response.data.message,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#10b981'
         });
-      } else if (msg === 'User not found') {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'User not found.',
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error sending reset link.',
-        });
+        setEmail('');
       }
+    } catch (err) {
+      console.error('Forgot password error:', err);
+      
+      let errorMessage = 'Failed to send reset link. Please try again.';
+      let icon = 'error';
+      
+      if (err.response && err.response.data) {
+        if (err.response.data.message.includes('User not found')) {
+          // Don't reveal if user exists or not for security
+          errorMessage = 'If an account with that email exists, a password reset link has been sent.';
+          icon = 'info';
+        } else if (err.response.data.message.includes('Email service not available')) {
+          errorMessage = 'Email service is currently unavailable. Please contact support.';
+          icon = 'warning';
+        } else if (err.response.data.message.includes('Failed to send')) {
+          errorMessage = 'Failed to send email. Please try again later.';
+          icon = 'warning';
+        } else {
+          errorMessage = err.response.data.message;
+        }
+      } else if (err.request) {
+        errorMessage = 'Network error. Please check your internet connection and try again.';
+        icon = 'warning';
+      }
+      
+      Swal.fire({
+        icon: icon,
+        title: 'Reset Link Not Sent',
+        text: errorMessage,
+        confirmButtonText: 'OK',
+        confirmButtonColor: icon === 'error' ? '#ef4444' : '#3b82f6'
+      });
     }
     setLoading(false);
   };
@@ -100,22 +126,10 @@ function ForgotPasswordPage() {
             </Button>
           </Form>
 
-          {/* Help Section */}
-          <div className="help-section">
-            <div className="help-item">
-              <div className="help-icon">📧</div>
-              <div className="help-text">
-                <h4>Check Your Email</h4>
-                <p>Look for an email from CHARISM with your reset link</p>
-              </div>
-            </div>
-            <div className="help-item">
-              <div className="help-icon">⏰</div>
-              <div className="help-text">
-                <h4>Link Expires</h4>
-                <p>Reset links expire after 24 hours for security</p>
-              </div>
-            </div>
+          {/* Additional Help */}
+          <div className="forgot-password-help">
+            <p>Don't have an account? <a href="/register">Sign up here</a></p>
+            <p>Remember your password? <a href="/login">Login here</a></p>
           </div>
         </div>
       </Container>

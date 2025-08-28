@@ -13,10 +13,40 @@ function ChangePasswordPage() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [passwordMatch, setPasswordMatch] = useState(null);
+  const [passwordStrength, setPasswordStrength] = useState('');
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  // Check password matching in real-time
+  useEffect(() => {
+    if (confirmNewPassword && newPassword) {
+      if (newPassword === confirmNewPassword) {
+        setPasswordMatch(true);
+      } else {
+        setPasswordMatch(false);
+      }
+    } else {
+      setPasswordMatch(null);
+    }
+  }, [newPassword, confirmNewPassword]);
+
+  // Check password strength
+  useEffect(() => {
+    if (newPassword) {
+      if (newPassword.length < 6) {
+        setPasswordStrength('weak');
+      } else if (newPassword.length < 10) {
+        setPasswordStrength('medium');
+      } else {
+        setPasswordStrength('strong');
+      }
+    } else {
+      setPasswordStrength('');
+    }
+  }, [newPassword]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,6 +75,8 @@ function ChangePasswordPage() {
       setOldPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
+      setPasswordMatch(null);
+      setPasswordStrength('');
     } catch (err) {
       Swal.fire({
         icon: 'error',
@@ -53,6 +85,24 @@ function ChangePasswordPage() {
       });
     }
     setLoading(false);
+  };
+
+  const getPasswordStrengthColor = () => {
+    switch (passwordStrength) {
+      case 'weak': return '#ef4444';
+      case 'medium': return '#f59e0b';
+      case 'strong': return '#10b981';
+      default: return '#6b7280';
+    }
+  };
+
+  const getPasswordStrengthText = () => {
+    switch (passwordStrength) {
+      case 'weak': return 'Weak Password';
+      case 'medium': return 'Medium Password';
+      case 'strong': return 'Strong Password';
+      default: return '';
+    }
   };
 
   return (
@@ -105,6 +155,11 @@ function ChangePasswordPage() {
                   <div className="input-focus-line"></div>
                 </div>
                 <div className="form-hint">Choose a new password different from your current one</div>
+                {passwordStrength && (
+                  <div className="password-strength" style={{ color: getPasswordStrengthColor(), fontSize: '0.9rem', marginTop: '5px' }}>
+                    {getPasswordStrengthText()}
+                  </div>
+                )}
               </div>
 
               <div className="form-field">
@@ -115,17 +170,22 @@ function ChangePasswordPage() {
                     value={confirmNewPassword}
                     onChange={e => setConfirmNewPassword(e.target.value)}
                     required
-                    className="form-input"
+                    className={`form-input ${passwordMatch !== null ? (passwordMatch ? 'password-match' : 'password-mismatch') : ''}`}
                   />
                   <div className="input-focus-line"></div>
                 </div>
                 <div className="form-hint">Re-enter your new password to confirm</div>
+                {passwordMatch !== null && (
+                  <div className={`password-match-indicator ${passwordMatch ? 'match' : 'mismatch'}`}>
+                    {passwordMatch ? '✅ Passwords match!' : '❌ Passwords do not match'}
+                  </div>
+                )}
               </div>
             </div>
 
             <Button 
               type="submit" 
-              disabled={loading} 
+              disabled={loading || passwordMatch === false} 
               className={`change-password-button ${loading ? 'loading' : ''}`}
             >
               <span className="button-content">

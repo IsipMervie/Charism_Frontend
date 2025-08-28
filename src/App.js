@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 import './App.css';
 
 // Components
@@ -57,8 +56,12 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/events" element={<EventListPage />} />
-        <Route path="/events/:eventId" element={<EventDetailsPage />} /> {/* View Details */}
+        
+        {/* Specific event routes must come BEFORE dynamic routes */}
         <Route path="/events/register/:token" element={<PublicEventRegistrationPage />} /> {/* Public Registration */}
+        
+        {/* Dynamic event routes */}
+        <Route path="/events/:eventId" element={<EventDetailsPage />} /> {/* View Details */}
         <Route
           path="/events/:eventId/participants"
           element={

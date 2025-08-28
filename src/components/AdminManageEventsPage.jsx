@@ -246,7 +246,7 @@ function AdminManageEventsPage() {
 
   const handleShareEvent = (event) => {
     // Check if event has public registration enabled
-    if (!event.isPublicRegistrationEnabled || !event.registrationToken) {
+    if (!event.isPublicRegistrationEnabled || !event.publicRegistrationToken) {
       Swal.fire({
         icon: 'warning',
         title: 'Public Registration Not Enabled',
@@ -256,58 +256,79 @@ function AdminManageEventsPage() {
       return;
     }
 
-    const registrationUrl = `${window.location.origin}/events/register/${event.registrationToken}`;
+    const registrationUrl = `${window.location.origin}/events/register/${event.publicRegistrationToken}`;
+    const eventUrl = `${window.location.origin}/events/${event._id}`;
     const eventTitle = event.title;
     const eventDate = new Date(event.date).toLocaleDateString();
     const eventTime = formatTimeRange12Hour(event.startTime, event.endTime);
     const eventLocation = event.location;
 
-         Swal.fire({
-       title: 'Share Event',
-       html: `
-         <div style="text-align: left; max-width: 500px;">
-           <h4 style="color: #2c3e50; margin-bottom: 15px;">${eventTitle}</h4>
-           <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-             <p style="margin: 5px 0; color: #495057;">
-               <strong>📅 Date:</strong> ${eventDate}
-             </p>
-             <p style="margin: 5px 0; color: #495057;">
-               <strong>🕐 Time:</strong> ${eventTime}
-             </p>
-             <p style="margin: 5px 0; color: #495057;">
-               <strong>📍 Location:</strong> ${eventLocation}
-             </p>
-           </div>
-           
-           <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
-             <p style="margin: 0 0 10px 0; color: #1565c0; font-weight: 600;">
-               📋 Registration Link:
-             </p>
-             <code style="background: white; padding: 8px; border-radius: 4px; font-size: 12px; word-break: break-all; display: block; color: #333;">
-               ${registrationUrl}
-             </code>
-           </div>
-         </div>
-       `,
-       confirmButtonText: '📋 Copy Link',
-       showCancelButton: false,
-       width: '600px',
-       customClass: {
-         popup: 'share-event-popup'
-       }
-     }).then((result) => {
-       if (result.isConfirmed) {
-         // Copy link to clipboard
-         navigator.clipboard.writeText(registrationUrl);
-         Swal.fire({
-           icon: 'success',
-           title: 'Link Copied!',
-           text: 'Registration link copied to clipboard',
-           timer: 2000,
-           showConfirmButton: false
-         });
-       }
-     });
+    Swal.fire({
+      title: 'Share Event',
+      html: `
+        <div style="text-align: left; max-width: 500px;">
+          <h4 style="color: #2c3e50; margin-bottom: 15px;">${eventTitle}</h4>
+          <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="margin: 5px 0; color: #495057;">
+              <strong>📅 Date:</strong> ${eventDate}
+            </p>
+            <p style="margin: 5px 0; color: #495057;">
+              <strong>🕐 Time:</strong> ${eventTime}
+            </p>
+            <p style="margin: 5px 0; color: #495057;">
+              <strong>📍 Location:</strong> ${eventLocation}
+            </p>
+          </div>
+          
+          <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3; margin-bottom: 15px;">
+            <p style="margin: 0 0 10px 0; color: #1565c0; font-weight: 600;">
+              🔗 Event Link (Public View):
+            </p>
+            <code style="background: white; padding: 8px; border-radius: 4px; font-size: 12px; word-break: break-all; display: block; color: #333;">
+              ${eventUrl}
+            </code>
+          </div>
+          
+          <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+            <p style="margin: 0 0 10px 0; color: #2e7d32; font-weight: 600;">
+              📋 Registration Link:
+            </p>
+            <code style="background: white; padding: 8px; border-radius: 4px; font-size: 12px; word-break: break-all; display: block; color: #333;">
+              ${registrationUrl}
+            </code>
+          </div>
+        </div>
+      `,
+      confirmButtonText: '📋 Copy Registration Link',
+      showCancelButton: true,
+      cancelButtonText: '🔗 Copy Event Link',
+      width: '600px',
+      customClass: {
+        popup: 'share-event-popup'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Copy registration link to clipboard
+        navigator.clipboard.writeText(registrationUrl);
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Link Copied!',
+          text: 'Registration link copied to clipboard',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // Copy event link to clipboard
+        navigator.clipboard.writeText(eventUrl);
+        Swal.fire({
+          icon: 'success',
+          title: 'Event Link Copied!',
+          text: 'Event link copied to clipboard',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    });
   };
 
   const handleViewAttachments = async (eventId) => {
@@ -671,17 +692,17 @@ function AdminManageEventsPage() {
                           )}
 
                           {/* Show registration link if public registration is enabled */}
-                          {event.isPublicRegistrationEnabled && event.registrationToken && (
+                          {event.isPublicRegistrationEnabled && event.publicRegistrationToken && (
                             <div className="detail-item registration-link">
                               <span className="detail-label">Registration Link:</span>
                               <div className="link-container">
                                 <code className="registration-url">
-                                  {`${window.location.origin}/events/register/${event.registrationToken}`}
+                                  {`${window.location.origin}/events/register/${event.publicRegistrationToken}`}
                                 </code>
                                 <button
                                   className="copy-link-btn"
                                   onClick={() => {
-                                    navigator.clipboard.writeText(`${window.location.origin}/events/register/${event.registrationToken}`);
+                                    navigator.clipboard.writeText(`${window.location.origin}/events/register/${event.publicRegistrationToken}`);
                                     Swal.fire({
                                       icon: 'success',
                                       title: 'Link Copied!',
@@ -723,7 +744,7 @@ function AdminManageEventsPage() {
                           </button>
 
                           {/* Share Button - Only show if public registration is enabled */}
-                          {event.isPublicRegistrationEnabled && event.registrationToken && (
+                          {event.isPublicRegistrationEnabled && event.publicRegistrationToken && (
                             <button
                               className="action-button share-button"
                               onClick={() => handleShareEvent(event)}
