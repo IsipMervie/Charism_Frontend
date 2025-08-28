@@ -1,5 +1,6 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 import './App.css';
 
 // Components
@@ -43,6 +44,7 @@ import AdminViewStudentDocumentation from './components/AdminViewStudentDocument
 import PublicEventRegistrationPage from './components/PublicEventRegistrationPage';
 import FeedbackPage from './components/FeedbackPage';
 import AdminManageFeedbackPage from './components/AdminManageFeedbackPage';
+import NotFoundPage from './components/NotFoundPage';
 
 function App() {
   return (
@@ -293,7 +295,7 @@ function App() {
         />
 
         {/* 404 fallback */}
-        <Route path="*" element={<div>404 Not Found</div>} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
