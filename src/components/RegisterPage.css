@@ -498,29 +498,47 @@ input[type="submit"].register-button:hover,
 @media (max-width: 768px) {
   .email-verification-alert {
     width: 90vw !important;
-    max-width: 500px !important;
+    margin: 0 auto !important;
   }
   
   .email-verification-alert .swal2-title {
-    font-size: 1.5rem;
+    font-size: 1.5rem !important;
   }
   
   .email-verification-alert .swal2-html-container {
-    font-size: 14px;
-  }
-  
-  .email-verification-btn {
-    padding: 10px 24px !important;
     font-size: 0.9rem !important;
   }
-  
-  .verification-reminder {
-    flex-direction: column;
-    text-align: center;
-    gap: 8px;
-  }
-  
-  .reminder-icon {
-    margin-top: 0;
-  }
+}
+
+/* Password Matching Styles */
+.password-match-indicator {
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 8px;
+  transition: all 0.3s ease;
+}
+
+.password-match-indicator.match {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.password-match-indicator.mismatch {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.form-input.password-match {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 1px #22c55e !important;
+}
+
+.form-input.password-mismatch {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
 }

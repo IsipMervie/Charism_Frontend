@@ -5,6 +5,7 @@ import './App.css';
 // Components
 import NavigationBar from './components/NavigationBar';
 import PrivateRoute from './components/PrivateRoute';
+import EnvironmentCheck from './components/EnvironmentCheck';
 
 // Pages
 import HomePage from './components/HomePage';
@@ -49,6 +50,7 @@ function App() {
   return (
     <Router>
       <NavigationBar />
+      <EnvironmentCheck />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<HomePage />} />

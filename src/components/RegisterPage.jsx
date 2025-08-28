@@ -13,6 +13,7 @@ function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMatch, setPasswordMatch] = useState(null);
   const [userId, setUserId] = useState('');
   const [academicYear, setAcademicYear] = useState('');
   const [year, setYear] = useState('');
@@ -31,6 +32,19 @@ function RegisterPage() {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  // Check password matching in real-time
+  useEffect(() => {
+    if (confirmPassword && password) {
+      if (password === confirmPassword) {
+        setPasswordMatch(true);
+      } else {
+        setPasswordMatch(false);
+      }
+    } else {
+      setPasswordMatch(null);
+    }
+  }, [password, confirmPassword]);
 
   // Fetch settings for dynamic options
   useEffect(() => {
@@ -259,7 +273,7 @@ function RegisterPage() {
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       required
-                      className="form-input"
+                      className={`form-input ${passwordMatch !== null ? (passwordMatch ? 'password-match' : 'password-mismatch') : ''}`}
                     />
                     <div className="input-focus-line"></div>
                   </div>
@@ -273,12 +287,19 @@ function RegisterPage() {
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
                       required
-                      className="form-input"
+                      className={`form-input ${passwordMatch !== null ? (passwordMatch ? 'password-match' : 'password-mismatch') : ''}`}
                     />
                     <div className="input-focus-line"></div>
                   </div>
                 </div>
               </div>
+              
+              {/* Password Match Indicator */}
+              {passwordMatch !== null && (
+                <div className={`password-match-indicator ${passwordMatch ? 'match' : 'mismatch'}`}>
+                  {passwordMatch ? '✅ Passwords match!' : '❌ Passwords do not match'}
+                </div>
+              )}
             </div>
 
             <div className="form-section">
@@ -400,7 +421,7 @@ function RegisterPage() {
 
             <Button 
               type="submit" 
-              disabled={loading} 
+              disabled={loading || passwordMatch === false} 
               className={`register-button ${loading ? 'loading' : ''}`}
             >
               <span className="button-content">

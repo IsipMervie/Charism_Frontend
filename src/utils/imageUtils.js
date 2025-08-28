@@ -47,3 +47,16 @@ export const getImageUrlWithTimestamp = (imagePath, type = 'general') => {
   const separator = baseUrl.includes('?') ? '&' : '?';
   return `${baseUrl}${separator}t=${timestamp}`;
 };
+
+// Debug function to check current configuration
+export const debugImageConfig = () => {
+  console.log('🔍 Image Utils Debug Info:');
+  console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+  console.log('BACKEND_URL:', BACKEND_URL);
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  return {
+    REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+    BACKEND_URL,
+    NODE_ENV: process.env.NODE_ENV
+  };
+};
