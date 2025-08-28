@@ -24,12 +24,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "build:prod": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "react-scripts build",
+    "build:prod": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
+    "build:render": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "echo 'Build completed successfully'"
+    "predeploy": "npm run build:render",
+    "deploy": "echo 'Build completed successfully for Render'"
   },
   "eslintConfig": {
     "extends": [

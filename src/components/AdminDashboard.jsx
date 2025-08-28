@@ -1,12 +1,14 @@
 // frontend/src/components/AdminDashboard.jsx
 // Simple but Creative Admin Dashboard Design
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Button, Row, Col, Card, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getAnalytics } from '../api/api';
 import { axiosInstance } from '../api/api';
 import { FaUsers, FaCalendarAlt, FaChartBar, FaTrophy, FaUserCheck, FaEnvelope, FaCog, FaBuilding, FaFile, FaUser, FaFileAlt } from 'react-icons/fa';
+import { getSchoolSettings } from '../api/api';
+import { getLogoUrl } from '../utils/imageUtils';
 
 import './AdminDashboard.css';
 
@@ -102,7 +104,7 @@ function AdminDashboard() {
                 </div>
               ) : school && school.logo ? (
                 <img
-                  src={`/uploads/${school.logo}`}
+                  src={`${getLogoUrl(school.logo)}`}
                   alt="School Logo"
                   className="school-logo"
                 />

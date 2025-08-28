@@ -9,7 +9,8 @@ import {
 } from 'react-icons/fa';
 import { getEvents, getUserProfile } from '../api/api';
 import { axiosInstance } from '../api/api';
-
+import { getSchoolSettings } from '../api/api';
+import { getLogoUrl } from '../utils/imageUtils';
 import './StudentDashboard.css';
 
 function StudentDashboard() {
@@ -196,7 +197,7 @@ function StudentDashboard() {
                 </div>
               ) : school && school.logo ? (
                 <img
-                  src={`/uploads/${school.logo}`}
+                  src={getLogoUrl(school.logo)}
                   alt="School Logo"
                   className="school-logo"
                   onError={(e) => {

@@ -1,10 +1,17 @@
-# Production Environment Variables for Frontend
+# Production Environment Variables for Frontend (Render)
 # Copy this file to .env.production before building
 
-REACT_APP_API_URL=https://charism-backend.onrender.com
+# API URL (point to your Render backend)
+REACT_APP_API_URL=https://your-backend-name.onrender.com
 REACT_APP_ENV=production
 REACT_APP_VERSION=1.0.0
 GENERATE_SOURCEMAP=false
 
 # Note: In production, set GENERATE_SOURCEMAP=false to reduce bundle size
 # and improve security by not exposing source code
+
+# Render Deployment Notes:
+# 1. Use build:render script for Render builds
+# 2. Set REACT_APP_API_URL to your Render backend URL
+# 3. Build command: npm run build:render
+# 4. Publish directory: build
