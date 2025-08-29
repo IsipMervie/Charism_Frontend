@@ -1,5 +1,5 @@
 // Image URL utility for consistent image handling
-const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://charism-backend.onrender.com';
+const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 const STATIC_URL = BACKEND_URL.replace('/api', '');
 
 export const getImageUrl = (imagePath, type = 'general') => {

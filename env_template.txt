@@ -1,9 +1,0 @@
-# Frontend Environment Variables
-# Copy this to .env before building
-
-# Disable source maps for production builds
-GENERATE_SOURCEMAP=false
-
-# API Configuration
-REACT_APP_API_URL=https://charism-backend.onrender.com
-REACT_APP_ENV=development

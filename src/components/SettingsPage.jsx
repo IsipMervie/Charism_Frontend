@@ -483,7 +483,7 @@ function SettingsPage() {
                     {/* Show temporary profile picture if available, otherwise show current */}
                     {(tempProfilePicture || profilePicture) ? (
                       <img
-                        src={`https://charism-backend.onrender.com/uploads/profile-pictures/${tempProfilePicture || profilePicture}`}
+                        src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000'}/uploads/profile-pictures/${tempProfilePicture || profilePicture}`}
                         alt="Current Profile"
                         className="current-profile-image"
                         onError={(e) => {
