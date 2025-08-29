@@ -1,5 +1,6 @@
 // Image URL utility for consistent image handling
 const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://charism-backend.onrender.com';
+const STATIC_URL = BACKEND_URL.replace('/api', '');
 
 export const getImageUrl = (imagePath, type = 'general') => {
   if (!imagePath) return null;
@@ -10,15 +11,15 @@ export const getImageUrl = (imagePath, type = 'general') => {
   // Handle different image types
   switch (type) {
     case 'profile':
-      return `${BACKEND_URL}/uploads/profile-pictures/${cleanPath}`;
+      return `${STATIC_URL}/uploads/profile-pictures/${cleanPath}`;
     case 'event':
-      return `${BACKEND_URL}/uploads/${cleanPath}`;
+      return `${STATIC_URL}/uploads/${cleanPath}`;
     case 'logo':
-      return `${BACKEND_URL}/uploads/${cleanPath}`;
+      return `${STATIC_URL}/uploads/${cleanPath}`;
     case 'documentation':
-      return `${BACKEND_URL}/uploads/documentation/${cleanPath}`;
+      return `${STATIC_URL}/uploads/documentation/${cleanPath}`;
     default:
-      return `${BACKEND_URL}/uploads/${cleanPath}`;
+      return `${STATIC_URL}/uploads/${cleanPath}`;
   }
 };
 
@@ -53,10 +54,12 @@ export const debugImageConfig = () => {
   console.log('🔍 Image Utils Debug Info:');
   console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
   console.log('BACKEND_URL:', BACKEND_URL);
+  console.log('STATIC_URL:', STATIC_URL);
   console.log('NODE_ENV:', process.env.NODE_ENV);
   return {
     REACT_APP_API_URL: process.env.REACT_APP_API_URL,
     BACKEND_URL,
+    STATIC_URL,
     NODE_ENV: process.env.NODE_ENV
   };
 };
