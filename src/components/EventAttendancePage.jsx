@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getEvents, joinEvent, timeIn, timeOut, getPublicSettings, generateReport } from '../api/api';
 import Swal from 'sweetalert2';
 import { FaSearch, FaCalendar, FaClock, FaUsers, FaMapMarkerAlt, FaSpinner, FaExclamationTriangle, FaFilter, FaEye, FaDownload } from 'react-icons/fa';
 import { formatTimeRange12Hour } from '../utils/timeUtils';
+import { getEventImageUrl } from '../utils/imageUtils';
 import './EventAttendancePage.css';
 
 const EventAttendancePage = memo(() => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
   const [joinedEvents, setJoinedEvents] = useState([]);
@@ -550,7 +553,7 @@ const EventAttendancePage = memo(() => {
                   {event.image && (
                     <div className="event-image-wrapper">
                       <img
-                        src={`https://charism-backend.onrender.com/uploads/${event.image}`}
+                        src={getEventImageUrl(event.image)}
                         alt={event.title}
                         className="event-image"
                       />
@@ -685,7 +688,7 @@ const EventAttendancePage = memo(() => {
                       {(role === 'Admin' || role === 'Staff') && (
                         <button 
                           className="action-btn info-btn"
-                          onClick={() => window.location.href = `/events/${event._id}`}
+                          onClick={() => navigate(`/events/${event._id}`)}
                         >
                           <FaEye /> View Participants
                         </button>

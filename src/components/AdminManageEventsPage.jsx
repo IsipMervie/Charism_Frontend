@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { FaCalendar, FaClock, FaUsers, FaMapMarkerAlt, FaEdit, FaEye, FaTrash, FaPlus, FaSpinner, FaEyeSlash, FaShare } from 'react-icons/fa';
 import { formatTimeRange12Hour } from '../utils/timeUtils';
+import { getEventImageUrl } from '../utils/imageUtils';
 import './AdminManageEventsPage.css';
 
 function AdminManageEventsPage() {
@@ -256,8 +257,9 @@ function AdminManageEventsPage() {
       return;
     }
 
-    const registrationUrl = `${window.location.origin}/events/register/${event.publicRegistrationToken}`;
-    const eventUrl = `${window.location.origin}/events/${event._id}`;
+    const frontendUrl = process.env.REACT_APP_FRONTEND_URL || window.location.origin;
+    const registrationUrl = `${frontendUrl}/events/register/${event.publicRegistrationToken}`;
+    const eventUrl = `${frontendUrl}/events/${event._id}`;
     const eventTitle = event.title;
     const eventDate = new Date(event.date).toLocaleDateString();
     const eventTime = formatTimeRange12Hour(event.startTime, event.endTime);
@@ -631,7 +633,7 @@ function AdminManageEventsPage() {
                       {event.image && (
                         <div className="event-image-wrapper">
                           <img
-                            src={`https://charism-backend.onrender.com/uploads/${event.image}`}
+                            src={getEventImageUrl(event.image)}
                             alt={event.title}
                             className="event-image"
                           />

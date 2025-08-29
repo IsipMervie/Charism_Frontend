@@ -8,6 +8,7 @@ import {
   FaSpinner, FaCheckCircle, FaExclamationTriangle, FaUsers
 } from 'react-icons/fa';
 import { axiosInstance } from '../api/api';
+import { getProfilePictureUrl as getImageUrl } from '../utils/imageUtils';
 import './ProfilePage.css';
 
 function ProfilePage() {
@@ -31,10 +32,10 @@ function ProfilePage() {
   const getProfilePictureUrl = (filename) => {
     if (!filename) return null;
     
-    // Use the full backend URL for uploads
-    const backendUrl = 'https://charism-backend.onrender.com';
+    // Use the image utilities for consistent URL handling
     const timestamp = Date.now();
-    return `${backendUrl}/uploads/profile-pictures/${filename}?t=${timestamp}`;
+    const baseUrl = getImageUrl(filename);
+    return baseUrl ? `${baseUrl}?t=${timestamp}` : null;
   };
 
   // Fetch user profile from backend to get the latest profile picture

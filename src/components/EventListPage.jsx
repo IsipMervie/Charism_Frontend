@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { FaCalendar, FaClock, FaMapMarkerAlt, FaUsers, FaDownload, FaEye, FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { formatTimeRange12Hour } from '../utils/timeUtils';
+import { getEventImageUrl } from '../utils/imageUtils';
 import './EventListPage.css';
 
 function EventListPage() {
@@ -997,7 +998,7 @@ function EventListPage() {
                     {event.image && (
                       <div className="event-image-wrapper">
                         <img
-                          src={`https://charism-backend.onrender.com/uploads/${event.image}`}
+                          src={getEventImageUrl(event.image)}
                           alt={event.title}
                           className="event-image"
                         />
@@ -1172,7 +1173,7 @@ function EventListPage() {
                         {(role === 'Admin' || role === 'Staff') && (
                           <button 
                             className="view-participants-button"
-                            onClick={() => window.location.href = `/events/${event._id}`}
+                            onClick={() => navigate(`/events/${event._id}`)}
                           >
                             <FaEye className="button-icon" /> View Participants
                           </button>

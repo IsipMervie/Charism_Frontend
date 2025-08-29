@@ -1,10 +1,12 @@
-/* Modern Responsive Design System */
+/* Modern Responsive Design System with Blue Theme */
 
 :root {
-  /* Color Palette */
-  --primary-color: #2563eb;
-  --primary-dark: #1d4ed8;
+  /* Color Palette - Blue Theme */
+  --primary-color: #1e40af;
+  --primary-dark: #1e3a8a;
   --primary-light: #3b82f6;
+  --primary-lighter: #60a5fa;
+  --primary-lightest: #dbeafe;
   --secondary-color: #64748b;
   --success-color: #10b981;
   --warning-color: #f59e0b;
@@ -198,6 +200,64 @@ a:hover {
   cursor: not-allowed;
 }
 
+/* Blue Theme Button Variants */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+}
+
+.btn-secondary {
+  background: var(--gray-100);
+  border: 2px solid var(--gray-300);
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--gray-200);
+  border-color: var(--gray-400);
+  transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+  background: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
 .btn-primary {
   background-color: var(--primary-color);
   color: var(--white);
@@ -274,6 +334,18 @@ a:hover {
 
 .form-control:focus {
   border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+  outline: none;
+}
+
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
   outline: 0;
   box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
 }
@@ -305,17 +377,20 @@ a:hover {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  transition: box-shadow var(--transition-fast);
+  transition: all 0.3s ease;
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .card-header {
   padding: var(--space-6);
   border-bottom: 1px solid var(--border-light);
-  background-color: var(--bg-secondary);
+  background: linear-gradient(135deg, var(--primary-lightest) 0%, var(--gray-50) 100%);
+  color: var(--primary-dark);
+  font-weight: 600;
 }
 
 .card-body {
@@ -359,6 +434,12 @@ a:hover {
   color: #0c4a6e;
   background-color: #e0f2fe;
   border-color: #bae6fd;
+}
+
+.alert-primary {
+  background: var(--primary-lightest);
+  border: 1px solid var(--primary-lighter);
+  color: var(--primary-dark);
 }
 
 /* Utilities */

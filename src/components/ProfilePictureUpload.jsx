@@ -3,6 +3,7 @@ import { Button, Spinner } from 'react-bootstrap';
 import { FaCamera, FaTrash, FaUser } from 'react-icons/fa';
 import { uploadProfilePicture, deleteProfilePicture } from '../api/api';
 import Swal from 'sweetalert2';
+import { getProfilePictureUrl } from '../utils/imageUtils';
 import './ProfilePictureUpload.css';
 
 const ProfilePictureUpload = ({ 
@@ -161,15 +162,13 @@ const ProfilePictureUpload = ({
     }
   };
 
-  const getProfilePictureUrl = (filename) => {
+  const getProfilePictureUrlLocal = (filename) => {
     if (!filename) return null;
-    // Use the configured API base URL instead of hardcoded localhost
-    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-    const uploadsUrl = baseUrl.replace('/api', '');
-          return `${uploadsUrl}/uploads/profile-pictures/${filename}`;
+    // Use the image utilities for consistent URL handling
+    return getProfilePictureUrl(filename);
   };
 
-  const currentImageUrl = currentProfilePicture ? getProfilePictureUrl(currentProfilePicture) : null;
+  const currentImageUrl = currentProfilePicture ? getProfilePictureUrlLocal(currentProfilePicture) : null;
   const displayImageUrl = previewUrl || currentImageUrl;
 
   const sizeClasses = {

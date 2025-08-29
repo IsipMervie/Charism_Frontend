@@ -3,6 +3,8 @@ import { getEventDetails, updateEvent } from '../api/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { FaCalendar, FaClock, FaMapMarkerAlt, FaUsers, FaSave, FaTimes, FaImage } from 'react-icons/fa';
+import { formatTimeRange12Hour } from '../utils/timeUtils';
+import { getEventImageUrl } from '../utils/imageUtils';
 import './EditEventPage.css';
 
 function EditEventPage() {
@@ -220,7 +222,7 @@ function EditEventPage() {
               <div className="current-image image-preview">
                 <p>Current Image:</p>
                 <div className="image-frame">
-                  <img src={`https://charism-backend.onrender.com/uploads/${event.image}`} alt="Current event" />
+                  <img src={getEventImageUrl(event.image)} alt="Current event" />
                 </div>
               </div>
             )}

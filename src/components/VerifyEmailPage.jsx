@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { verifyEmail } from '../api/api';
 import Swal from 'sweetalert2';
 import './VerifyEmailPage.css';
 
@@ -23,11 +23,11 @@ const VerifyEmailPage = () => {
       }
 
       try {
-        // Use the correct API endpoint
-        const response = await axios.get(`${process.env.REACT_APP_API_URL || ''}/api/auth/verify-email/${token}`);
+        // Use the API utility function
+        const response = await verifyEmail(token);
         
-        if (response.data && response.data.message) {
-          setMessage(response.data.message);
+        if (response && response.message) {
+          setMessage(response.message);
           setSuccess(true);
           
           // Show success SweetAlert
@@ -53,20 +53,20 @@ const VerifyEmailPage = () => {
         let errorMessage = 'An error occurred while verifying your email.';
         let icon = 'error';
         
-        if (error.response && error.response.data) {
-          if (error.response.data.message.includes('already verified')) {
+        if (error.message) {
+          if (error.message.includes('already verified')) {
             errorMessage = 'This email is already verified. You can log in to your account.';
             icon = 'info';
-          } else if (error.response.data.message.includes('Invalid or expired token')) {
+          } else if (error.message.includes('Invalid or expired token')) {
             errorMessage = 'The verification link is invalid or has expired. Please request a new verification email.';
             icon = 'warning';
-          } else if (error.response.data.message.includes('User not found')) {
+          } else if (error.message.includes('User not found')) {
             errorMessage = 'User account not found. Please check your verification link.';
             icon = 'error';
           } else {
-            errorMessage = error.response.data.message;
+            errorMessage = error.message;
           }
-        } else if (error.request) {
+        } else if (error.message && error.message.includes('Network Error')) {
           errorMessage = 'Network error. Please check your internet connection and try again.';
           icon = 'warning';
         }
