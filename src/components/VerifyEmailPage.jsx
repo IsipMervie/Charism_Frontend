@@ -14,7 +14,7 @@ const VerifyEmailPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const verifyEmail = async () => {
+    const verifyUserEmail = async () => {
       if (!token) {
         setMessage('No verification token provided');
         setSuccess(false);
@@ -94,7 +94,7 @@ const VerifyEmailPage = () => {
       }
     };
 
-    verifyEmail();
+    verifyUserEmail();
   }, [token, navigate]);
 
   if (loading) {
